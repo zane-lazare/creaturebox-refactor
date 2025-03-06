@@ -21,10 +21,12 @@ from .routes.logs import logs_bp
 from .routes.scheduler import scheduler_bp
 from .routes.network import network_bp
 from .routes.jobs import jobs_bp
+from .routes.storage import storage_bp
 
 # Import services
 from .services.job_queue import job_queue
 from .services.cache import cache_service
+from .services.storage import storage_manager
 
 def create_app():
     """Create and configure the Flask application."""
@@ -88,6 +90,7 @@ def register_blueprints(app):
     app.register_blueprint(scheduler_bp)
     app.register_blueprint(network_bp)
     app.register_blueprint(jobs_bp)
+    app.register_blueprint(storage_bp)
 
 def setup_services(app):
     """Initialize and configure services."""
