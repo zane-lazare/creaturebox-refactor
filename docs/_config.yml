@@ -14,33 +14,42 @@ aux_links:
 # Footer content 
 footer_content: "CreatureBox Documentation - Generated on 2025-03-08"
 
-# Navigation structure
-nav:
-  - title: Overview
-    children:
-      - title: Introduction
-        url: /
-      - title: Repository Structure
-        url: /repository-structure-manifest
-  - title: Core Components
-    children:
-      - title: Configuration
-        url: /src-config
-      - title: Power Management
-        url: /src-power
-      - title: Software
-        url: /src-software
-  - title: Web Interface
-    children:
-      - title: Web Core
-        url: /src-web
-      - title: API Routes
-        url: /src-web-routes
-      - title: Services
-        url: /src-web-services
-      - title: Middleware
-        url: /src-web-middleware
-      - title: Utilities
-        url: /src-web-utils
-      - title: Tests
-        url: /src-web-tests
+# Collections for better organization
+collections:
+  core-components:
+    permalink: "/:collection/:path/"
+    output: true
+  web-interface:
+    permalink: "/:collection/:path/"
+    output: true
+  setup:
+    permalink: "/:collection/:path/"
+    output: true
+
+# Just the Docs defaults
+defaults:
+  - scope:
+      path: ""
+      type: core-components
+    values:
+      layout: default
+      parent: Core Components
+  - scope:
+      path: ""
+      type: web-interface
+    values:
+      layout: default
+      parent: Web Interface
+  - scope:
+      path: ""
+      type: setup
+    values:
+      layout: default
+      parent: Setup & Deployment
+
+# Enable back to top button
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Enable copy code button
+enable_copy_code_button: true
