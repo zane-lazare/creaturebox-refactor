@@ -1,21 +1,53 @@
 # Root Project Files Documentation
 
-## Installation and Verification
-- `install.sh`: Primary installation script
-- `pre_install_check.py`: Pre-installation system compatibility check
-- `verify_installation.py`: Post-installation verification script
+## Installation and System Verification
+
+### pre_install_check.py
+- **Purpose**: Pre-installation system compatibility verification
+- **Key Functions**:
+  * Validate system requirements
+  * Check hardware and software dependencies
+  * Ensure minimum specifications are met
+
+### install.sh
+- **Purpose**: Primary installation script for CreatureBox
+- **Core Responsibilities**:
+  * Automated system setup
+  * Dependency installation
+  * Configuration initialization
+
+### verify_installation.py
+- **Purpose**: Post-installation system validation
+- **Key Validation Steps**:
+  * Verify successful component installation
+  * Check system configuration integrity
+  * Perform diagnostic tests
 
 ## Project Configuration
-- `requirements.txt`: Python dependency specifications
-- `pytest.ini`: pytest configuration for testing
-- `license.md`: Project licensing information
 
-## Development Notes
-- Comprehensive installation process
-- Dependency management
-- Testing framework setup
+### requirements.txt
+- **Purpose**: Python dependency specification
+- **Content**:
+  * List of required Python packages
+  * Version constraints
+  * Project-specific library requirements
 
-## Key Considerations
-- Systematic installation verification
-- Explicit dependency tracking
-- Clear licensing terms
+### pytest.ini
+- **Purpose**: pytest configuration for testing
+- **Configuration Aspects**:
+  * Test discovery parameters
+  * Default test behavior
+  * Reporting settings
+
+## Licensing
+
+### license.md
+- **Purpose**: Project licensing information
+- **Key Details**:
+  * Usage permissions
+  * Distribution guidelines
+  * Copyright statements
+
+## Documentation Generation Metadata
+- Generated: 2025-03-07
+- Scope: Comprehensive root file analysis
