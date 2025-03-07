@@ -62,6 +62,16 @@
 - Web application assets
 - UI resources
 
+###### Static CSS
+[CSS Stylesheets](/docs/src-web-static-css.md)
+- Core styling resources
+- Visual design management
+
+###### Static JavaScript
+[JavaScript Assets](/docs/src-web-static-js.md)
+- Client-side application logic
+- Interactive interface scripts
+
 ##### Web Tests
 [Web Test Suite](/docs/src-web-tests.md)
 - Comprehensive testing
