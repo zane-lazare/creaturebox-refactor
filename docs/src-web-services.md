@@ -1,178 +1,299 @@
-# src/web/services Directory Documentation
+# Web Services Module Documentation
 
-## Directory Purpose
-The `src/web/services` directory contains core service modules that provide essential background functionality for the CreatureBox web application. These services handle operations such as caching, background job processing, and storage management, which require persistent state and potentially long-running operations. The services in this directory enable the application to efficiently manage resources, provide responsiveness to users, and maintain data integrity, even during complex operations that would otherwise block the main application thread.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| cache.py | Python | 1.2 KB | Caching service implementation |
-| job_queue.py | Python | 2.3 KB | Background job processing service |
-| storage.py | Python | 1.8 KB | Photo storage management service |
+## Overview
 
-## Detailed File Descriptions
+The Web Services Module provides the core business logic components that handle background processing, caching, storage management, and job queue functionality for the CreatureBox web application.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/web/services` directory contains service classes that implement the core business logic of the CreatureBox web application. This module provides:
+
+- Background processing capabilities
+- Caching mechanisms for performance optimization
+- Storage management for photos and files
+- Job queue for delayed and asynchronous tasks
+- API interaction layers with system components
+- Data access abstractions
+
+These services act as the middle layer between the web routes (controllers) and the system resources, providing reusable, modular functionality that encapsulates complex operations.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| __init__.py | Python | 0.2 KB | Package initialization |
+| cache.py | Python | 1.6 KB | Data caching service |
+| job_queue.py | Python | 2.2 KB | Background task scheduling |
+| storage.py | Python | 2.8 KB | File storage management |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
+
+### __init__.py
+- **Primary Purpose**: Package initialization
+- **Key Functions**:
+  * `register_services(app)`: Initializes all services with the Flask app
+- **Dependencies**:
+  * Flask application context
+- **Technical Notes**: Ensures services are properly initialized in the correct order
 
 ### cache.py
-- **Primary Purpose**: Provides a flexible caching system to improve application performance
+- **Primary Purpose**: Data caching and performance optimization
 - **Key Functions**:
-  * `Cache` class: Abstract base class defining cache interface
-  * `MemoryCache` class: In-memory implementation of caching
-  * `RedisCache` class: Redis-backed implementation (when available)
-  * `get_cache(config)`: Factory function to select appropriate cache implementation
-  * `cache_decorator()`: Function decorator for easy result caching
+  * `CacheService`: Main caching service class
+  * `cache.get(key)`: Retrieve cached item
+  * `cache.set(key, value, ttl)`: Store item in cache
+  * `cache.delete(key)`: Remove item from cache
+  * `cache.clear()`: Clear entire cache
+  * `cache.get_or_set(key, callable, ttl)`: Get cached value or compute and cache
+  * `cache_decorator(ttl)`: Decorator for caching function results
 - **Dependencies**:
-  * Redis (optional)
-  * Python standard library
-- **Technical Notes**: 
-  * Automatically falls back to memory cache if Redis is unavailable
-  * Implements TTL (time-to-live) for cached items
-  * Thread-safe implementation for concurrent access
+  * Redis or in-memory cache implementation
+  * Serialization utilities
+- **Technical Notes**: Configurable with different backend providers (Redis, in-memory, filesystem)
 
 ### job_queue.py
-- **Primary Purpose**: Manages asynchronous execution of long-running tasks
+- **Primary Purpose**: Background and scheduled task processing
 - **Key Functions**:
-  * `JobQueue` class: Core job processing system
-  * `Job` class: Representation of a background task
-  * `enqueue(func, *args, **kwargs)`: Adds a job to the queue
-  * `get_job_status(job_id)`: Retrieves current status of a job
-  * `cancel_job(job_id)`: Attempts to cancel a running job
-  * `cleanup_old_jobs(max_age)`: Removes completed jobs older than specified time
+  * `JobQueue`: Main queue management class
+  * `queue.enqueue(func, *args, **kwargs)`: Add task to queue
+  * `queue.schedule(func, delay, *args, **kwargs)`: Schedule delayed task
+  * `queue.recurring(func, interval, *args, **kwargs)`: Set up recurring task
+  * `queue.cancel(job_id)`: Cancel pending job
+  * `queue.status(job_id)`: Check job status
+  * `queue.results(job_id)`: Get job results
+  * `Worker`: Background worker implementation
 - **Dependencies**:
-  * Threading module
-  * Queue module
-  * uuid module
-- **Technical Notes**: 
-  * Implements worker pool pattern for parallel processing
-  * Provides real-time status updates for running jobs
-  * Maintains persistent job history for monitoring
+  * Threading or multiprocessing
+  * Redis for persistent job storage
+- **Technical Notes**: Supports priority levels and job dependencies
 
 ### storage.py
-- **Primary Purpose**: Manages photo storage operations and organization
+- **Primary Purpose**: File and image storage management
 - **Key Functions**:
-  * `StorageManager` class: Core storage management functionality
-  * `get_storage_stats()`: Returns disk usage and capacity information
-  * `backup_photos(destination)`: Creates backups of photo files
-  * `cleanup_old_photos(days_to_keep)`: Manages storage by removing old images
-  * `organize_photos_by_date()`: Organizes photo files into date-based directories
+  * `StorageService`: Main storage management class
+  * `storage.save_file(file_obj, path)`: Save uploaded file
+  * `storage.get_file(path)`: Retrieve file
+  * `storage.delete_file(path)`: Remove file
+  * `storage.list_files(directory)`: List files in directory
+  * `storage.get_url(path)`: Get URL for file access
+  * `storage.save_image(image, path, format)`: Save image with processing
+  * `storage.create_thumbnail(image_path, size)`: Generate thumbnail
+  * `storage.get_disk_usage()`: Check storage utilization
 - **Dependencies**:
-  * os module
-  * shutil module
-  * datetime module
-  * src/web/utils/files.py
-- **Technical Notes**: 
-  * Implements safe file operations with error handling
-  * Includes validation to prevent accidental data loss
-  * Uses transactional approach for operations affecting multiple files
+  * File system access
+  * PIL for image processing
+  * File type detection
+- **Technical Notes**: Supports both local and remote storage backends
 
-## Relationship Documentation
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/routes/*.py (routes that use these services)
-  * src/web/app.py (application initialization)
+  * [Web Routes](./src-web-routes.md): Routes use services for business logic
+  * [Web Utilities](./src-web-utils.md): Services depend on utility functions
+  * [Web Middleware](./src-web-middleware.md): Services use middleware context
 - **Depends On**:
-  * src/web/utils/*.py (utility functions)
-  * src/config/ (configuration settings)
-  * External services (Redis, when available)
+  * [Configuration Module](./src-config.md): Service configuration
+  * [Software Module](./src-software.md): For camera and system control
+  * Third-party libraries (Redis, PIL)
+  * File system and hardware access
 - **Used By**:
-  * API endpoints that require background processing
-  * Operations that benefit from caching
-  * Storage management functions
+  * Route handlers in web application
+  * Background processing tasks
+  * Scheduled operations
 
-## Use Cases
-1. **Performance Optimization Through Caching**:
-   - **Implementation**: The cache.py module provides both in-memory and Redis-backed caching to improve response times for frequently accessed data.
-   - **Example**:
-     ```python
-     from src.web.services.cache import get_cache, cache_decorator
-     
-     cache = get_cache(app.config)
-     
-     # Function decorator approach
-     @cache_decorator(timeout=300)  # Cache for 5 minutes
-     def get_system_status():
-         # Complex or slow operation to get status
-         return status_data
-     
-     # Direct cache usage
-     def get_photo_metadata(photo_id):
-         cache_key = f"photo:{photo_id}:metadata"
-         cached = cache.get(cache_key)
-         if cached:
-             return cached
-             
-         metadata = compute_photo_metadata(photo_id)
-         cache.set(cache_key, metadata, timeout=600)
-         return metadata
-     ```
+</div>
+</details>
 
-2. **Long-Running Background Tasks**:
-   - **Implementation**: The job_queue.py module enables asynchronous execution of time-consuming operations without blocking the web server.
-   - **Example**:
-     ```python
-     from src.web.services.job_queue import JobQueue
-     
-     job_queue = JobQueue(worker_count=4)
-     
-     # API route handler
-     @app.route('/api/photos/process-batch', methods=['POST'])
-     def process_photo_batch():
-         photos = request.json.get('photos', [])
-         job = job_queue.enqueue(process_multiple_photos, photos)
-         return jsonify({'job_id': job.id, 'status': job.status})
-     
-     # Status checking endpoint
-     @app.route('/api/jobs/<job_id>', methods=['GET'])
-     def check_job_status(job_id):
-         job = job_queue.get_job(job_id)
-         if not job:
-             abort(404)
-         return jsonify({
-             'id': job.id,
-             'status': job.status,
-             'progress': job.progress,
-             'result': job.result if job.status == 'completed' else None
-         })
-     ```
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
 
-3. **Photo Storage Management**:
-   - **Implementation**: The storage.py module handles organization and management of photo files.
-   - **Example**:
+1. **Image Processing Pipeline**:
+   - **Description**: Processing and storing captured images.
+   - **Example**: 
      ```python
-     from src.web.services.storage import StorageManager
+     # In a route handler
+     from src.web.services.storage import storage_service
+     from src.web.services.job_queue import job_queue
      
-     storage_mgr = StorageManager(base_path='/opt/creaturebox/photos')
-     
-     # API route for storage cleanup
-     @app.route('/api/storage/cleanup', methods=['POST'])
-     def cleanup_storage():
-         days_to_keep = request.json.get('days_to_keep', 30)
-         job = job_queue.enqueue(
-             storage_mgr.cleanup_old_photos, 
-             days_to_keep
-         )
-         return jsonify({'job_id': job.id})
+     @camera_bp.route('/api/camera/capture', methods=['POST'])
+     def capture_image():
+         # Trigger camera capture
+         raw_image = camera_utility.capture()
          
-     # API route for storage stats
-     @app.route('/api/storage/stats', methods=['GET'])
-     def get_storage_info():
-         stats = storage_mgr.get_storage_stats()
-         return jsonify(stats)
+         # Save original image
+         original_path = storage_service.save_image(
+             raw_image, 
+             f"captures/{datetime.now().strftime('%Y%m%d%H%M%S')}.jpg",
+             format='jpeg',
+             quality=95
+         )
+         
+         # Queue background processing
+         job_queue.enqueue(
+             process_image,
+             original_path,
+             apply_filters=True,
+             generate_thumbnails=True
+         )
+         
+         return jsonify({"status": "success", "path": original_path})
+     
+     def process_image(image_path, apply_filters=False, generate_thumbnails=False):
+         """Background task to process captured image"""
+         if apply_filters:
+             # Apply image enhancement filters
+             storage_service.apply_filters(image_path)
+             
+         if generate_thumbnails:
+             # Create multiple thumbnail sizes
+             storage_service.create_thumbnail(image_path, (100, 100))
+             storage_service.create_thumbnail(image_path, (400, 400))
      ```
 
-4. **External Storage Backup**:
-   - **Implementation**: The storage.py module provides functionality to backup photos to external devices.
-   - **Example**:
+2. **Caching for Performance**:
+   - **Description**: Using caching to improve application performance.
+   - **Example**: 
      ```python
-     # API route for external backup
-     @app.route('/api/storage/backup/external', methods=['POST'])
-     def backup_to_external():
-         device_path = request.json.get('device_path')
-         if not os.path.exists(device_path):
-             abort(400, "External device not found")
+     # In a service or route handler
+     from src.web.services.cache import cache_service
+     
+     @gallery_bp.route('/api/gallery/recent', methods=['GET'])
+     def get_recent_photos():
+         # Cache key based on request parameters
+         page = request.args.get('page', 1, type=int)
+         cache_key = f"recent_photos:page:{page}"
+         
+         # Try to get from cache first
+         cached_result = cache_service.get(cache_key)
+         if cached_result:
+             return jsonify(cached_result)
              
-         job = job_queue.enqueue(
-             storage_mgr.backup_photos,
-             destination=device_path,
-             incremental=True
+         # Not in cache, fetch from storage
+         photos = storage_service.list_files(
+             "captures", 
+             sort_by="date", 
+             order="desc", 
+             limit=20, 
+             offset=(page-1)*20
          )
-         return jsonify({'job_id': job.id})
+         
+         # Process photos
+         result = {"photos": process_photo_list(photos), "page": page}
+         
+         # Cache for 5 minutes
+         cache_service.set(cache_key, result, ttl=300)
+         
+         return jsonify(result)
      ```
+
+3. **Background Job Processing**:
+   - **Description**: Scheduling and monitoring background tasks.
+   - **Example**: 
+     ```python
+     # In a route handler or service
+     from src.web.services.job_queue import job_queue
+     
+     @system_bp.route('/api/system/backup', methods=['POST'])
+     def trigger_backup():
+         # Get backup parameters
+         params = request.get_json()
+         destination = params.get('destination', 'default')
+         include_photos = params.get('include_photos', True)
+         
+         # Schedule backup job to run in the background
+         job_id = job_queue.enqueue(
+             perform_system_backup,
+             destination,
+             include_photos
+         )
+         
+         return jsonify({"status": "scheduled", "job_id": job_id})
+         
+     @system_bp.route('/api/system/backup/status/<job_id>', methods=['GET'])
+     def backup_status(job_id):
+         # Check job status
+         status = job_queue.status(job_id)
+         
+         if status == 'complete':
+             results = job_queue.results(job_id)
+             return jsonify({
+                 "status": "complete",
+                 "backup_size": results.get('size'),
+                 "backup_location": results.get('path'),
+                 "duration": results.get('duration')
+             })
+         elif status == 'failed':
+             error = job_queue.results(job_id).get('error')
+             return jsonify({"status": "failed", "error": error}), 500
+         else:
+             return jsonify({"status": status})
+     ```
+
+4. **Storage Management**:
+   - **Description**: Managing disk storage and performing cleanup.
+   - **Example**: 
+     ```python
+     # In a scheduled task
+     from src.web.services.storage import storage_service
+     from src.web.services.job_queue import job_queue
+     
+     def setup_storage_maintenance():
+         # Schedule daily storage maintenance
+         job_queue.recurring(
+             maintain_storage,
+             interval=24*60*60,  # Daily
+             run_at="02:00"      # At 2 AM
+         )
+         
+     def maintain_storage():
+         """Perform storage maintenance tasks"""
+         # Check storage usage
+         usage = storage_service.get_disk_usage()
+         
+         # If storage is over 80% full, cleanup old files
+         if usage.percent > 80:
+             # Find oldest non-favorite images
+             old_files = storage_service.list_files(
+                 "captures",
+                 sort_by="date",
+                 order="asc",
+                 filter={"favorite": False},
+                 limit=100
+             )
+             
+             # Delete files until under threshold or no more files
+             deleted = 0
+             for file in old_files:
+                 if storage_service.get_disk_usage().percent < 70:
+                     break
+                     
+                 storage_service.delete_file(file.path)
+                 deleted += 1
+                 
+             return {"cleaned_up": True, "deleted_count": deleted}
+         
+         return {"cleaned_up": False, "usage_percent": usage.percent}
+     ```
+
+</div>
+</details>
