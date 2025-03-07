@@ -14,7 +14,7 @@ The CreatureBox system relies on several core components that provide the founda
 
 The core components work together to provide system functionality:
 
-```mermaid
+<div class="mermaid">
 graph TD
     Config[Configuration] --> Software[Software]
     Config --> Power[Power Management]
@@ -25,7 +25,7 @@ graph TD
     style Config fill:#fbb,stroke:#333,stroke-width:2px
     style Software fill:#bfb,stroke:#333,stroke-width:2px
     style Power fill:#bbf,stroke:#333,stroke-width:2px
-```
+</div>
 
 ## Key Components
 
