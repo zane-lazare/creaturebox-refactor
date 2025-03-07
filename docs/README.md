@@ -33,10 +33,11 @@ All sections are collapsible for better navigation, and each page includes a hor
 - [Deployment](./deployment.md): Production deployment configurations
 - [Source Directory](./src.md): Main source code container overview
 
-### Core Modules
-- [Configuration Module](./src-config.md): System-wide settings and parameters
-- [Power Management](./src-power.md): Power-related scripts and utilities
-- [Software Module](./src-software.md): Core operational scripts and utilities
+### Core Components
+- [Core Components Overview](./core-components/index.md): Core functionality modules
+  - [Configuration Module](./core-components/configuration.md): System-wide settings
+  - [Power Management](./core-components/power-management.md): Power control scripts
+  - [Software Module](./core-components/software-module.md): Operational scripts
 
 ### Web Application
 - [Web Interface](./src-web.md): Flask application and web components
@@ -57,11 +58,13 @@ This documentation has been enhanced with:
 2. **Improved Table Formatting**: Standardized all tables using proper Markdown syntax
 3. **Interactive Navigation**: Added collapsible sections and horizontal navigation menu
 4. **Streamlined Structure**: Organized documentation into logical, hierarchical sections
+5. **Core Components Directory**: Grouped related modules under a dedicated directory
 
 ## Using This Documentation
 1. Start with the overview sections for high-level understanding
 2. Use collapsible sections to focus on specific information
 3. Navigate quickly with the horizontal menu on each page
 4. Refer to reference documents for system-wide context
+5. See the [Core Components](./core-components/index.md) for central system functionality
 
 This documentation has been designed to be both comprehensive and accessible, providing valuable information for developers, administrators, and users while enabling easy navigation of complex technical material.
