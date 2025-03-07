@@ -15,29 +15,24 @@ CreatureBox is a modular web interface for controlling and monitoring wildlife m
 The CreatureBox system consists of several interconnected components:
 
 <div class="mermaid">
-graph TD
+graph TD;
+    Web[Web Interface] --> Routes[API Routes];
+    Web --> Services[Background Services];
+    Web --> WebUtils[Web Utilities];
+    Services --> Software[Software Components];
+    Routes --> WebUtils;
+    Routes --> Software;
+    Software --> Config[Configuration];
+    Software --> Power[Power Management];
+    Software --> Scripts[Software Scripts];
+    
     classDef core fill:#f9f,stroke:#333,stroke-width:2px;
     classDef web fill:#bbf,stroke:#333,stroke-width:1px;
     classDef util fill:#bfb,stroke:#333,stroke-width:1px;
-
-    Web[Web Interface]:::web --> Routes[API Routes]:::web
-    Web --> Services[Background Services]:::web
-    Web --> WebUtils[Web Utilities]:::web
-    Services --> Software[Software Components]:::core
-    Routes --> WebUtils
-    Routes --> Software
-    Software --> Config[Configuration]:::core
-    Software --> Power[Power Management]:::core
-    Software --> Scripts[Software Scripts]:::util
-
-    click Web "src-web" "View Web Core Documentation"
-    click Routes "src-web-routes" "View Routes Documentation"
-    click Services "src-web-services" "View Services Documentation"
-    click WebUtils "src-web-utils" "View Web Utilities Documentation"
-    click Software "src-software" "View Software Documentation"
-    click Config "src-config" "View Configuration Documentation"
-    click Power "src-power" "View Power Management Documentation"
-    click Scripts "src-software-scripts" "View Scripts Documentation"
+    
+    class Config,Software core;
+    class Web,Routes,Services,WebUtils web;
+    class Scripts util;
 </div>
 
 ## Quick Navigation
