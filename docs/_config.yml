@@ -14,13 +14,38 @@ aux_links:
 # Footer content 
 footer_content: "CreatureBox Documentation - Generated on 2025-03-08"
 
-# Navigation structure
-nav_external_links:
-  - title: GitHub Repository
-    url: https://github.com/zane-lazare/creaturebox-refactor
+# Collections for better organization
+collections:
+  core-components:
+    permalink: "/:collection/:path/"
+    output: true
+  web-interface:
+    permalink: "/:collection/:path/"
+    output: true
+  setup:
+    permalink: "/:collection/:path/"
+    output: true
 
-# Default base layout
+# Just the Docs defaults
 defaults:
+  - scope:
+      path: ""
+      type: core-components
+    values:
+      layout: default
+      parent: Core Components
+  - scope:
+      path: ""
+      type: web-interface
+    values:
+      layout: default
+      parent: Web Interface
+  - scope:
+      path: ""
+      type: setup
+    values:
+      layout: default
+      parent: Setup & Deployment
   - scope:
       path: ""
     values:
@@ -32,3 +57,16 @@ back_to_top_text: "Back to top"
 
 # Enable copy code button
 enable_copy_code_button: true
+
+# Exclude old flat files from navigation
+exclude:
+  - src-*.md
+  - root.md
+  - deployment.md
+  - core-components.md
+  - web-interface.md
+  - setup.md
+  - documentation-*.md
+  - comprehensive-file-manifest.md
+  - component-map.md
+  - repository-manifest.md
