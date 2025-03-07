@@ -14,36 +14,22 @@ This page provides a reference guide to navigate between related components in t
 The CreatureBox system is organized into several interconnected modules:
 
 <div class="mermaid">
-graph TD
-    Root[Installation and Setup] --> Deployment[Production Deployment]
-    Root --> Source[Source Code]
+graph TD;
+    Root[Installation and Setup] --> Deployment[Production Deployment];
+    Root --> Source[Source Code];
     
-    Source --> Config[Configuration]
-    Source --> Power[Power Management]
-    Source --> Software[Software]
-    Source --> Web[Web Interface]
+    Source --> Config[Configuration];
+    Source --> Power[Power Management];
+    Source --> Software[Software];
+    Source --> Web[Web Interface];
     
-    Web --> Routes[API Routes]
-    Web --> Services[Background Services]
-    Web --> Middleware[Middleware]
-    Web --> Utils[Utilities]
-    Web --> Tests[Tests]
+    Web --> Routes[API Routes];
+    Web --> Services[Background Services];
+    Web --> Middleware[Middleware];
+    Web --> Utils[Utilities];
+    Web --> Tests[Tests];
     
-    Software --> Scripts[Scripts]
-    
-    click Root "./root" "Root Directory Documentation"
-    click Deployment "./deployment" "Deployment Documentation"
-    click Source "./src" "Source Directory Documentation"
-    click Config "./src-config" "Configuration Documentation"
-    click Power "./src-power" "Power Management Documentation"
-    click Software "./src-software" "Software Documentation"
-    click Scripts "./src-software-scripts" "Scripts Documentation"
-    click Web "./src-web" "Web Interface Documentation"
-    click Routes "./src-web-routes" "API Routes Documentation"
-    click Services "./src-web-services" "Services Documentation"
-    click Middleware "./src-web-middleware" "Middleware Documentation"
-    click Utils "./src-web-utils" "Utilities Documentation"
-    click Tests "./src-web-tests" "Tests Documentation"
+    Software --> Scripts[Scripts];
 </div>
 
 ## Component Dependencies
