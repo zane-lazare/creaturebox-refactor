@@ -2,6 +2,11 @@
 
 ## Project Structure
 
+### Repository Manifest
+[Repository Structure Manifest](/docs/repository-manifest.md)
+- Comprehensive directory mapping
+- Structural metadata analysis
+
 ### Root Project Files
 [Root Files Documentation](/docs/root-files.md)
 - Installation scripts
