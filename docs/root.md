@@ -1,3 +1,10 @@
+---
+layout: default
+title: Root Directory
+nav_order: 5
+permalink: /root/
+---
+
 # Root Directory Documentation
 
 {% include navigation.html %}
