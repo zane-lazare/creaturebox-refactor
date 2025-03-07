@@ -2,6 +2,12 @@
 
 ## Project Structure
 
+### Root Project Files
+[Root Files Documentation](/docs/root-files.md)
+- Installation scripts
+- Dependency management
+- Project configuration
+
 ### Configuration
 [Configuration Module](/docs/config.md)
 - System configuration files
