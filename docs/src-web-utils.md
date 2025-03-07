@@ -1,217 +1,341 @@
-# src/web/utils Directory Documentation
+# Web Utilities Module Documentation
 
-## Directory Purpose
-The `src/web/utils` directory contains utility modules that provide reusable helper functions and classes for the CreatureBox web application. These utilities encapsulate common operations related to camera control, file management, and system interaction, creating a clean abstraction layer between the web routes and the underlying system functionality. By centralizing these utilities, the application maintains consistent behavior, reduces code duplication, and simplifies maintenance across multiple components.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| camera.py | Python | 1.8 KB | Camera control utilities |
-| files.py | Python | 1.5 KB | File operation utilities |
-| system.py | Python | 1.7 KB | System interaction utilities |
+## Overview
 
-## Detailed File Descriptions
+The Web Utilities Module provides helper functions and reusable components that support the CreatureBox web application, offering camera interfaces, file management, system operations, and common utility functions.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/web/utils` directory contains utility functions and helper components that are used throughout the CreatureBox web application. This module provides:
+
+- Camera control interfaces for web components
+- File management utilities
+- System operation wrappers
+- Date and time processing
+- Data validation and transformation
+- Common helper functions for web routes and services
+
+These utilities encapsulate implementation details and provide clean, reusable interfaces for common operations, improving code maintainability and reducing duplication.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| __init__.py | Python | 0.2 KB | Package initialization |
+| camera.py | Python | 2.4 KB | Camera interfaces |
+| files.py | Python | 1.8 KB | File operations |
+| system.py | Python | 2.1 KB | System interaction |
+| date_utils.py | Python | 1.2 KB | Date/time utilities |
+| validators.py | Python | 1.5 KB | Data validation |
+| formatters.py | Python | 0.9 KB | Data formatting |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
+
+### __init__.py
+- **Primary Purpose**: Package initialization
+- **Key Functions**:
+  * Exports common utility functions
+- **Dependencies**:
+  * None
+- **Technical Notes**: Only used for package identification
 
 ### camera.py
-- **Primary Purpose**: Provides utility functions for camera control and management
+- **Primary Purpose**: Camera control interfaces
 - **Key Functions**:
-  * `initialize_camera()`: Sets up camera with proper settings
-  * `capture_photo(output_path, settings={})`: Takes a photo with specified settings
-  * `get_camera_settings()`: Retrieves current camera configuration
-  * `update_camera_settings(settings)`: Updates camera configuration
-  * `get_camera_stream()`: Provides access to the camera stream
-  * `release_camera()`: Properly releases camera resources
+  * `initialize_camera()`: Set up camera with settings
+  * `capture_image(options)`: Take photo with specified parameters
+  * `start_preview()`: Begin camera preview stream
+  * `stop_preview()`: End camera preview
+  * `adjust_settings(settings)`: Change camera parameters
+  * `get_supported_modes()`: List available camera modes
+  * `set_attraction_mode(enable)`: Control wildlife attraction features
 - **Dependencies**:
-  * picamera module
-  * src/config/camera_settings.csv
-  * src/software/Take_Photo.py (indirect)
-- **Technical Notes**: 
-  * Implements thread-safe camera access
-  * Manages hardware resources efficiently
-  * Provides error handling for hardware issues
-  * Supports multiple camera models through abstraction
+  * Hardware camera drivers
+  * Camera libraries (picamera, gphoto)
+  * Camera-specific utilities
+- **Technical Notes**: Abstract interface supporting multiple camera types
 
 ### files.py
-- **Primary Purpose**: Handles file operations for photos and configuration
+- **Primary Purpose**: File operations
 - **Key Functions**:
-  * `get_photos_by_date(date=None, limit=None)`: Retrieves photos filtered by date
-  * `get_photo_metadata(photo_path)`: Extracts metadata from photo file
-  * `generate_thumbnail(photo_path, size=(200, 200))`: Creates thumbnail for photo
-  * `delete_photo(photo_path)`: Safely removes photo with confirmation
-  * `get_storage_stats()`: Returns storage usage information
-  * `ensure_directory_exists(path)`: Ensures directory is available for writing
+  * `safe_filename(original)`: Create safe filename
+  * `get_file_type(path)`: Detect file type
+  * `list_directory(path, filter)`: List directory contents
+  * `create_directory(path)`: Create directory if not exists
+  * `get_file_info(path)`: Get metadata for file
+  * `calculate_directory_size(path)`: Calculate total directory size
+  * `find_duplicate_images(path)`: Find similar/duplicate images
 - **Dependencies**:
-  * os, shutil, glob modules
-  * PIL (for image processing)
-  * src/web/services/storage.py (indirect)
-- **Technical Notes**: 
-  * Implements safe file operations with error handling
-  * Supports various file formats and organization schemes
-  * Includes permission checking and path validation
-  * Optimized for performance with large file collections
+  * File system access
+  * File type detection libraries
+- **Technical Notes**: Handles error conditions and edge cases
 
 ### system.py
-- **Primary Purpose**: Provides system-level operations and monitoring
+- **Primary Purpose**: System operation interfaces
 - **Key Functions**:
-  * `get_system_status()`: Returns comprehensive system information
-  * `reboot_system(delay=0)`: Initiates system reboot
-  * `shutdown_system(delay=0)`: Initiates system shutdown
-  * `get_cpu_temperature()`: Retrieves CPU temperature
-  * `get_memory_usage()`: Returns memory usage statistics
-  * `execute_system_command(command)`: Safely executes system commands
-  * `toggle_attraction_lights(state)`: Controls wildlife attraction lights
+  * `get_system_info()`: Retrieve system statistics
+  * `get_memory_usage()`: Get memory utilization
+  * `get_disk_usage(path)`: Get storage utilization
+  * `get_cpu_temperature()`: Measure CPU temperature
+  * `execute_command(command)`: Run system command safely
+  * `reboot_system()`: Trigger system reboot
+  * `shutdown_system()`: Trigger system shutdown
+  * `get_network_info()`: Get network interface details
 - **Dependencies**:
-  * os, subprocess modules
-  * psutil (for system information)
-  * src/software/Attract_On.py
-  * src/software/Shut_Down.py
-- **Technical Notes**: 
-  * Implements security measures for command execution
-  * Provides cross-platform compatibility where possible
-  * Includes detailed error reporting
-  * Optimized for Raspberry Pi hardware
+  * System command execution
+  * Hardware interfaces
+  * OS-specific libraries
+- **Technical Notes**: Implements safe execution patterns for system commands
 
-## Relationship Documentation
+### date_utils.py
+- **Primary Purpose**: Date and time utilities
+- **Key Functions**:
+  * `format_timestamp(timestamp, format)`: Format timestamp for display
+  * `parse_date_string(string, format)`: Parse date from string
+  * `get_time_difference(start, end)`: Calculate time difference
+  * `is_night_time()`: Determine if current time is night
+  * `get_sunrise_sunset()`: Get sunrise/sunset times
+  * `get_local_timezone()`: Get system timezone
+- **Dependencies**:
+  * Python datetime module
+  * Timezone libraries
+- **Technical Notes**: Handles timezone awareness properly
+
+### validators.py
+- **Primary Purpose**: Data validation
+- **Key Functions**:
+  * `validate_email(email)`: Validate email format
+  * `validate_ip_address(ip)`: Validate IP address format
+  * `validate_settings(settings, schema)`: Validate settings against schema
+  * `validate_file_upload(file, allowed_types)`: Validate uploaded file
+  * `sanitize_html(content)`: Clean HTML content
+  * `is_valid_path(path)`: Check path for validity/security
+- **Dependencies**:
+  * Validation libraries
+  * Schema validation
+- **Technical Notes**: Used for input validation and security
+
+### formatters.py
+- **Primary Purpose**: Data formatting
+- **Key Functions**:
+  * `format_file_size(size)`: Format bytes to human-readable
+  * `format_duration(seconds)`: Format seconds to HH:MM:SS
+  * `truncate_text(text, length)`: Truncate text with ellipsis
+  * `format_json(data, pretty)`: Format JSON data
+  * `strip_html(html)`: Remove HTML tags
+  * `pluralize(noun, count)`: Correctly pluralize words
+- **Dependencies**:
+  * None
+- **Technical Notes**: Simple pure functions for formatting
+
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/routes/ (used by route handlers)
-  * src/web/services/ (interacts with background services)
+  * [Web Routes](./src-web-routes.md): Used by route handlers
+  * [Web Services](./src-web-services.md): Used by business logic services
+  * [Web Tests](./src-web-tests.md): Used in test fixtures
 - **Depends On**:
-  * src/config/ (configuration settings)
-  * src/software/ (core system functionality)
-  * Hardware-specific libraries
+  * [Software Module](./src-software.md): For camera and system control
+  * [Configuration Module](./src-config.md): For settings access
+  * [Power Module](./src-power.md): For power state management
+  * System libraries and interfaces
 - **Used By**:
-  * API route handlers
-  * Web interface functionality
-  * Background services
+  * Most web application components
+  * Background tasks
+  * API endpoints
 
-## Use Cases
-1. **Photo Capture via Web Interface**:
-   - **Implementation**: The camera.py utilities provide an abstraction for camera control used by the web API.
-   - **Example**:
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
+1. **Camera Control from Web Interface**:
+   - **Description**: Taking photos via the web interface.
+   - **Example**: 
      ```python
-     # In routes/camera.py
-     from src.web.utils.camera import capture_photo, get_camera_settings
+     # In a route handler
+     from src.web.utils.camera import capture_image
      
-     @bp.route('/api/camera/capture', methods=['POST'])
-     def api_capture_photo():
-         # Get settings from request
-         settings = request.json or {}
+     @camera_bp.route('/api/camera/capture', methods=['POST'])
+     def take_photo():
+         # Get parameters from request
+         options = request.get_json() or {}
+         exposure = options.get('exposure', 'auto')
+         resolution = options.get('resolution', '1920x1080')
+         format = options.get('format', 'jpeg')
          
-         # Generate output path
-         date_dir = datetime.now().strftime('%Y-%m-%d')
-         timestamp = datetime.now().strftime('%H%M%S')
-         output_dir = f'/opt/creaturebox/data/photos/{date_dir}'
-         output_path = f'{output_dir}/{timestamp}.jpg'
-         
-         # Create directory if needed
-         from src.web.utils.files import ensure_directory_exists
-         ensure_directory_exists(output_dir)
-         
-         # Capture photo using utility function
          try:
-             result = capture_photo(output_path, settings)
-             return jsonify({
-                 'success': True,
-                 'photo_path': result['path'],
-                 'settings': result['settings']
-             })
-         except Exception as e:
-             return jsonify({'error': str(e)}), 500
-     ```
-
-2. **Photo Gallery Management**:
-   - **Implementation**: The files.py utilities provide functions for organizing and accessing photos.
-   - **Example**:
-     ```python
-     # In routes/gallery.py
-     from src.web.utils.files import get_photos_by_date, generate_thumbnail
-     
-     @bp.route('/api/gallery/photos', methods=['GET'])
-     def api_get_photos():
-         # Get query parameters
-         date = request.args.get('date')
-         limit = request.args.get('limit', 50, type=int)
-         page = request.args.get('page', 1, type=int)
-         
-         # Get photos using utility function
-         photos = get_photos_by_date(date, limit=limit, page=page)
-         
-         # Ensure thumbnails exist
-         for photo in photos:
-             if not os.path.exists(photo['thumbnail_path']):
-                 generate_thumbnail(photo['path'])
-         
-         return jsonify({
-             'photos': photos,
-             'total': len(photos),
-             'page': page
-         })
-     ```
-
-3. **System Control and Monitoring**:
-   - **Implementation**: The system.py utilities enable system management through the web interface.
-   - **Example**:
-     ```python
-     # In routes/system.py
-     from src.web.utils.system import get_system_status, reboot_system, toggle_attraction_lights
-     
-     @bp.route('/api/system/status', methods=['GET'])
-     def api_system_status():
-         # Get system information using utility function
-         status = get_system_status()
-         return jsonify(status)
-     
-     @bp.route('/api/system/reboot', methods=['POST'])
-     def api_system_reboot():
-         # Validate authorization (simplified)
-         if not is_authorized('admin'):
-             return jsonify({'error': 'Not authorized'}), 403
+             # Use camera utility to capture image
+             result = capture_image(
+                 exposure=exposure,
+                 resolution=resolution,
+                 format=format
+             )
              
-         # Get delay parameter
-         delay = request.json.get('delay', 0)
-         
-         # Initiate reboot using utility function
-         reboot_system(delay)
-         return jsonify({
-             'success': True,
-             'message': f'System will reboot in {delay} seconds'
-         })
-     
-     @bp.route('/api/system/toggle-lights', methods=['POST'])
-     def api_toggle_lights():
-         state = request.json.get('state', 'on')
-         toggle_attraction_lights(state == 'on')
-         return jsonify({
-             'success': True,
-             'lights': state
-         })
-     ```
-
-4. **Storage Management**:
-   - **Implementation**: The files.py utilities provide storage information and management capabilities.
-   - **Example**:
-     ```python
-     # In routes/storage.py
-     from src.web.utils.files import get_storage_stats, delete_photo
-     
-     @bp.route('/api/storage/stats', methods=['GET'])
-     def api_storage_stats():
-         # Get storage information using utility function
-         stats = get_storage_stats()
-         return jsonify(stats)
-     
-     @bp.route('/api/gallery/photos/<path:photo_path>', methods=['DELETE'])
-     def api_delete_photo(photo_path):
-         # Sanitize path (simplified)
-         safe_path = sanitize_path(photo_path)
-         
-         # Delete photo using utility function
-         try:
-             result = delete_photo(safe_path)
              return jsonify({
-                 'success': result,
-                 'path': safe_path
+                 "success": True,
+                 "file_path": result['path'],
+                 "timestamp": result['timestamp'],
+                 "metadata": result['metadata']
              })
          except Exception as e:
-             return jsonify({'error': str(e)}), 500
+             return jsonify({"success": False, "error": str(e)}), 500
      ```
+
+2. **File Management**:
+   - **Description**: Working with files in the web application.
+   - **Example**: 
+     ```python
+     # In a service or route handler
+     from src.web.utils.files import list_directory, get_file_info, safe_filename
+     
+     @gallery_bp.route('/api/gallery', methods=['GET'])
+     def get_gallery():
+         # Get directory listing
+         directory = request.args.get('directory', 'captures')
+         filter_type = request.args.get('type')
+         
+         try:
+             # List files in directory with optional filter
+             files = list_directory(directory, filter_type=filter_type)
+             
+             # Get detailed information for each file
+             result = []
+             for file_path in files:
+                 info = get_file_info(file_path)
+                 result.append({
+                     "name": info['name'],
+                     "path": file_path,
+                     "size": info['size'],
+                     "type": info['type'],
+                     "created": info['created'],
+                     "modified": info['modified'],
+                     "dimensions": info.get('dimensions')
+                 })
+             
+             return jsonify({"files": result})
+         except Exception as e:
+             return jsonify({"error": str(e)}), 500
+             
+     @gallery_bp.route('/api/gallery/upload', methods=['POST'])
+     def upload_file():
+         if 'file' not in request.files:
+             return jsonify({"error": "No file provided"}), 400
+             
+         file = request.files['file']
+         if file.filename == '':
+             return jsonify({"error": "Empty filename"}), 400
+             
+         # Create safe filename
+         filename = safe_filename(file.filename)
+         
+         # Save file
+         file.save(os.path.join('uploads', filename))
+         
+         return jsonify({"success": True, "filename": filename})
+     ```
+
+3. **System Information Display**:
+   - **Description**: Showing system status in the dashboard.
+   - **Example**: 
+     ```python
+     # In a route handler
+     from src.web.utils.system import get_system_info, get_memory_usage, get_disk_usage
+     from src.web.utils.formatters import format_file_size
+     
+     @system_bp.route('/api/system/status', methods=['GET'])
+     def system_status():
+         try:
+             # Get system information
+             info = get_system_info()
+             memory = get_memory_usage()
+             disk = get_disk_usage('/')
+             
+             # Format for display
+             memory_used_formatted = format_file_size(memory['used'])
+             memory_total_formatted = format_file_size(memory['total'])
+             
+             return jsonify({
+                 "hostname": info['hostname'],
+                 "uptime": info['uptime'],
+                 "cpu_temp": info['cpu_temperature'],
+                 "memory": {
+                     "used": memory_used_formatted,
+                     "total": memory_total_formatted,
+                     "percent": memory['percent']
+                 },
+                 "disk": {
+                     "used": format_file_size(disk['used']),
+                     "total": format_file_size(disk['total']),
+                     "percent": disk['percent']
+                 },
+                 "network": info['network']
+             })
+         except Exception as e:
+             return jsonify({"error": str(e)}), 500
+     ```
+
+4. **Date and Time Handling**:
+   - **Description**: Using date utilities for scheduling and display.
+   - **Example**: 
+     ```python
+     # In a service or route handler
+     from src.web.utils.date_utils import format_timestamp, get_sunrise_sunset, is_night_time
+     
+     @scheduler_bp.route('/api/scheduler/optimal-times', methods=['GET'])
+     def get_optimal_capture_times():
+         try:
+             # Get sunrise and sunset times
+             times = get_sunrise_sunset()
+             
+             # Format for display
+             sunrise = format_timestamp(times['sunrise'], "%H:%M")
+             sunset = format_timestamp(times['sunset'], "%H:%M")
+             
+             # Calculate optimal wildlife photography times
+             # (dawn and dusk are often best)
+             dawn_start = format_timestamp(times['sunrise'] - 1800, "%H:%M")  # 30 min before sunrise
+             dawn_end = format_timestamp(times['sunrise'] + 1800, "%H:%M")    # 30 min after sunrise
+             dusk_start = format_timestamp(times['sunset'] - 1800, "%H:%M")   # 30 min before sunset
+             dusk_end = format_timestamp(times['sunset'] + 1800, "%H:%M")     # 30 min after sunset
+             
+             # Check if it's currently night time
+             is_night = is_night_time()
+             
+             return jsonify({
+                 "sunrise": sunrise,
+                 "sunset": sunset,
+                 "optimal_periods": [
+                     {"name": "Dawn", "start": dawn_start, "end": dawn_end},
+                     {"name": "Dusk", "start": dusk_start, "end": dusk_end}
+                 ],
+                 "is_night": is_night,
+                 "current_period": "Night" if is_night else "Day"
+             })
+         except Exception as e:
+             return jsonify({"error": str(e)}), 500
+     ```
+
+</div>
+</details>
