@@ -2,8 +2,13 @@
 
 ## Project Structure
 
+### Comprehensive File Manifest
+[File Manifest](/docs/comprehensive-file-manifest.md)
+- Detailed file-level documentation
+- Metadata and analysis for all repository files
+
 ### Repository Manifest
-[Repository Structure Manifest](/docs/repository-manifest.md)
+[Repository Structure](/docs/repository-manifest.md)
 - Comprehensive directory mapping
 - Structural metadata analysis
 
