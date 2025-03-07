@@ -1,17 +1,41 @@
-# src Directory Documentation
+# Source Directory Documentation
 
-## Directory Purpose
-The `src` directory is the primary source code container for the CreatureBox system, housing all application components, modules, and subsystems. This directory organizes the codebase into logical modules according to functionality, creating a clear separation of concerns and enabling modular development. The src directory implements a structured architecture that divides the system into configuration management, power control, software utilities, and web interface components, allowing for independent development, testing, and maintenance of each subsystem while ensuring they work together cohesively.
+{% include navigation.html %}
 
-## File Inventory
+## Overview
+
+The Source Directory contains all application components, modules, and subsystems of the CreatureBox system, organized into logical modules according to functionality for modular development and maintenance.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src` directory is the primary source code container for the CreatureBox system, housing all application components, modules, and subsystems. This directory:
+
+- Organizes the codebase into logical modules according to functionality
+- Creates a clear separation of concerns
+- Enables modular development and testing
+- Implements a structured architecture that divides the system into:
+  * Configuration management
+  * Power control
+  * Software utilities
+  * Web interface components
+
+This structure allows for independent development, testing, and maintenance of each subsystem while ensuring they work together cohesively.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
 | Filename | Type | Size | Description |
 |----------|------|------|-------------|
 | (No files directly in src directory) | - | - | - |
 
-## Detailed File Descriptions
-The src directory contains no files directly; it serves as a container for subdirectories.
+**Subdirectories:**
 
-## Subdirectories
 | Subdirectory | Description |
 |--------------|-------------|
 | config/ | System configuration files and parameters |
@@ -19,13 +43,22 @@ The src directory contains no files directly; it serves as a container for subdi
 | software/ | Core operational scripts and utilities |
 | web/ | Web interface and API components |
 
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
+
+The src directory contains no files directly; it serves as a container for subdirectories.
+
 ### config/
 - **Purpose**: Contains configuration files for various system components
 - **Key Files**:
   * camera_settings.csv: Camera configuration parameters
   * controls.txt: System control settings
   * schedule_settings.csv: Automated schedule configuration
-- See [src/config Documentation](./src-config.md) for detailed information
+- See [Configuration Module](./src-config.md) for detailed information
 
 ### power/
 - **Purpose**: Manages power-related operations for field deployments
@@ -33,26 +66,32 @@ The src directory contains no files directly; it serves as a container for subdi
   * low_in_one.sh: Combined low power mode script
   * lowpower.sh: Basic low power mode
   * powerup_wifi.sh: Re-enable WiFi after power saving
-- See [src/power Documentation](./src-power.md) for detailed information
+- See [Power Management](./src-power.md) for detailed information
 
 ### software/
 - **Purpose**: Contains core operational scripts for system functionality
 - **Key Files**:
   * Various .py files for system operations (Attract_On.py, Take_Photo.py, etc.)
   * scripts/ subdirectory with additional utility scripts
-- See [src/software Documentation](./src-software.md) for detailed information
+- See [Software Module](./src-software.md) for detailed information
 
 ### web/
 - **Purpose**: Implements the web interface and API for system control
 - **Key Files**:
   * app.py: Flask application entry point
   * Various subdirectories for routes, services, utilities, etc.
-- See [src/web Documentation](./src-web.md) for detailed information
+- See [Web Interface](./src-web.md) for detailed information
 
-## Relationship Documentation
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * deployment/ (deployment configurations use source code)
-  * Root directory installation scripts
+  * [Deployment](./deployment.md): Deployment configurations use source code
+  * [Root Directory](./root.md): Installation scripts reference source code
 - **Depends On**:
   * External Python libraries (specified in requirements.txt)
   * System services and hardware
@@ -61,9 +100,15 @@ The src directory contains no files directly; it serves as a container for subdi
   * System administrators
   * Deployment scripts
 
-## Use Cases
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
 1. **Modular System Development**:
-   - **Implementation**: The src directory structure enables modular development of different system components.
+   - **Description**: The src directory structure enables modular development of different system components.
    - **Example**:
      ```
      # Development of a new feature can be isolated to appropriate module
@@ -84,7 +129,7 @@ The src directory contains no files directly; it serves as a container for subdi
      This modular approach allows for clear organization and separation of concerns.
 
 2. **System Deployment**:
-   - **Implementation**: The src directory structure supports clean deployment processes.
+   - **Description**: The src directory structure supports clean deployment processes.
    - **Example**:
      ```bash
      # Deployment script can target specific components
@@ -106,7 +151,7 @@ The src directory contains no files directly; it serves as a container for subdi
      ```
 
 3. **Component Integration**:
-   - **Implementation**: The src directory organizes code to enable clean integration between components.
+   - **Description**: The src directory organizes code to enable clean integration between components.
    - **Example**:
      ```python
      # Web interface calling software utilities:
@@ -125,7 +170,7 @@ The src directory contains no files directly; it serves as a container for subdi
      This organization allows different components to work together while maintaining separation.
 
 4. **System Maintenance and Updates**:
-   - **Implementation**: The src structure allows targeted updates to specific components.
+   - **Description**: The src structure allows targeted updates to specific components.
    - **Example**:
      ```bash
      # Update just the web interface without affecting other components
@@ -146,3 +191,6 @@ The src directory contains no files directly; it serves as a container for subdi
        curl http://localhost:5000/api/system/status
      }
      ```
+
+</div>
+</details>
