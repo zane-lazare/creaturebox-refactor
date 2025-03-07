@@ -2,58 +2,52 @@
 
 ## Project Structure
 
-### Comprehensive File Manifest
-[File Manifest](/docs/comprehensive-file-manifest.md)
-- Detailed file-level documentation
-- Metadata and analysis for all repository files
+### Comprehensive Documentation
 
-### Repository Manifest
-[Repository Structure](/docs/repository-manifest.md)
-- Comprehensive directory mapping
-- Structural metadata analysis
-
-### Root Project Files
+#### Root Files
 [Root Files Documentation](/docs/root-files.md)
 - Installation scripts
 - Dependency management
 - Project configuration
 
-### Configuration
-[Configuration Module](/docs/config.md)
-- System configuration files
-- Settings management
+#### Deployment
+[Deployment Files](/docs/deployment-files.md)
+- Service configurations
+- Web server setup
 
-### Deployment
-[Deployment Module](/docs/deployment.md)
-- Service and server configurations
-- Systemd and Nginx setup
+#### Source Code
 
-### Power Management
-[Power Module](/docs/power.md)
+##### Configuration
+[Configuration Files](/docs/src-config-files.md)
+- System configuration details
+- Parameter management
+
+##### Power Management
+[Power Management Files](/docs/src-power-files.md)
 - Power-related scripts
-- Low-power mode controls
+- System state control
 
-### Software Components
-[Software Module](/docs/software.md)
-- Core operational scripts
+##### Software Components
+[Software Files](/docs/src-software-files.md)
+- Operational scripts
 - System utilities
 
-### Web Interface
-[Web Module](/docs/web.md)
-- Web application infrastructure
-- API and routing mechanisms
+##### Web Interface
+[Web Files](/docs/src-web-files.md)
+- Application core
+- Web infrastructure
 
-#### Web Middleware
-[Web Middleware](/docs/web-middleware.md)
+###### Web Middleware
+[Web Middleware Files](/docs/src-web-middleware-files.md)
 - Authentication mechanisms
 - Request processing
 
-## Documentation Generation
-- Generated on: 2025-03-07
-- Comprehensive coverage of project components
-- Modular documentation approach
+### Repository Analysis
+[Repository Structure](/docs/repository-manifest.md)
+- Comprehensive directory mapping
+- Structural metadata
 
-## Notes
-- Dynamically generated documentation
-- Reflects current project structure
-- Provides insights into system architecture
+## Documentation Generation
+- Generated: 2025-03-07
+- Comprehensive project documentation
+- Modular, detailed analysis
