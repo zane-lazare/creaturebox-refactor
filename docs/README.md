@@ -33,6 +33,11 @@
 - Web application infrastructure
 - API and routing mechanisms
 
+#### Web Middleware
+[Web Middleware](/docs/web-middleware.md)
+- Authentication mechanisms
+- Request processing
+
 ## Documentation Generation
 - Generated on: 2025-03-07
 - Comprehensive coverage of project components
