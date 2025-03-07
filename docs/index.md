@@ -14,7 +14,7 @@ CreatureBox is a modular web interface for controlling and monitoring wildlife m
 
 The CreatureBox system consists of several interconnected components:
 
-```mermaid
+<div class="mermaid">
 graph TD
     classDef core fill:#f9f,stroke:#333,stroke-width:2px;
     classDef web fill:#bbf,stroke:#333,stroke-width:1px;
@@ -38,7 +38,7 @@ graph TD
     click Config "src-config" "View Configuration Documentation"
     click Power "src-power" "View Power Management Documentation"
     click Scripts "src-software-scripts" "View Scripts Documentation"
-```
+</div>
 
 ## Quick Navigation
 
