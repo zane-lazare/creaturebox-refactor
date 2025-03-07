@@ -91,6 +91,18 @@ Each module's documentation follows a consistent structure with these sections:
 
 All sections are collapsible to help you focus on the information you need.
 
+## How to Navigate this Documentation
+
+1. **Expand/Collapse Sections**: Click on any section header to expand or collapse it
+2. **Jump to Sections**: Use the horizontal navigation menu below each page title
+3. **Cross-reference Links**: Blue links will take you to related documentation
+4. **Section Anchors**: Append `#section-id` to URLs to link directly to sections:
+   - `#purpose` - Jump to purpose section
+   - `#file-inventory` - Jump to file inventory
+   - `#file-descriptions` - Jump to file descriptions
+   - `#relationships` - Jump to relationship documentation
+   - `#use-cases` - Jump to use cases
+
 ## Reference Materials
 
 - [Component Map](./component-map.md) - Visual representation of system components
