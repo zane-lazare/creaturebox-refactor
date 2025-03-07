@@ -274,3 +274,207 @@ def test_error_handling_integration(client):
     data = json.loads(response.data)
     assert data['status'] == 'error'
     assert data['error']['code'] == 2000  # FILE_NOT_FOUND
+
+def test_concurrent_job_processing(client, integration_app):
+    """Test processing multiple jobs concurrently through the API."""
+    # Submit multiple different jobs simultaneously
+    job_endpoints = [
+        '/api/storage/backup',
+        '/api/storage/clean',
+        '/api/storage/backup/external'  # This might fail if no external storage
+    ]
+    
+    job_ids = []
+    
+    # Submit all jobs
+    for endpoint in job_endpoints:
+        # For clean endpoint, add parameters
+        if endpoint == '/api/storage/clean':
+            payload = {'days_to_keep': 30, 'min_free_percent': 10.0}
+            response = client.post(endpoint, json=payload)
+        else:
+            response = client.post(endpoint)
+        
+        # Some endpoints might return error (like external backup with no device)
+        # but job should still be created if the endpoint exists
+        if response.status_code in (200, 404):
+            if response.status_code == 200:
+                data = json.loads(response.data)
+                if 'job_id' in data.get('data', {}):
+                    job_ids.append(data['data']['job_id'])
+    
+    # Ensure we have at least one job to test
+    assert len(job_ids) > 0, "No jobs were successfully created"
+    
+    # Check all jobs progress concurrently
+    with integration_app.app_context():
+        # Wait for jobs to complete (with timeout)
+        max_wait = 15  # seconds
+        start_time = time.time()
+        
+        completed_jobs = set()
+        while time.time() - start_time < max_wait and len(completed_jobs) < len(job_ids):
+            for job_id in job_ids:
+                if job_id in completed_jobs:
+                    continue
+                    
+                job = job_queue.get_job(job_id)
+                if job['status'] in (JobStatus.COMPLETED.value, JobStatus.FAILED.value):
+                    completed_jobs.add(job_id)
+            
+            # Small delay to avoid tight loop
+            time.sleep(0.1)
+        
+        # Verify all jobs were processed
+        assert len(completed_jobs) == len(job_ids), "Not all jobs completed in time"
+    
+    # Verify final job statuses through API
+    for job_id in job_ids:
+        response = client.get(f'/api/jobs/{job_id}')
+        assert response.status_code == 200
+        
+        data = json.loads(response.data)
+        assert data['status'] in (JobStatus.COMPLETED.value, JobStatus.FAILED.value)
+        
+        # Check job details
+        assert 'started_at' in data
+        assert 'completed_at' in data
+        
+        # Verify job duration is reasonable
+        if data['started_at'] and data['completed_at']:
+            duration = data['completed_at'] - data['started_at']
+            assert duration >= 0, "Job has invalid duration"
+
+def test_error_recovery_in_background_jobs(client, integration_app):
+    """Test system recovery from failed background jobs."""
+    # Patch the backup_photos method to deliberately fail
+    with patch('src.web.services.storage.storage_manager.backup_photos') as mock_backup:
+        # Configure mock to raise an exception
+        mock_backup.side_effect = Exception("Simulated backup failure")
+        
+        # Submit the job that will fail
+        response = client.post('/api/storage/backup')
+        assert response.status_code == 200
+        
+        # Get job ID
+        data = json.loads(response.data)
+        job_id = data['data']['job_id']
+        
+        # Wait for job to complete (with failure)
+        max_wait = 10  # seconds
+        start_time = time.time()
+        
+        with integration_app.app_context():
+            while time.time() - start_time < max_wait:
+                job = job_queue.get_job(job_id)
+                if job['status'] == JobStatus.FAILED.value:
+                    break
+                time.sleep(0.1)
+            
+            # Verify job failed
+            job = job_queue.get_job(job_id)
+            assert job['status'] == JobStatus.FAILED.value
+            assert job['error'] is not None
+            assert "Simulated backup failure" in job['error']['message']
+    
+    # Now submit a successful job to verify system still works
+    response = client.post('/api/storage/backup')
+    assert response.status_code == 200
+    
+    # Get job ID
+    data = json.loads(response.data)
+    job_id = data['data']['job_id']
+    
+    # Check job completes successfully
+    with integration_app.app_context():
+        max_wait = 10  # seconds
+        start_time = time.time()
+        
+        while time.time() - start_time < max_wait:
+            job = job_queue.get_job(job_id)
+            if job['status'] == JobStatus.COMPLETED.value:
+                break
+            time.sleep(0.1)
+        
+        # Verify job succeeded
+        job = job_queue.get_job(job_id)
+        assert job['status'] == JobStatus.COMPLETED.value
+
+def test_storage_boundary_conditions(client, integration_app):
+    """Test storage management under boundary conditions."""
+    with integration_app.app_context():
+        # 1. Test clean with very recent cutoff date (should not delete anything)
+        response = client.post('/api/storage/clean', json={
+            'days_to_keep': 9999,  # Very high value
+            'min_free_percent': 1.0  # Very low threshold
+        })
+        assert response.status_code == 200
+        
+        # Get job ID and wait for completion
+        data = json.loads(response.data)
+        job_id = data['data']['job_id']
+        
+        # Wait for job completion
+        max_wait = 10
+        start_time = time.time()
+        while time.time() - start_time < max_wait:
+            job = job_queue.get_job(job_id)
+            if job['status'] in (JobStatus.COMPLETED.value, JobStatus.FAILED.value):
+                break
+            time.sleep(0.1)
+        
+        # Verify no files were deleted (should still have our test photo)
+        test_photo_path = os.path.join(
+            os.environ.get('CREATUREBOX_HOME'),
+            'photos',
+            '2025-01-01',
+            'test_photo.jpg'
+        )
+        assert os.path.exists(test_photo_path), "Test photo was incorrectly deleted"
+        
+        # 2. Test with very old cutoff date (should delete everything)
+        # First make sure the backup directory exists for the test photo
+        backup_dir = os.path.join(
+            os.environ.get('CREATUREBOX_HOME'),
+            'photos_backedup',
+            '2025-01-01'
+        )
+        os.makedirs(backup_dir, exist_ok=True)
+        
+        # Copy test photo to backup dir to satisfy cleanup safety check
+        shutil.copy2(
+            test_photo_path,
+            os.path.join(backup_dir, 'test_photo.jpg')
+        )
+        
+        # Now run cleanup with very old cutoff
+        response = client.post('/api/storage/clean', json={
+            'days_to_keep': 0,  # Delete everything
+            'min_free_percent': 99.0  # Very high threshold to force cleanup
+        })
+        assert response.status_code == 200
+        
+        # Get job ID and wait for completion
+        data = json.loads(response.data)
+        job_id = data['data']['job_id']
+        
+        # Wait for job completion
+        max_wait = 10
+        start_time = time.time()
+        while time.time() - start_time < max_wait:
+            job = job_queue.get_job(job_id)
+            if job['status'] in (JobStatus.COMPLETED.value, JobStatus.FAILED.value):
+                break
+            time.sleep(0.1)
+        
+        # 3. Test storage stats accuracy after operations
+        response = client.get('/api/storage/stats')
+        assert response.status_code == 200
+        
+        data = json.loads(response.data)
+        # Photos count might be 0 or 1 depending on if cleanup succeeded
+        assert 'photos' in data
+        assert 'count' in data['photos']
+        assert 'backups' in data
+        assert 'count' in data['backups']
+        assert data['backups']['count'] >= 1  # Should have our backup
