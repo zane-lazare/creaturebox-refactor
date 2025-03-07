@@ -1,163 +1,290 @@
-# src/web/routes Directory Documentation
+# Web Routes Module Documentation
 
-## Directory Purpose
-The `src/web/routes` directory contains the API endpoint definitions for the CreatureBox web interface. Each file in this directory implements a specific set of related routes using Flask Blueprints to organize the application's URL structure. These routes handle HTTP requests, process user input, interact with the underlying system components, and return appropriate responses. Together, they form the complete API that enables control and monitoring of the CreatureBox system through the web interface.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| __init__.py | Python | 0.3 KB | Package initialization and blueprint registration |
-| camera.py | Python | 1.8 KB | Camera control and configuration routes |
-| gallery.py | Python | 2.1 KB | Photo gallery management routes |
-| jobs.py | Python | 1.2 KB | Background job management routes |
-| settings.py | Python | 1.0 KB | System settings configuration routes |
-| storage.py | Python | 1.5 KB | Storage management routes |
-| system.py | Python | 1.3 KB | System control and monitoring routes |
+## Overview
 
-## Detailed File Descriptions
+The Web Routes Module defines all API endpoints and page handlers for the CreatureBox web interface, organizing endpoints into logical blueprints for different system functionalities.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/web/routes` directory contains Flask blueprints that define all the API endpoints and page handlers for the CreatureBox web interface. This module:
+
+- Provides RESTful API endpoints for system control
+- Defines page routes for the web interface
+- Handles request processing and validation
+- Maps URL patterns to controller functions
+- Organizes endpoints into logical functional groups
+
+Routes are grouped into blueprints based on functionality, such as camera control, system management, gallery access, and configuration.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| __init__.py | Python | 0.2 KB | Blueprint initialization |
+| api.py | Python | 1.8 KB | RESTful API endpoint definitions |
+| auth.py | Python | 1.4 KB | Authentication routes |
+| camera.py | Python | 2.2 KB | Camera control endpoints |
+| config.py | Python | 1.6 KB | Configuration management routes |
+| gallery.py | Python | 2.4 KB | Photo gallery access |
+| system.py | Python | 1.9 KB | System management endpoints |
+| views.py | Python | 1.7 KB | Web UI page routes |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
 
 ### __init__.py
-- **Primary Purpose**: Initializes the routes package and provides functions to register all blueprints
+- **Primary Purpose**: Package initialization and blueprint registration
 - **Key Functions**:
-  * `register_blueprints(app)`: Registers all blueprint modules with the Flask app
-- **Dependencies**: Flask, all other route modules
-- **Technical Notes**: Simplifies blueprint registration in the main app.py file
+  * `get_blueprints()`: Returns list of all route blueprints
+- **Dependencies**:
+  * Flask Blueprint system
+- **Technical Notes**: Simplifies blueprint registration in main app.py
+
+### api.py
+- **Primary Purpose**: Core API endpoint definitions
+- **Key Routes**:
+  * `GET /api/status`: System status information
+  * `GET /api/version`: Software version details
+  * `POST /api/reboot`: Trigger system reboot
+  * `POST /api/shutdown`: Trigger system shutdown
+- **Dependencies**:
+  * System utilities module
+  * Authentication middleware
+- **Technical Notes**: All endpoints return JSON responses, require API authentication
+
+### auth.py
+- **Primary Purpose**: User authentication endpoints
+- **Key Routes**:
+  * `POST /auth/login`: User login
+  * `POST /auth/logout`: User logout
+  * `GET /auth/status`: Authentication status
+  * `POST /auth/reset-password`: Password reset
+- **Dependencies**:
+  * Authentication service
+  * User database models
+- **Technical Notes**: Implements JWT-based authentication with refresh tokens
 
 ### camera.py
-- **Primary Purpose**: Provides routes for camera control and configuration
-- **Key Functions**:
-  * `GET /api/camera/settings`: Retrieves current camera settings
-  * `POST /api/camera/settings`: Updates camera settings
-  * `POST /api/camera/calibrate`: Calibrates the camera
-  * `POST /api/camera/capture`: Captures a photo
-  * `GET /api/camera/stream`: Streams camera feed
+- **Primary Purpose**: Camera control functionality
+- **Key Routes**:
+  * `POST /api/camera/capture`: Take photo
+  * `GET /api/camera/preview`: Live camera preview
+  * `GET /api/camera/settings`: Current camera settings
+  * `POST /api/camera/settings`: Update camera settings
+  * `POST /api/camera/attraction`: Toggle attraction mode
 - **Dependencies**:
-  * Flask
-  * src/web/utils/camera.py
-  * src/web/services/job_queue.py
-- **Technical Notes**: Some operations (like capture) are run asynchronously through the job queue
+  * Camera utility module
+  * Configuration service
+- **Technical Notes**: Provides both synchronous and asynchronous capture modes
+
+### config.py
+- **Primary Purpose**: System configuration management
+- **Key Routes**:
+  * `GET /api/config/settings`: Get all system settings
+  * `POST /api/config/settings`: Update system settings
+  * `GET /api/config/backup`: Download configuration backup
+  * `POST /api/config/restore`: Restore from backup
+  * `GET /api/config/defaults`: Reset to default settings
+- **Dependencies**:
+  * Configuration service
+  * File utilities
+- **Technical Notes**: Validates all configuration changes before applying
 
 ### gallery.py
-- **Primary Purpose**: Manages photo gallery viewing and operations
-- **Key Functions**:
-  * `GET /api/gallery/dates`: Lists dates with photos
-  * `GET /api/gallery/photos`: Lists photos with optional filtering
-  * `GET /api/gallery/photos/view/<date>/<filename>`: Retrieves specific photo
-  * `GET /api/gallery/photos/thumbnail/<date>/<filename>`: Retrieves photo thumbnail
-  * `DELETE /api/gallery/photos/<filename>`: Deletes a photo
+- **Primary Purpose**: Photo gallery access and management
+- **Key Routes**:
+  * `GET /api/gallery/recent`: Get recent photos
+  * `GET /api/gallery/photo/:id`: Get specific photo
+  * `DELETE /api/gallery/photo/:id`: Delete photo
+  * `POST /api/gallery/photo/:id/favorite`: Mark photo as favorite
+  * `GET /api/gallery/download`: Download photo archive
 - **Dependencies**:
-  * Flask
-  * src/web/utils/files.py
-  * src/web/services/storage.py
-- **Technical Notes**: Implements pagination for efficiently loading large galleries
-
-### jobs.py
-- **Primary Purpose**: Manages background processing jobs
-- **Key Functions**:
-  * `GET /api/jobs/`: Lists all background jobs
-  * `GET /api/jobs/<job_id>`: Gets status of specific job
-  * `POST /api/jobs/<job_id>/cancel`: Cancels a running job
-  * `POST /api/jobs/cleanup`: Cleans up completed jobs
-- **Dependencies**:
-  * Flask
-  * src/web/services/job_queue.py
-- **Technical Notes**: Provides real-time status updates for long-running operations
-
-### settings.py
-- **Primary Purpose**: Manages system configuration settings
-- **Key Functions**:
-  * `GET /api/settings/`: Retrieves all system settings
-  * `GET /api/settings/<section>`: Retrieves settings for specific section
-  * `POST /api/settings/<section>`: Updates settings for specific section
-  * `POST /api/settings/reset`: Resets settings to defaults
-- **Dependencies**:
-  * Flask
-  * src/config/*.csv files
-- **Technical Notes**: Implements validation for each setting type
-
-### storage.py
-- **Primary Purpose**: Manages photo storage and backup operations
-- **Key Functions**:
-  * `GET /api/storage/stats`: Gets storage usage statistics
-  * `POST /api/storage/backup`: Initiates photo backup
-  * `POST /api/storage/backup/external`: Backs up to external device
-  * `POST /api/storage/clean`: Cleans up old photos
-- **Dependencies**:
-  * Flask
-  * src/web/services/storage.py
-  * src/web/services/job_queue.py
-- **Technical Notes**: Long-running storage operations are executed as background jobs
+  * Storage service
+  * File utilities
+- **Technical Notes**: Supports pagination, filtering, and image transformations
 
 ### system.py
-- **Primary Purpose**: Provides system control and monitoring functionality
-- **Key Functions**:
-  * `GET /api/system/status`: Gets system status information
-  * `POST /api/system/reboot`: Reboots the system
-  * `POST /api/system/shutdown`: Shuts down the system
-  * `POST /api/system/toggle-lights`: Toggles attraction lights
+- **Primary Purpose**: System operations management
+- **Key Routes**:
+  * `GET /api/system/info`: System information
+  * `GET /api/system/logs`: System logs
+  * `POST /api/system/update`: Software update
+  * `GET /api/system/storage`: Storage status
+  * `POST /api/system/backup`: Create system backup
 - **Dependencies**:
-  * Flask
-  * src/web/utils/system.py
-  * src/software/Attract_On.py
-  * src/software/Shut_Down.py
-- **Technical Notes**: Implements confirmation requirements for critical operations
+  * System utilities
+  * File system access
+- **Technical Notes**: Some endpoints require admin privileges
 
-## Relationship Documentation
+### views.py
+- **Primary Purpose**: Web UI page routes
+- **Key Routes**:
+  * `GET /`: Homepage
+  * `GET /gallery`: Photo gallery page
+  * `GET /settings`: Settings page
+  * `GET /system`: System management page
+  * `GET /login`: Login page
+- **Dependencies**:
+  * Template rendering
+  * Authentication service
+- **Technical Notes**: Renders HTML templates for browser interface
+
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/app.py (application that registers these routes)
-  * src/web/middleware/ (processes requests before reaching routes)
+  * [Web Core](./src-web.md): Routes are registered with main application
+  * [Web Services](./src-web-services.md): Routes use services for business logic
+  * [Web Middleware](./src-web-middleware.md): Request processing before routes
+  * [Web Utilities](./src-web-utils.md): Helper functions used by routes
 - **Depends On**:
-  * src/web/utils/ (utility functions called from routes)
-  * src/web/services/ (background services used by routes)
-  * src/software/ (system scripts called by routes)
-  * src/config/ (configuration files accessed by routes)
+  * Flask framework
+  * Authentication system
+  * [Configuration Module](./src-config.md): System settings access
+  * [Software Module](./src-software.md): System control functionality
 - **Used By**:
-  * Web frontend
-  * External API clients
-  * Testing suite
+  * Web browser clients
+  * Mobile applications (via API)
+  * System monitoring tools
 
-## Use Cases
-1. **Camera Photo Capture**:
-   - **Implementation**: The camera.py route file implements a POST endpoint that triggers the camera to take a photo.
-   - **Example**:
-     ```
-     POST /api/camera/capture
-     Content-Type: application/json
-     
-     {
-       "resolution": "high",
-       "save_path": "custom/location",
-       "file_prefix": "wildlife_"
-     }
-     ```
-     This request schedules a photo capture job and returns a job ID for tracking.
+</div>
+</details>
 
-2. **Gallery Photo Browsing**:
-   - **Implementation**: The gallery.py route file provides endpoints to browse and view photos.
-   - **Example**:
-     ```
-     GET /api/gallery/photos?date=2025-03-01&page=2&limit=20
-     ```
-     Returns paginated list of photos from specified date.
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
 
-3. **System Control**:
-   - **Implementation**: The system.py route file enables system control operations.
-   - **Example**:
+1. **Camera Control via API**:
+   - **Description**: Remote triggering of camera capture through API.
+   - **Example**: 
+     ```python
+     # API route for camera capture
+     @camera_bp.route('/api/camera/capture', methods=['POST'])
+     @jwt_required
+     def capture_image():
+         # Get capture parameters
+         params = request.get_json() or {}
+         delay = params.get('delay', 0)
+         count = params.get('count', 1)
+         interval = params.get('interval', 1)
+         
+         # Validate parameters
+         if count > 10:
+             return jsonify({"error": "Cannot capture more than 10 images at once"}), 400
+             
+         # Trigger capture
+         try:
+             job_id = camera_service.schedule_capture(delay, count, interval)
+             return jsonify({"success": True, "job_id": job_id})
+         except Exception as e:
+             return jsonify({"error": str(e)}), 500
      ```
-     POST /api/system/toggle-lights
-     Content-Type: application/json
-     
-     {
-       "state": "on",
-       "duration_minutes": 30
-     }
-     ```
-     Turns on attraction lights for specified duration.
 
-4. **Background Job Management**:
-   - **Implementation**: The jobs.py route file manages long-running tasks.
-   - **Example**:
+2. **User Authentication**:
+   - **Description**: User login and authentication process.
+   - **Example**: 
+     ```python
+     # User login route
+     @auth_bp.route('/auth/login', methods=['POST'])
+     def login():
+         # Get credentials
+         credentials = request.get_json()
+         username = credentials.get('username')
+         password = credentials.get('password')
+         
+         # Validate input
+         if not username or not password:
+             return jsonify({"error": "Missing credentials"}), 400
+             
+         # Authenticate user
+         try:
+             user = auth_service.authenticate(username, password)
+             if user:
+                 access_token = create_access_token(identity=user.id)
+                 refresh_token = create_refresh_token(identity=user.id)
+                 return jsonify(access_token=access_token, refresh_token=refresh_token)
+             else:
+                 return jsonify({"error": "Invalid credentials"}), 401
+         except Exception as e:
+             return jsonify({"error": str(e)}), 500
      ```
-     GET /api/jobs/a1b2c3d4-5678
+
+3. **Configuration Management**:
+   - **Description**: Updating system configuration through the web interface.
+   - **Example**: 
+     ```python
+     # Update configuration settings
+     @config_bp.route('/api/config/settings', methods=['POST'])
+     @jwt_required
+     @admin_required
+     def update_settings():
+         # Get settings
+         new_settings = request.get_json()
+         
+         # Validate settings
+         validation_errors = config_service.validate_settings(new_settings)
+         if validation_errors:
+             return jsonify({"error": "Invalid settings", "details": validation_errors}), 400
+             
+         # Apply settings
+         try:
+             config_service.update_settings(new_settings)
+             return jsonify({"success": True})
+         except Exception as e:
+             return jsonify({"error": str(e)}), 500
      ```
-     Returns the status of a specific job, such as a photo backup operation.
+
+4. **Photo Gallery Access**:
+   - **Description**: Accessing and managing captured photos.
+   - **Example**: 
+     ```python
+     # Get recent photos with pagination
+     @gallery_bp.route('/api/gallery/recent', methods=['GET'])
+     @jwt_required
+     def get_recent_photos():
+         # Parse query parameters
+         page = request.args.get('page', 1, type=int)
+         per_page = request.args.get('per_page', 20, type=int)
+         date_from = request.args.get('from')
+         date_to = request.args.get('to')
+         
+         # Apply limits
+         per_page = min(per_page, 50)  # Maximum 50 per page
+         
+         # Get photos from storage service
+         photos, total = gallery_service.get_photos(
+             page=page,
+             per_page=per_page,
+             date_from=date_from,
+             date_to=date_to
+         )
+         
+         # Return paginated results
+         return jsonify({
+             "photos": photos,
+             "total": total,
+             "page": page,
+             "per_page": per_page,
+             "pages": (total + per_page - 1) // per_page
+         })
+     ```
+
+</div>
+</details>
