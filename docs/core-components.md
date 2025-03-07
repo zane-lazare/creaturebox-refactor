@@ -15,16 +15,20 @@ The CreatureBox system relies on several core components that provide the founda
 The core components work together to provide system functionality:
 
 <div class="mermaid">
-graph TD
-    Config[Configuration] --> Software[Software]
-    Config --> Power[Power Management]
-    Software --> Scripts[Utility Scripts]
-    Power --> LowPower[Low Power Mode]
-    Power --> WiFi[WiFi Management]
+graph TD;
+    Config[Configuration] --> Software[Software];
+    Config --> Power[Power Management];
+    Software --> Scripts[Utility Scripts];
+    Power --> LowPower[Low Power Mode];
+    Power --> WiFi[WiFi Management];
     
-    style Config fill:#fbb,stroke:#333,stroke-width:2px
-    style Software fill:#bfb,stroke:#333,stroke-width:2px
-    style Power fill:#bbf,stroke:#333,stroke-width:2px
+    classDef config fill:#fbb,stroke:#333,stroke-width:2px;
+    classDef software fill:#bfb,stroke:#333,stroke-width:2px;
+    classDef power fill:#bbf,stroke:#333,stroke-width:2px;
+    
+    class Config config;
+    class Software software;
+    class Power power;
 </div>
 
 ## Key Components
