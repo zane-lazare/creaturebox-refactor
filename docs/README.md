@@ -40,12 +40,14 @@ All sections are collapsible for better navigation, and each page includes a hor
   - [Software Module](./core-components/software-module.md): Operational scripts
 
 ### Web Application
-- [Web Interface](./src-web.md): Flask application and web components
-  - [Web Routes](./src-web-routes.md): API endpoints
-  - [Web Services](./src-web-services.md): Background services
-  - [Web Middleware](./src-web-middleware.md): Request processing
-  - [Web Utilities](./src-web-utils.md): Helper functions
-  - [Web Tests](./src-web-tests.md): Test suite
+- [Web Interface](./web-interface.md): Flask application and web components
+  - [Core Web Components](./web-interface/core.md): Main application files
+  - [API Routes](./web-interface/routes.md): API endpoints
+  - [Background Services](./web-interface/services.md): Background services
+  - [Middleware](./web-interface/middleware.md): Request processing
+  - [Utilities](./web-interface/utils.md): Helper functions
+  - [Static Resources](./web-interface/static.md): Frontend assets
+  - [Tests](./web-interface/tests.md): Test suite
 
 ### Reference Documents
 - [Repository Structure](./repository-manifest.md): Complete repository topology
