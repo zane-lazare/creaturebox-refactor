@@ -7,6 +7,11 @@
 - System configuration files
 - Settings management
 
+### Deployment
+[Deployment Module](/docs/deployment.md)
+- Service and server configurations
+- Systemd and Nginx setup
+
 ### Power Management
 [Power Module](/docs/power.md)
 - Power-related scripts
