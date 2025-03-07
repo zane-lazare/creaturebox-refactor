@@ -1,224 +1,253 @@
-# src/software Directory Documentation
+# Software Module Documentation
 
-## Directory Purpose
-The `src/software` directory contains operational Python scripts that provide core functionality for the CreatureBox system. These scripts implement camera control, system management, file operations, and other essential features that enable the proper functioning of the wildlife monitoring system. The software in this directory serves as a bridge between the web interface and the underlying hardware, providing command-line utilities that can be invoked both programmatically and directly by users when needed.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| Attract_On.py | Python | 0.7 KB | Attraction light control |
-| Backup_Files.py | Python | 1.2 KB | File backup utility |
-| Enable_Camera.py | Python | 0.9 KB | Camera initialization |
-| Shut_Down.py | Python | 0.6 KB | System shutdown handler |
-| Take_Photo.py | Python | 1.3 KB | Photo capture controller |
-| Update_Project.py | Python | 0.8 KB | Software update utility |
-| Upload_Photo.py | Python | 1.1 KB | Photo upload handler |
-| WiFi_Setup.py | Python | 0.9 KB | Wireless configuration |
+## Overview
 
-## Detailed File Descriptions
+The Software Module contains the core operational scripts that control the CreatureBox hardware, including the camera system, scheduling, and system management utilities.
 
-### Attract_On.py
-- **Primary Purpose**: Controls the attraction light system for wildlife photography
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/software` directory houses the primary operational scripts that drive the CreatureBox system functionality. This module is responsible for:
+
+- Controlling the attraction mode for wildlife photography
+- Managing the camera capture process
+- Scheduling system operations
+- Providing debugging and diagnostic capabilities
+- Managing power consumption monitoring
+- Implementing system backup functionality
+- Controlling scheduled shutdown operations
+
+These scripts form the functional core of the CreatureBox system, connecting the hardware components with the user interface and automation systems.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| Attract_On.py | Python | 2.3 KB | Enables attraction mode |
+| Attract_Off.py | Python | 1.8 KB | Disables attraction mode |
+| Backup_Files.py | Python | 3.1 KB | System data backup utility |
+| DebugMode.py | Python | 2.5 KB | Diagnostic functionality |
+| Measure_Power.py | Python | 1.7 KB | Power monitoring |
+| Scheduler.py | Python | 4.2 KB | Task scheduling system |
+| TakePhoto.py | Python | 3.8 KB | Camera control interface |
+| StartCron.py | Python | 0.9 KB | Enables scheduled tasks |
+| StopCron.py | Python | 0.7 KB | Disables scheduled tasks |
+| StopScheduledShutdown.py | Python | 1.1 KB | Cancels pending shutdown |
+| TurnEverythingOff.py | Python | 1.5 KB | Complete system shutdown |
+| RegisterNewWifi.sh | Shell | 1.2 KB | WiFi configuration |
+| readme.md | Markdown | 0.5 KB | Module documentation |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
+
+### Attraction Mode Control
+
+#### Attract_On.py / Attract_Off.py
+- **Primary Purpose**: Control the attraction mechanisms (lights, sounds, etc.)
 - **Key Functions**:
-  * `set_light_state(state, brightness)`: Turns lights on/off with brightness control
-  * `pulse_lights(duration, frequency)`: Creates pulsing light pattern
-  * `schedule_light_cycle(start_time, end_time, interval)`: Sets up timed light cycles
+  * `start_attraction_sequence()`: Activates lights and sounds in sequence
+  * `stop_attraction_sequence()`: Deactivates attraction mechanisms
+  * `check_attraction_status()`: Verifies current state
 - **Dependencies**:
-  * RPi.GPIO (for hardware control)
-  * time, datetime modules
-  * src/config/controls.txt (for settings)
-- **Technical Notes**: Supports PWM for variable brightness, includes safety timeout
+  * Hardware control libraries
+  * Configuration settings from src/config
+- **Technical Notes**: Uses PWM for LED control and audio libraries for sound playback
 
-### Backup_Files.py
-- **Primary Purpose**: Creates backups of photo files and system configuration
+### System Management
+
+#### Backup_Files.py
+- **Primary Purpose**: Creates backups of critical system data
 - **Key Functions**:
-  * `backup_photos(source_dir, backup_dir)`: Copies photo files to backup location
-  * `backup_config(config_path, backup_dir)`: Backs up configuration files
-  * `create_archive(source_dir, archive_name)`: Creates compressed archive
-  * `verify_backup(source_dir, backup_dir)`: Validates backup integrity
+  * `backup_configuration()`: Copies configuration files
+  * `backup_images()`: Archives captured images
+  * `schedule_backup()`: Sets up recurring backup
 - **Dependencies**:
-  * os, shutil modules
-  * subprocess (for compression)
-  * hashlib (for file verification)
-- **Technical Notes**: Implements incremental backup strategy, tracks changes via checksums
+  * File system access
+  * Storage service from web module
+- **Technical Notes**: Supports both local and remote backup locations
 
-### Enable_Camera.py
-- **Primary Purpose**: Initializes and configures the camera hardware
+#### DebugMode.py
+- **Primary Purpose**: Enables detailed system diagnostics
 - **Key Functions**:
-  * `initialize_camera()`: Performs hardware initialization
-  * `load_camera_settings()`: Applies settings from configuration file
-  * `test_camera()`: Performs camera self-test
-  * `configure_camera_mode(mode)`: Sets specific operational modes
+  * `enable_debug_logging()`: Increases log verbosity
+  * `run_diagnostics()`: Performs hardware tests
+  * `generate_debug_report()`: Creates diagnostic summary
 - **Dependencies**:
-  * picamera module
-  * src/config/camera_settings.csv (for settings)
-  * subprocess (for hardware commands)
-- **Technical Notes**: Handles camera hardware errors, includes retry logic
+  * System utilities
+  * Logging framework
+- **Technical Notes**: Can significantly increase log file size when enabled
 
-### Shut_Down.py
-- **Primary Purpose**: Manages clean system shutdown process
+### Measurement and Monitoring
+
+#### Measure_Power.py
+- **Primary Purpose**: Monitors system power consumption
 - **Key Functions**:
-  * `safe_shutdown(delay=0)`: Performs orderly system shutdown
-  * `emergency_shutdown()`: Rapid shutdown for critical conditions
-  * `cleanup_before_shutdown()`: Closes files and services
-  * `log_shutdown_reason(reason)`: Records shutdown cause
+  * `read_power_sensors()`: Gets current power readings
+  * `log_power_usage()`: Records power data
+  * `check_battery_levels()`: Verifies battery status
 - **Dependencies**:
-  * os, sys modules
-  * subprocess (for system commands)
-  * logging module
-- **Technical Notes**: Ensures all data is written before power off, includes notification
+  * Hardware sensor interfaces
+  * Data logging services
+- **Technical Notes**: Calibrated for specific power monitoring hardware
 
-### Take_Photo.py
-- **Primary Purpose**: Controls photo capture process with various settings
+### Task Scheduling
+
+#### Scheduler.py
+- **Primary Purpose**: Controls timed operations
 - **Key Functions**:
-  * `capture_photo(output_path, settings={})`: Takes photo with specified settings
-  * `capture_timelapse(count, interval, output_dir)`: Creates time-lapse sequence
-  * `capture_burst(count, output_dir)`: Takes rapid burst of photos
-  * `apply_image_effects(photo_path, effects)`: Applies post-processing effects
+  * `load_schedule()`: Reads schedule configuration
+  * `add_task()`: Creates new scheduled task
+  * `remove_task()`: Cancels scheduled task
+  * `run_pending()`: Executes due tasks
 - **Dependencies**:
-  * picamera module
-  * src/config/camera_settings.csv
-  * PIL (for post-processing)
-  * os, time modules
-- **Technical Notes**: Supports multiple resolution and quality settings, includes EXIF data
+  * System cron service
+  * Configuration module
+- **Technical Notes**: Uses both cron for persistence and in-memory scheduling for precision
 
-### Update_Project.py
-- **Primary Purpose**: Handles software updates for the CreatureBox system
+### Camera Control
+
+#### TakePhoto.py
+- **Primary Purpose**: Interface to camera hardware
 - **Key Functions**:
-  * `check_for_updates()`: Checks repository for newer versions
-  * `download_update()`: Retrieves update package
-  * `verify_update_package(package_path)`: Validates update integrity
-  * `apply_update(package_path)`: Installs update
-  * `rollback_update()`: Reverts to previous version if needed
+  * `initialize_camera()`: Sets up camera with parameters
+  * `capture_image()`: Takes single photo
+  * `capture_sequence()`: Takes series of photos
+  * `adjust_settings()`: Changes camera parameters
 - **Dependencies**:
-  * requests module
-  * subprocess, os modules
-  * hashlib (for package verification)
-- **Technical Notes**: Includes backup of current version before update, supports staged rollout
+  * Camera hardware drivers
+  * Configuration settings
+  * Storage services
+- **Technical Notes**: Supports multiple camera models through abstraction layer
 
-### Upload_Photo.py
-- **Primary Purpose**: Transfers photos to remote storage or services
+### System Control
+
+#### StartCron.py / StopCron.py
+- **Primary Purpose**: Manage system scheduled tasks
 - **Key Functions**:
-  * `upload_to_server(photo_path, server_url)`: Uploads to HTTP server
-  * `upload_to_cloud(photo_path, service="s3")`: Uploads to cloud storage
-  * `upload_batch(photo_dir, destination)`: Processes multiple files
-  * `check_connectivity()`: Verifies network connection before upload
+  * `enable_cron_jobs()`: Activates all scheduled tasks
+  * `disable_cron_jobs()`: Deactivates all scheduled tasks
 - **Dependencies**:
-  * requests module
-  * boto3 (for AWS uploads)
-  * os module
-  * src/config/controls.txt (for settings)
-- **Technical Notes**: Implements retry logic, bandwidth throttling, supports multiple services
+  * System cron service
+- **Technical Notes**: Requires root privileges to modify cron
 
-### WiFi_Setup.py
-- **Primary Purpose**: Configures and manages wireless network connectivity
+#### StopScheduledShutdown.py
+- **Primary Purpose**: Prevents automated system shutdown
 - **Key Functions**:
-  * `setup_wifi_connection(ssid, password)`: Configures new connection
-  * `scan_networks()`: Lists available networks
-  * `test_connection()`: Validates connectivity
-  * `save_network_config(config)`: Stores connection settings
+  * `cancel_shutdown()`: Removes pending shutdown commands
+  * `notify_cancelled()`: Logs and notifies of cancellation
 - **Dependencies**:
-  * subprocess module
-  * os module
-  * requests (for connectivity testing)
-- **Technical Notes**: Creates wpa_supplicant configuration, includes fallback to known networks
+  * System shutdown service
+- **Technical Notes**: Works by identifying and killing shutdown timer processes
 
-## Relationship Documentation
+#### TurnEverythingOff.py
+- **Primary Purpose**: Safe system shutdown
+- **Key Functions**:
+  * `save_state()`: Preserves current system state
+  * `stop_services()`: Gracefully terminates services
+  * `power_down()`: Initiates hardware shutdown
+- **Dependencies**:
+  * All system services
+  * Power control module
+- **Technical Notes**: Ensures data integrity before power off
+
+### Network Configuration
+
+#### RegisterNewWifi.sh
+- **Primary Purpose**: Configure WiFi connectivity
+- **Key Functions**:
+  * `scan_networks()`: Identifies available networks
+  * `save_credentials()`: Stores network authentication
+  * `connect_network()`: Establishes connection
+- **Dependencies**:
+  * Network interfaces
+  * wpa_supplicant service
+- **Technical Notes**: Can operate in headless mode with predefined credentials
+
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/routes/ (invoked by web API)
-  * src/power/ (used in power management)
+  * [Scripts Directory](./src-software-scripts.md): Additional specialized utility scripts
+  * [Configuration Module](./src-config.md): System settings used by software scripts
+  * [Power Module](./src-power.md): Power management integrated with software control
 - **Depends On**:
-  * src/config/ (configuration files)
-  * Hardware-specific libraries (RPi.GPIO, picamera)
-  * System utilities (wpa_supplicant, shutdown)
+  * System hardware interfaces
+  * Linux system services (cron, systemd)
+  * Camera hardware drivers
 - **Used By**:
-  * Web application for system control
-  * Scheduled tasks
+  * [Web Interface](./src-web.md): Web application calls these scripts
+  * System automation and scheduling services
   * User-initiated operations
 
-## Use Cases
-1. **Wildlife Photography with Attraction Lights**:
-   - **Implementation**: The Attract_On.py script controls LED lighting to attract wildlife for better photos.
-   - **Example**:
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
+1. **Wildlife Photography Session**:
+   - **Description**: Setting up the system for automated wildlife photography.
+   - **Example**: 
      ```python
-     # Used in web interface to control lights
-     def api_toggle_lights():
-         state = request.json.get('state')
-         brightness = request.json.get('brightness', 100)
-         duration = request.json.get('duration', 0)
-         
-         # Call the script with appropriate parameters
-         cmd = [
-             'python', 
-             '/opt/creaturebox/src/software/Attract_On.py',
-             '--state', state,
-             '--brightness', str(brightness)
-         ]
-         if duration:
-             cmd.extend(['--duration', str(duration)])
-             
-         subprocess.Popen(cmd)
-         return jsonify({"status": "success"})
+     # First enable attraction mode
+     subprocess.run(["python", "/path/to/Attract_On.py"])
+     
+     # Schedule automated photo captures
+     with open('/etc/crontab', 'a') as cron:
+         cron.write("0 * * * * python /path/to/TakePhoto.py")
+     
+     # Enable scheduled tasks
+     subprocess.run(["python", "/path/to/StartCron.py"])
      ```
 
-2. **Scheduled Photo Capture**:
-   - **Implementation**: The Take_Photo.py script enables automated photography at specified intervals.
-   - **Example**:
+2. **System Maintenance**:
+   - **Description**: Performing system backup and diagnostics.
+   - **Example**: 
      ```python
-     # Used in scheduler for timed captures
-     def scheduled_photo_capture():
-         timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
-         output_dir = f'/opt/creaturebox/data/photos/{datetime.now().strftime("%Y-%m-%d")}'
-         os.makedirs(output_dir, exist_ok=True)
-         
-         # Call the script with appropriate settings
-         cmd = [
-             'python',
-             '/opt/creaturebox/src/software/Take_Photo.py',
-             '--output', f'{output_dir}/{timestamp}.jpg',
-             '--resolution', 'high',
-             '--effect', 'auto'
-         ]
-         subprocess.run(cmd)
+     # Run diagnostics 
+     subprocess.run(["python", "/path/to/DebugMode.py", "--diagnose"])
+     
+     # Backup critical data
+     subprocess.run(["python", "/path/to/Backup_Files.py", "--full"])
      ```
 
-3. **System Updates and Maintenance**:
-   - **Implementation**: The Update_Project.py script provides a mechanism for updating the system software.
-   - **Example**:
+3. **Power Management**:
+   - **Description**: Monitoring and managing system power consumption.
+   - **Example**: 
      ```python
-     # Used in system maintenance API
-     @app.route('/api/system/update', methods=['POST'])
-     def update_system_software():
-         # Start update in background process
-         job = job_queue.enqueue(
-             subprocess.run,
-             ['python', '/opt/creaturebox/src/software/Update_Project.py', '--perform-update']
-         )
-         return jsonify({"job_id": job.id})
+     # Check current power usage
+     result = subprocess.run(["python", "/path/to/Measure_Power.py"], 
+                            capture_output=True, text=True)
+     
+     # If power is low, shutdown non-essential services
+     if "LOW BATTERY" in result.stdout:
+         subprocess.run(["python", "/path/to/TurnEverythingOff.py", "--except-core"])
      ```
 
-4. **Field Data Management**:
-   - **Implementation**: The combination of Backup_Files.py and Upload_Photo.py enables managing photos in remote deployments.
-   - **Example**:
-     ```python
-     # Used in storage management
-     def weekly_data_maintenance():
-         # First backup locally
-         subprocess.run([
-             'python',
-             '/opt/creaturebox/src/software/Backup_Files.py',
-             '--source', '/opt/creaturebox/data/photos',
-             '--destination', '/mnt/backup'
-         ])
-         
-         # Then upload if connection available
-         if check_internet_connection():
-             subprocess.run([
-                 'python',
-                 '/opt/creaturebox/src/software/Upload_Photo.py',
-                 '--source', '/opt/creaturebox/data/photos',
-                 '--destination', 'cloud',
-                 '--service', 's3',
-                 '--bucket', 'wildlife-monitoring-data'
-             ])
+4. **Network Configuration**:
+   - **Description**: Setting up new network connection.
+   - **Example**: 
+     ```bash
+     # Configure new WiFi network
+     ./RegisterNewWifi.sh --ssid "WildlifeNetwork" --password "secure-password"
      ```
+
+</div>
+</details>
