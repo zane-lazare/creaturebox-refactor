@@ -1,9 +1,33 @@
-# src/web Directory Documentation
+# Web Interface Module Documentation
 
-## Directory Purpose
-The `src/web` directory contains the complete web application component of the CreatureBox system. It provides a modular Flask-based web interface for controlling and monitoring the CreatureBox wildlife monitoring hardware. This component enables users to configure camera settings, capture photos, view the gallery, manage storage, and control system functions through an intuitive browser interface, accessible both locally and remotely when configured.
+{% include navigation.html %}
 
-## File Inventory
+## Overview
+
+The Web Interface module provides a browser-based control panel for the CreatureBox system, allowing users to configure settings, manage photos, and control system operations through an intuitive interface.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/web` directory contains the complete web application component of the CreatureBox system. It provides a modular Flask-based web interface for controlling and monitoring the CreatureBox wildlife monitoring hardware. This component enables users to:
+
+- Configure camera settings
+- Capture photos on demand
+- View the photo gallery
+- Manage file storage
+- Control system power and scheduling
+- Monitor system status
+
+The web interface is accessible both locally on the device network and remotely when properly configured for external access.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
 | Filename | Type | Size | Description |
 |----------|------|------|-------------|
 | app.py | Python | 1.6 KB | Application entry point and factory |
@@ -11,7 +35,12 @@ The `src/web` directory contains the complete web application component of the C
 | error_handlers.py | Python | 1.2 KB | Centralized error handling |
 | middleware.py | Python | 0.8 KB | Request processing middleware |
 
-## Detailed File Descriptions
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
 
 ### app.py
 - **Primary Purpose**: Serves as the entry point for the Flask web application
@@ -62,27 +91,38 @@ The `src/web` directory contains the complete web application component of the C
   * Middleware modules from middleware/ directory
 - **Technical Notes**: Uses Flask's before_request and after_request hooks for cross-cutting concerns
 
-## Relationship Documentation
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/routes/ (API endpoints that use core app)
-  * src/web/services/ (Background services used by app)
-  * src/web/utils/ (Utility functions called by app)
-  * src/web/middleware/ (Additional middleware components)
-  * src/web/static/ (Frontend assets served by app)
-  * src/web/tests/ (Test suite for web application)
+  * [Web Routes](./src-web-routes.md): API endpoints that use core app
+  * [Web Services](./src-web-services.md): Background services used by app
+  * [Web Utilities](./src-web-utils.md): Utility functions called by app
+  * [Web Middleware](./src-web-middleware.md): Additional middleware components
+  * [Web Static](./src-web-static.md): Frontend assets served by app
+  * [Web Tests](./src-web-tests.md): Test suite for web application
 - **Depends On**:
   * Flask and related libraries
-  * src/config/ (System configuration files)
-  * src/power/ (For system power control features)
-  * src/software/ (For camera and system control)
+  * [Configuration Module](./src-config.md): System configuration files
+  * [Power Module](./src-power.md): For system power control features
+  * [Software Module](./src-software.md): For camera and system control
 - **Used By**:
   * Web browser clients
-  * deployment/gunicorn.conf.py (WSGI server configuration)
-  * deployment/nginx.conf (Web server configuration)
+  * [Deployment](./deployment.md): WSGI server and web server configuration
 
-## Use Cases
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
 1. **Web Application Initialization**:
-   - **Implementation**: The app.py file implements the application factory pattern, creating and configuring a Flask application with all necessary components.
+   - **Description**: Creating and configuring a Flask application with all necessary components.
    - **Example**: 
      ```python
      from src.web.app import create_app
@@ -91,7 +131,7 @@ The `src/web` directory contains the complete web application component of the C
      ```
 
 2. **Environment-specific Configuration**:
-   - **Implementation**: The config.py file loads different settings based on the environment.
+   - **Description**: Loading different settings based on the environment.
    - **Example**: 
      ```python
      app = create_app('development')  # Uses development settings with debug enabled
@@ -100,9 +140,12 @@ The `src/web` directory contains the complete web application component of the C
      ```
 
 3. **Consistent Error Handling**:
-   - **Implementation**: error_handlers.py provides centralized error handling for all routes.
+   - **Description**: Centralized error handling for all routes.
    - **Example**: When a route raises a 404 error, the handle_404_error function returns a JSON response for API requests or renders an error template for browser requests.
 
 4. **Request Processing Pipeline**:
-   - **Implementation**: middleware.py sets up a request processing pipeline that logs requests and adds security headers.
+   - **Description**: Setting up a request processing pipeline that logs requests and adds security headers.
    - **Example**: Each incoming request is logged and each outgoing response gets security headers like Content-Security-Policy.
+
+</div>
+</details>
