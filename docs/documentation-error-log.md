@@ -17,6 +17,14 @@ Each error is logged with the following information:
 | Timestamp | Directory/File | Error Type | Description | Resolution Status | Resolution Notes |
 |-----------|---------------|------------|-------------|------------------|------------------|
 | 2025-03-08T14:35:00Z | Repository Setup | Minor | Documentation branch already exists but doesn't follow required structure | RESOLVED | Structure being aligned to requirements |
+| 2025-03-08T16:00:00Z | Multiple Files | Major | Multiple empty documentation files (0 bytes) | IN_PROGRESS | Files to be consolidated or filled with content |
+| 2025-03-08T16:00:00Z | docs/README.md | Major | Documentation structure references don't match actual repository structure | IN_PROGRESS | README to be updated with accurate structure |
+| 2025-03-08T16:00:00Z | Multiple Files | Minor | Inconsistent use of Jekyll templates and Liquid syntax | IN_PROGRESS | Standardizing template usage across files |
+| 2025-03-08T16:00:00Z | Multiple Files | Major | Redundant files covering the same components | IN_PROGRESS | Content to be consolidated following cleanup plan |
+| 2025-03-08T16:00:00Z | Multiple Files | Minor | Inconsistent formatting across documentation | IN_PROGRESS | Applying consistent formatting standards |
+| 2025-03-08T16:00:00Z | docs/ | Major | Incomplete migration to core-components structure | IN_PROGRESS | Finalizing migration of all relevant files |
+| 2025-03-08T16:00:00Z | docs/ | Minor | Missing cross-references between related documentation | IN_PROGRESS | Adding proper cross-references |
+| 2025-03-08T16:00:00Z | docs/ | Major | Jekyll configuration issues with front matter | IN_PROGRESS | Adding proper front matter to all files |
 
 ## Error Resolution Protocol
 1. Log all errors as they are encountered
