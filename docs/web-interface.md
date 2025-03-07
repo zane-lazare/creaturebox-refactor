@@ -3,7 +3,7 @@ layout: default
 title: Web Interface
 nav_order: 3
 has_children: true
-permalink: /web-interface
+permalink: /web-interface/
 ---
 
 # Web Interface
@@ -44,10 +44,18 @@ graph TD;
 
 <div class="component-cards">
   <div class="component-card">
+    <h3>Core Web Components</h3>
+    <p>Foundation of the web application including app setup, configuration, and error handling.</p>
+    <div class="links">
+      <a href="./web-interface/core.html">Documentation</a>
+    </div>
+  </div>
+
+  <div class="component-card">
     <h3>API Routes</h3>
     <p>Defines the REST API endpoints for controlling the system and accessing resources.</p>
     <div class="links">
-      <a href="./src-web-routes.html">Documentation</a>
+      <a href="./web-interface/routes.html">Documentation</a>
     </div>
   </div>
   
@@ -55,7 +63,7 @@ graph TD;
     <h3>Background Services</h3>
     <p>Manages long-running tasks, caching, and storage operations.</p>
     <div class="links">
-      <a href="./src-web-services.html">Documentation</a>
+      <a href="./web-interface/services.html">Documentation</a>
     </div>
   </div>
   
@@ -63,7 +71,7 @@ graph TD;
     <h3>Middleware</h3>
     <p>Handles authentication, request processing, and cross-cutting concerns.</p>
     <div class="links">
-      <a href="./src-web-middleware.html">Documentation</a>
+      <a href="./web-interface/middleware.html">Documentation</a>
     </div>
   </div>
   
@@ -71,7 +79,7 @@ graph TD;
     <h3>Utilities</h3>
     <p>Provides reusable helper functions for camera, file, and system operations.</p>
     <div class="links">
-      <a href="./src-web-utils.html">Documentation</a>
+      <a href="./web-interface/utils.html">Documentation</a>
     </div>
   </div>
   
@@ -79,7 +87,15 @@ graph TD;
     <h3>Tests</h3>
     <p>Comprehensive test suite for web components.</p>
     <div class="links">
-      <a href="./src-web-tests.html">Documentation</a>
+      <a href="./web-interface/tests.html">Documentation</a>
+    </div>
+  </div>
+
+  <div class="component-card">
+    <h3>Static Resources</h3>
+    <p>Frontend assets including CSS, JavaScript, and images.</p>
+    <div class="links">
+      <a href="./web-interface/static.html">Documentation</a>
     </div>
   </div>
 </div>
@@ -90,11 +106,11 @@ The Web Interface exposes the following main API endpoints:
 
 | Endpoint | Description | Documentation |
 |----------|-------------|---------------|
-| `/api/system/*` | System status and control | [System Routes](./src-web-routes.html#system) |
-| `/api/camera/*` | Camera control and settings | [Camera Routes](./src-web-routes.html#camera) |
-| `/api/gallery/*` | Photo gallery management | [Gallery Routes](./src-web-routes.html#gallery) |
-| `/api/storage/*` | Storage management | [Storage Routes](./src-web-routes.html#storage) |
-| `/api/jobs/*` | Background job management | [Job Routes](./src-web-routes.html#jobs) |
+| `/api/system/*` | System status and control | [System Routes](./web-interface/routes.html#system) |
+| `/api/camera/*` | Camera control and settings | [Camera Routes](./web-interface/routes.html#camera) |
+| `/api/gallery/*` | Photo gallery management | [Gallery Routes](./web-interface/routes.html#gallery) |
+| `/api/storage/*` | Storage management | [Storage Routes](./web-interface/routes.html#storage) |
+| `/api/jobs/*` | Background job management | [Job Routes](./web-interface/routes.html#jobs) |
 
 ## Configuration
 
@@ -104,7 +120,7 @@ The Web Interface is configured through several mechanisms:
 2. **Config Files**: Settings in `src/config/` directory
 3. **Web Settings**: User-configurable settings accessible through the interface
 
-See [Configuration Documentation](./src-config.html) for more details.
+See [Configuration Documentation](./core-components/configuration.html) for more details.
 
 ## Core Files
 
@@ -117,7 +133,7 @@ error_handlers.py - Centralized error handling<br>
 middleware.py - Request processing middleware
 </div>
 
-See [Web Core Documentation](./src-web.html) for detailed information about these files.
+See [Web Core Documentation](./web-interface/core.html) for detailed information about these files.
 
 ## Deployment
 
