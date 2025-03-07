@@ -1,0 +1,124 @@
+{
+  "last_updated": "2025-03-08T17:30:00Z",
+  "overall_status": {
+    "directories_processed": 16,
+    "directories_completed": 16,
+    "total_directories": 16,
+    "completion_percentage": 100.0
+  },
+  "directory_tracking": [
+    {
+      "directory_path": "/",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T14:50:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Root directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/deployment",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T15:10:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Deployment directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T17:25:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Source directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/config",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T15:50:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Config directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/power",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T15:30:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Power directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/software",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T16:30:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Software directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/software/scripts",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T16:40:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Software scripts directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T15:00:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/middleware",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T16:50:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web middleware directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/routes",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T15:15:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web routes directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/services",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T15:20:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web services directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/static",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T17:10:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web static directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/static/css",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T17:15:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web static CSS directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/static/js",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T17:20:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web static JS directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/tests",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T17:00:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web tests directory documentation completed with all required sections"
+    },
+    {
+      "directory_path": "/src/web/utils",
+      "documentation_status": "COMPLETED",
+      "last_updated": "2025-03-08T16:55:00Z",
+      "completion_percentage": 100.0,
+      "reviewer_notes": "Web utils directory documentation completed with all required sections"
+    }
+  ],
+  "error_log": []
+}
