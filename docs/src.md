@@ -1,3 +1,10 @@
+---
+layout: default
+title: Source Directory
+nav_order: 7
+permalink: /src/
+---
+
 # Source Directory Documentation
 
 {% include navigation.html %}
@@ -58,7 +65,7 @@ The src directory contains no files directly; it serves as a container for subdi
   * camera_settings.csv: Camera configuration parameters
   * controls.txt: System control settings
   * schedule_settings.csv: Automated schedule configuration
-- See [Configuration Module](./src-config.md) for detailed information
+- See [Configuration Module](./core-components/configuration.md) for detailed information
 
 ### power/
 - **Purpose**: Manages power-related operations for field deployments
@@ -66,21 +73,21 @@ The src directory contains no files directly; it serves as a container for subdi
   * low_in_one.sh: Combined low power mode script
   * lowpower.sh: Basic low power mode
   * powerup_wifi.sh: Re-enable WiFi after power saving
-- See [Power Management](./src-power.md) for detailed information
+- See [Power Management](./core-components/power-management.md) for detailed information
 
 ### software/
 - **Purpose**: Contains core operational scripts for system functionality
 - **Key Files**:
   * Various .py files for system operations (Attract_On.py, Take_Photo.py, etc.)
   * scripts/ subdirectory with additional utility scripts
-- See [Software Module](./src-software.md) for detailed information
+- See [Software Module](./core-components/software-module.md) for detailed information
 
 ### web/
 - **Purpose**: Implements the web interface and API for system control
 - **Key Files**:
   * app.py: Flask application entry point
   * Various subdirectories for routes, services, utilities, etc.
-- See [Web Interface](./src-web.md) for detailed information
+- See [Web Interface](./web-interface.md) for detailed information
 
 </div>
 </details>
