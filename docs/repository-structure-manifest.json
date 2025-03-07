@@ -1,0 +1,218 @@
+{
+  "generated_timestamp": "2025-03-08T14:40:00Z",
+  "repository_info": {
+    "name": "creaturebox-refactor",
+    "owner": "zane-lazare",
+    "primary_branch": "main",
+    "documentation_branch": "documentation"
+  },
+  "directory_structure": [
+    {
+      "path": "/",
+      "depth": 0,
+      "file_count": 7,
+      "subdirectory_count": 2,
+      "files": [
+        "README.md", 
+        "install.sh", 
+        "license.md", 
+        "pre_install_check.py", 
+        "pytest.ini", 
+        "requirements.txt", 
+        "verify_installation.py"
+      ],
+      "subdirectories": ["deployment", "src"]
+    },
+    {
+      "path": "/deployment",
+      "depth": 1,
+      "file_count": 3,
+      "subdirectory_count": 0,
+      "files": [
+        "creaturebox.service", 
+        "gunicorn.conf.py", 
+        "nginx.conf"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src",
+      "depth": 1,
+      "file_count": 0,
+      "subdirectory_count": 4,
+      "files": [],
+      "subdirectories": ["config", "power", "software", "web"]
+    },
+    {
+      "path": "/src/config",
+      "depth": 2,
+      "file_count": 3,
+      "subdirectory_count": 0,
+      "files": [
+        "camera_settings.csv", 
+        "controls.txt", 
+        "schedule_settings.csv"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/power",
+      "depth": 2,
+      "file_count": 3,
+      "subdirectory_count": 0,
+      "files": [
+        "low_in_one.sh", 
+        "lowpower.sh", 
+        "powerup_wifi.sh"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/software",
+      "depth": 2,
+      "file_count": 8,
+      "subdirectory_count": 1,
+      "files": [
+        "Attract_On.py",
+        "Backup_Files.py",
+        "Enable_Camera.py",
+        "Shut_Down.py",
+        "Take_Photo.py",
+        "Update_Project.py",
+        "Upload_Photo.py",
+        "WiFi_Setup.py"
+      ],
+      "subdirectories": ["scripts"]
+    },
+    {
+      "path": "/src/software/scripts",
+      "depth": 3,
+      "file_count": 5,
+      "subdirectory_count": 0,
+      "files": [
+        "auto_capture.py",
+        "diagnostic.py",
+        "monitor_disk.py",
+        "remote_control.py",
+        "system_check.py"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web",
+      "depth": 2,
+      "file_count": 4,
+      "subdirectory_count": 6,
+      "files": [
+        "app.py",
+        "config.py",
+        "error_handlers.py",
+        "middleware.py"
+      ],
+      "subdirectories": ["middleware", "routes", "services", "static", "tests", "utils"]
+    },
+    {
+      "path": "/src/web/middleware",
+      "depth": 3,
+      "file_count": 2,
+      "subdirectory_count": 0,
+      "files": [
+        "__init__.py",
+        "auth.py"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web/routes",
+      "depth": 3,
+      "file_count": 7,
+      "subdirectory_count": 0,
+      "files": [
+        "__init__.py",
+        "camera.py",
+        "gallery.py",
+        "jobs.py",
+        "settings.py",
+        "storage.py",
+        "system.py"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web/services",
+      "depth": 3,
+      "file_count": 3,
+      "subdirectory_count": 0,
+      "files": [
+        "cache.py",
+        "job_queue.py",
+        "storage.py"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web/static",
+      "depth": 3,
+      "file_count": 0,
+      "subdirectory_count": 2,
+      "files": [],
+      "subdirectories": ["css", "js"]
+    },
+    {
+      "path": "/src/web/static/css",
+      "depth": 4,
+      "file_count": 1,
+      "subdirectory_count": 0,
+      "files": [
+        "style.css"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web/static/js",
+      "depth": 4,
+      "file_count": 4,
+      "subdirectory_count": 0,
+      "files": [
+        "camera.js",
+        "gallery.js",
+        "main.js",
+        "system.js"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web/tests",
+      "depth": 3,
+      "file_count": 5,
+      "subdirectory_count": 0,
+      "files": [
+        "__init__.py",
+        "conftest.py",
+        "test_job_queue.py",
+        "test_routes.py",
+        "test_services.py"
+      ],
+      "subdirectories": []
+    },
+    {
+      "path": "/src/web/utils",
+      "depth": 3,
+      "file_count": 3,
+      "subdirectory_count": 0,
+      "files": [
+        "camera.py",
+        "files.py",
+        "system.py"
+      ],
+      "subdirectories": []
+    }
+  ],
+  "metadata": {
+    "total_directories": 16,
+    "total_files": 55,
+    "max_depth": 4,
+    "generation_method": "Recursive directory traversal",
+    "validation_status": "COMPLETE"
+  }
+}
