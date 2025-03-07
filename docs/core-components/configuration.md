@@ -3,6 +3,7 @@ layout: default
 title: Configuration
 parent: Core Components
 nav_order: 1
+permalink: /core-components/configuration/
 ---
 
 # Configuration
