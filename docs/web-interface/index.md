@@ -44,10 +44,18 @@ graph TD;
 
 <div class="component-cards">
   <div class="component-card">
+    <h3>Core Web Components</h3>
+    <p>Foundation of the web application including app setup, configuration, and error handling.</p>
+    <div class="links">
+      <a href="./core.html">Documentation</a>
+    </div>
+  </div>
+
+  <div class="component-card">
     <h3>API Routes</h3>
     <p>Defines the REST API endpoints for controlling the system and accessing resources.</p>
     <div class="links">
-      <a href="./routes">Documentation</a>
+      <a href="./routes.html">Documentation</a>
     </div>
   </div>
   
@@ -55,7 +63,7 @@ graph TD;
     <h3>Background Services</h3>
     <p>Manages long-running tasks, caching, and storage operations.</p>
     <div class="links">
-      <a href="./services">Documentation</a>
+      <a href="./services.html">Documentation</a>
     </div>
   </div>
   
@@ -63,7 +71,7 @@ graph TD;
     <h3>Middleware</h3>
     <p>Handles authentication, request processing, and cross-cutting concerns.</p>
     <div class="links">
-      <a href="./middleware">Documentation</a>
+      <a href="./middleware.html">Documentation</a>
     </div>
   </div>
   
@@ -71,7 +79,7 @@ graph TD;
     <h3>Utilities</h3>
     <p>Provides reusable helper functions for camera, file, and system operations.</p>
     <div class="links">
-      <a href="./utils">Documentation</a>
+      <a href="./utils.html">Documentation</a>
     </div>
   </div>
   
@@ -79,7 +87,15 @@ graph TD;
     <h3>Tests</h3>
     <p>Comprehensive test suite for web components.</p>
     <div class="links">
-      <a href="./tests">Documentation</a>
+      <a href="./tests.html">Documentation</a>
+    </div>
+  </div>
+
+  <div class="component-card">
+    <h3>Static Resources</h3>
+    <p>Frontend assets including CSS, JavaScript, and images.</p>
+    <div class="links">
+      <a href="./static.html">Documentation</a>
     </div>
   </div>
 </div>
@@ -90,11 +106,11 @@ The Web Interface exposes the following main API endpoints:
 
 | Endpoint | Description | Documentation |
 |----------|-------------|---------------|
-| `/api/system/*` | System status and control | [System Routes](./routes#system) |
-| `/api/camera/*` | Camera control and settings | [Camera Routes](./routes#camera) |
-| `/api/gallery/*` | Photo gallery management | [Gallery Routes](./routes#gallery) |
-| `/api/storage/*` | Storage management | [Storage Routes](./routes#storage) |
-| `/api/jobs/*` | Background job management | [Job Routes](./routes#jobs) |
+| `/api/system/*` | System status and control | [System Routes](./routes.html#system) |
+| `/api/camera/*` | Camera control and settings | [Camera Routes](./routes.html#camera) |
+| `/api/gallery/*` | Photo gallery management | [Gallery Routes](./routes.html#gallery) |
+| `/api/storage/*` | Storage management | [Storage Routes](./routes.html#storage) |
+| `/api/jobs/*` | Background job management | [Job Routes](./routes.html#jobs) |
 
 ## Core Files
 
@@ -107,4 +123,4 @@ error_handlers.py - Centralized error handling<br>
 middleware.py - Request processing middleware
 </div>
 
-See [Web Core Documentation](./core) for detailed information about these files.
+See [Web Core Documentation](./core.html) for detailed information about these files.
