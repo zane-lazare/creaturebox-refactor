@@ -1,0 +1,124 @@
+{
+  "last_updated": "2025-03-08T14:30:00Z",
+  "overall_status": {
+    "directories_processed": 0,
+    "directories_completed": 0,
+    "total_directories": 15,
+    "completion_percentage": 0.0
+  },
+  "directory_tracking": [
+    {
+      "directory_path": "/",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Root directory documentation not started"
+    },
+    {
+      "directory_path": "/deployment",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Deployment directory documentation not started"
+    },
+    {
+      "directory_path": "/src",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Source directory documentation not started"
+    },
+    {
+      "directory_path": "/src/config",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Config directory documentation not started"
+    },
+    {
+      "directory_path": "/src/power",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Power directory documentation not started"
+    },
+    {
+      "directory_path": "/src/software",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Software directory documentation not started"
+    },
+    {
+      "directory_path": "/src/software/scripts",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Software scripts directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/middleware",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web middleware directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/routes",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web routes directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/services",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web services directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/static",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web static directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/static/css",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web static CSS directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/static/js",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web static JS directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/tests",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web tests directory documentation not started"
+    },
+    {
+      "directory_path": "/src/web/utils",
+      "documentation_status": "NOT_STARTED",
+      "last_updated": null,
+      "completion_percentage": 0.0,
+      "reviewer_notes": "Web utils directory documentation not started"
+    }
+  ],
+  "error_log": []
+}
