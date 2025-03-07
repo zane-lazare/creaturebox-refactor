@@ -32,15 +32,45 @@
 - Operational scripts
 - System utilities
 
-##### Web Interface
+###### Software Scripts
+[Software Utility Scripts](/docs/src-software-scripts.md)
+- Specialized utility scripts
+- System diagnostic tools
+
+#### Web Interface
 [Web Files](/docs/src-web-files.md)
 - Application core
 - Web infrastructure
 
-###### Web Middleware
+##### Web Middleware
 [Web Middleware Files](/docs/src-web-middleware-files.md)
 - Authentication mechanisms
 - Request processing
+
+##### Web Routes
+[Web Routes](/docs/src-web-routes.md)
+- API endpoint definitions
+- Request handling
+
+##### Web Services
+[Web Services](/docs/src-web-services.md)
+- Background processing
+- Caching and storage
+
+##### Web Static Resources
+[Web Static Files](/docs/src-web-static.md)
+- Web application assets
+- UI resources
+
+##### Web Tests
+[Web Test Suite](/docs/src-web-tests.md)
+- Comprehensive testing
+- System validation
+
+##### Web Utilities
+[Web Utility Functions](/docs/src-web-utils.md)
+- Cross-cutting support
+- Reusable helpers
 
 ### Repository Analysis
 [Repository Structure](/docs/repository-manifest.md)
