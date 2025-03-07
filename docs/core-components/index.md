@@ -38,7 +38,7 @@ graph TD;
     <h3>Configuration</h3>
     <p>Defines system-wide settings and parameters for various components.</p>
     <div class="links">
-      <a href="./configuration">Documentation</a>
+      <a href="configuration">Documentation</a>
     </div>
   </div>
   
@@ -46,7 +46,7 @@ graph TD;
     <h3>Power Management</h3>
     <p>Controls power-related operations for field deployments.</p>
     <div class="links">
-      <a href="./power">Documentation</a>
+      <a href="power">Documentation</a>
     </div>
   </div>
   
@@ -54,7 +54,7 @@ graph TD;
     <h3>Software</h3>
     <p>Implements core operational scripts for system functionality.</p>
     <div class="links">
-      <a href="./software">Documentation</a>
+      <a href="software">Documentation</a>
     </div>
   </div>
   
@@ -62,7 +62,7 @@ graph TD;
     <h3>Software Scripts</h3>
     <p>Provides specialized utility scripts for additional functionality.</p>
     <div class="links">
-      <a href="./software-scripts">Documentation</a>
+      <a href="software-scripts">Documentation</a>
     </div>
   </div>
 </div>
@@ -75,4 +75,4 @@ The core components integrate with the web interface to provide a complete syste
 - Software scripts are triggered by web API calls
 - Power management is controlled through the web interface
 
-See the [Web Interface](/docs/web-interface/) documentation for details on these integrations.
+See the [Web Interface](/web-interface/) documentation for details on these integrations.
