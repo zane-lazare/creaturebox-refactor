@@ -1,214 +1,196 @@
-# src/config Directory Documentation
+# Configuration Module Documentation
 
-## Directory Purpose
-The `src/config` directory contains configuration files that define system-wide settings and parameters for the CreatureBox system. These files establish default values, valid ranges, and current settings for various components including camera operation, system controls, and scheduling. The configuration files provide a centralized location for settings that affect multiple parts of the system, enabling consistent configuration management and allowing for both programmatic and user-driven customization of system behavior.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| camera_settings.csv | CSV | 0.8 KB | Camera configuration parameters |
-| controls.txt | Text | 0.5 KB | System control settings |
-| schedule_settings.csv | CSV | 0.7 KB | Automated schedule configuration |
+## Overview
 
-## Detailed File Descriptions
+The Configuration Module contains the core system settings files that control the CreatureBox's operational parameters, including camera settings, control mappings, and scheduling configurations.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/config` directory serves as the central repository for all configuration files that control the behavior of the CreatureBox system. This module provides:
+
+- Structured settings for camera operation
+- Input control mappings and definitions
+- Scheduling parameters for automated operation
+- System-wide operational constants and thresholds
+- Default configuration values for initial setup
+
+These configuration files are used by various system components to ensure consistent behavior across the application and to allow customization without code changes.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| camera_settings.csv | CSV | 1.2 KB | Camera configuration parameters |
+| controls.txt | Text | 0.8 KB | Input control mappings |
+| schedule_settings.csv | CSV | 0.9 KB | Automated operation scheduling |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
 
 ### camera_settings.csv
-- **Primary Purpose**: Defines camera configuration parameters for photo capture
-- **Key Fields**:
-  * `setting_name`: Name of the camera setting
-  * `value`: Current configured value
-  * `default`: Default value if not configured
-  * `min_value`: Minimum allowable value (for numeric settings)
-  * `max_value`: Maximum allowable value (for numeric settings)
-  * `options`: Available choices (for enumerated settings)
-  * `description`: Human-readable description of the setting
-  * `type`: Data type (integer, float, string, boolean, enum)
-- **Dependencies**:
-  * src/web/utils/camera.py (for applying settings)
-  * src/web/routes/camera.py (for API access)
-- **Technical Notes**: 
-  * CSV format enables easy parsing and modification
-  * Includes validation constraints for each setting
-  * Organized by functional categories (exposure, resolution, etc.)
+- **Primary Purpose**: Defines camera operational parameters
+- **Key Settings**:
+  * `resolution`: Image capture resolution (width x height)
+  * `exposure_mode`: Camera exposure setting (auto, night, action, etc.)
+  * `white_balance`: White balance mode (auto, sunlight, cloudy, etc.)
+  * `iso`: ISO sensitivity setting (100-800)
+  * `shutter_speed`: Manual shutter speed in microseconds
+  * `image_effect`: Special effects (none, negative, sketch, etc.)
+  * `led_enabled`: Enable/disable camera LED indicator
+- **Format**: CSV with header row and parameter values
+- **Technical Notes**: Changes require camera service restart to take effect
 
 ### controls.txt
-- **Primary Purpose**: Defines system-wide control settings and operational parameters
-- **Key Sections**:
-  * System identification (name, ID, location)
-  * Operational modes (normal, power-saving, maintenance)
-  * Network configuration (connection preferences)
-  * Notification settings (alerts, status reports)
-  * Security parameters (access control)
-- **Dependencies**:
-  * src/web/utils/system.py (for applying settings)
-  * src/web/routes/settings.py (for API access)
-- **Technical Notes**: 
-  * Uses simple key-value format for easy parsing
-  * Comments denoted with # character
-  * Includes documentation for each setting inline
+- **Primary Purpose**: Maps hardware controls to system functions
+- **Key Settings**:
+  * GPIO pin mappings for physical buttons
+  * Function assignments for each control
+  * Long-press and short-press behavior definitions
+  * LED indicator mappings
+- **Format**: Plain text with key=value pairs
+- **Technical Notes**: Read on system startup, changes require restart
 
 ### schedule_settings.csv
-- **Primary Purpose**: Configures automated scheduling of system operations
-- **Key Fields**:
-  * `schedule_id`: Unique identifier for schedule entry
-  * `operation`: Type of operation (photo, backup, power)
-  * `time`: Time to execute operation (24-hour format)
-  * `days`: Days to execute (comma-separated or daily/weekday/weekend)
-  * `parameters`: JSON-encoded parameters for operation
-  * `enabled`: Boolean indicating if schedule is active
-  * `description`: Human-readable description
-  * `last_run`: Timestamp of last execution
-- **Dependencies**:
-  * src/software/scripts/auto_capture.py (for scheduled execution)
-  * src/web/routes/settings.py (for API access)
-- **Technical Notes**: 
-  * CSV format enables easy parsing and modification
-  * Supports complex scheduling patterns
-  * Includes tracking of execution history
+- **Primary Purpose**: Defines automated operation schedule
+- **Key Settings**:
+  * `start_time`: Daily start time for system activation
+  * `end_time`: Daily end time for system shutdown
+  * `capture_interval`: Time between photo captures (minutes)
+  * `attraction_duration`: How long to run attraction features
+  * `power_management`: Power profile to use (standard, eco, extreme)
+  * `weekend_schedule`: Alternative settings for weekends
+  * `holiday_mode`: Settings for extended unattended operation
+- **Format**: CSV with header row and schedule parameters
+- **Technical Notes**: Processed by scheduler daemon, changes apply on next cycle
 
-## Relationship Documentation
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/config.py (application configuration)
-  * src/web/routes/settings.py (settings management API)
+  * [Software Module](./src-software.md): Uses configuration for operational parameters
+  * [Power Module](./src-power.md): Gets power settings from configuration
+  * [Web Interface](./src-web.md): Provides UI for editing configurations
 - **Depends On**:
-  * System hardware capabilities (for valid parameter ranges)
-  * File system permissions (for modifications)
+  * System default templates
+  * User preferences
 - **Used By**:
-  * Camera control functions
-  * Scheduling system
-  * System settings API
-  * Web interface for configuration
+  * Camera control scripts
+  * Scheduler service
+  * System initialization process
+  * Web interface configuration panels
 
-## Use Cases
-1. **Camera Configuration Management**:
-   - **Implementation**: The camera_settings.csv file defines all configurable parameters for the camera system.
-   - **Example**:
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
+1. **Camera Configuration**:
+   - **Description**: Setting up optimal camera parameters for wildlife photography.
+   - **Example**: 
      ```python
-     # Reading camera settings in camera utility module
-     def get_camera_settings():
-         settings = {}
-         with open('/opt/creaturebox/src/config/camera_settings.csv', 'r') as f:
-             reader = csv.DictReader(f)
-             for row in reader:
-                 settings[row['setting_name']] = {
-                     'value': convert_to_type(row['value'], row['type']),
-                     'default': convert_to_type(row['default'], row['type']),
-                     'type': row['type'],
-                     'description': row['description']
-                 }
-         return settings
+     # Read camera settings from configuration
+     import csv
      
-     # Updating a camera setting
-     def update_camera_setting(name, value):
-         settings = get_camera_settings()
-         if name not in settings:
-             raise ValueError(f"Unknown setting: {name}")
-             
-         # Validate value against constraints
-         # Update in-memory representation
-         settings[name]['value'] = value
-         
-         # Write back to CSV file
-         # Apply setting to camera hardware
+     with open('/path/to/camera_settings.csv', 'r') as f:
+         reader = csv.DictReader(f)
+         settings = next(reader)  # Get first row
+     
+     # Apply settings to camera
+     camera.resolution = (int(settings['resolution_x']), int(settings['resolution_y']))
+     camera.exposure_mode = settings['exposure_mode']
+     camera.iso = int(settings['iso'])
      ```
 
-2. **Scheduled Operations Configuration**:
-   - **Implementation**: The schedule_settings.csv file enables configuration of automated system operations.
-   - **Example**:
+2. **Scheduled Operation**:
+   - **Description**: Configuring automated capture schedules.
+   - **Example**: 
      ```python
-     # In scheduler module
-     def load_schedules():
-         schedules = []
-         with open('/opt/creaturebox/src/config/schedule_settings.csv', 'r') as f:
-             reader = csv.DictReader(f)
-             for row in reader:
-                 if row['enabled'].lower() == 'true':
-                     schedules.append({
-                         'id': row['schedule_id'],
-                         'operation': row['operation'],
-                         'time': row['time'],
-                         'days': parse_days(row['days']),
-                         'parameters': json.loads(row['parameters']),
-                         'description': row['description']
-                     })
-         return schedules
+     # Parse schedule settings
+     import csv
+     from datetime import datetime, time
      
-     # In cron-like scheduler
-     def check_schedules():
-         now = datetime.now()
-         today = now.strftime('%A').lower()
-         current_time = now.strftime('%H:%M')
-         
-         schedules = load_schedules()
-         for schedule in schedules:
-             if today in schedule['days'] and current_time == schedule['time']:
-                 execute_scheduled_operation(schedule)
-                 update_last_run(schedule['id'])
+     with open('/path/to/schedule_settings.csv', 'r') as f:
+         reader = csv.DictReader(f)
+         schedule = next(reader)
+     
+     # Determine if system should be active
+     now = datetime.now().time()
+     start = datetime.strptime(schedule['start_time'], '%H:%M').time()
+     end = datetime.strptime(schedule['end_time'], '%H:%M').time()
+     
+     if start <= now <= end:
+         # System should be active
+         activate_system()
+     else:
+         # System should be in low power mode
+         enter_low_power_mode()
      ```
 
-3. **System Control Configuration**:
-   - **Implementation**: The controls.txt file defines system-wide operational parameters.
-   - **Example**:
+3. **Control Mapping**:
+   - **Description**: Mapping hardware buttons to software functions.
+   - **Example**: 
      ```python
-     # Reading system controls
-     def get_system_controls():
-         controls = {}
-         with open('/opt/creaturebox/src/config/controls.txt', 'r') as f:
-             for line in f:
-                 line = line.strip()
-                 if not line or line.startswith('#'):
-                     continue
-                     
-                 key, value = line.split('=', 1)
+     # Load control mappings
+     controls = {}
+     with open('/path/to/controls.txt', 'r') as f:
+         for line in f:
+             if line.strip() and not line.startswith('#'):
+                 key, value = line.strip().split('=')
                  controls[key.strip()] = value.strip()
-         return controls
      
-     # Using control values to determine system behavior
-     def should_enable_feature(feature_name):
-         controls = get_system_controls()
-         if f"{feature_name}_enabled" in controls:
-             return controls[f"{feature_name}_enabled"].lower() == 'true'
-         return False  # Default to disabled if not specified
+     # Set up GPIO for button
+     import RPi.GPIO as GPIO
+     GPIO.setmode(GPIO.BCM)
+     
+     capture_button_pin = int(controls['capture_button_gpio'])
+     GPIO.setup(capture_button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+     GPIO.add_event_detect(capture_button_pin, GPIO.FALLING, 
+                          callback=take_photo, bouncetime=300)
      ```
 
-4. **Configuration Validation and Update**:
-   - **Implementation**: Configuration files include validation constraints that are enforced when updated.
-   - **Example**:
+4. **Configuration Update**:
+   - **Description**: Updating configuration through the web interface.
+   - **Example**: 
      ```python
-     # API route for updating camera settings
-     @app.route('/api/camera/settings', methods=['POST'])
+     # Web route to update camera settings
+     @app.route('/api/settings/camera', methods=['POST'])
      def update_camera_settings():
-         settings = request.json
+         new_settings = request.get_json()
          
-         # Read current configuration with constraints
-         current_settings = read_camera_settings_with_constraints()
+         # Validate settings
+         if 'resolution_x' not in new_settings or 'resolution_y' not in new_settings:
+             return jsonify({'error': 'Missing resolution parameters'}), 400
+             
+         # Write to CSV
+         with open('/path/to/camera_settings.csv', 'w', newline='') as f:
+             writer = csv.DictWriter(f, fieldnames=new_settings.keys())
+             writer.writeheader()
+             writer.writerow(new_settings)
+             
+         # Restart camera service to apply changes
+         subprocess.run(['systemctl', 'restart', 'creaturebox-camera.service'])
          
-         # Validate and apply updates
-         validation_errors = []
-         for name, value in settings.items():
-             if name not in current_settings:
-                 validation_errors.append(f"Unknown setting: {name}")
-                 continue
-                 
-             constraints = current_settings[name]
-             
-             # Type validation
-             if constraints['type'] == 'integer':
-                 if not isinstance(value, int):
-                     validation_errors.append(f"{name} must be an integer")
-                     continue
-             
-             # Range validation for numeric values
-             if 'min_value' in constraints and value < constraints['min_value']:
-                 validation_errors.append(
-                     f"{name} must be at least {constraints['min_value']}")
-                 continue
-             
-             # Apply valid setting
-             update_camera_setting(name, value)
-             
-         if validation_errors:
-             return jsonify({"errors": validation_errors}), 400
-             
-         return jsonify({"success": True})
+         return jsonify({'success': True})
      ```
+
+</div>
+</details>
