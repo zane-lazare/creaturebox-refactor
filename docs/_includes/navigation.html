@@ -1,0 +1,70 @@
+<!-- Horizontal Navigation Menu -->
+<div class="section-nav">
+  <nav>
+    <ul>
+      <li><a href="#purpose">Purpose</a></li>
+      <li><a href="#file-inventory">File Inventory</a></li>
+      <li><a href="#file-descriptions">File Descriptions</a></li>
+      <li><a href="#relationships">Relationships</a></li>
+      <li><a href="#use-cases">Use Cases</a></li>
+    </ul>
+  </nav>
+</div>
+
+<style>
+.section-nav {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.section-nav nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.section-nav nav ul li {
+  margin: 0 15px 0 0;
+}
+
+.section-nav nav ul li a {
+  color: #0366d6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.section-nav nav ul li a:hover {
+  text-decoration: underline;
+}
+
+details {
+  margin-bottom: 20px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+summary {
+  padding: 10px 15px;
+  background-color: #f6f8fa;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+summary:hover {
+  background-color: #f0f3f6;
+}
+
+details[open] summary {
+  border-bottom: 1px solid #e1e4e8;
+}
+
+details > div {
+  padding: 15px;
+}
+</style>
