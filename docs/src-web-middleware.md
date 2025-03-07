@@ -1,188 +1,270 @@
-# src/web/middleware Directory Documentation
+# Web Middleware Module Documentation
 
-## Directory Purpose
-The `src/web/middleware` directory contains components that intercept and process HTTP requests and responses in the CreatureBox web application. These middleware modules provide cross-cutting functionality such as authentication, request logging, security enforcement, and error handling. By implementing the middleware pattern, these components separate core application logic from supporting infrastructure concerns, enhancing security, maintainability, and performance of the web interface.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| __init__.py | Python | 0.2 KB | Package initialization |
-| auth.py | Python | 1.4 KB | Authentication middleware |
+## Overview
 
-## Detailed File Descriptions
+The Web Middleware Module provides authentication, request processing, and security features that handle requests before they reach the route handlers in the CreatureBox web application.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/web/middleware` directory contains components that intercept and process HTTP requests before they reach route handlers, and responses before they are sent to clients. This module:
+
+- Implements authentication and authorization
+- Applies security headers and protections
+- Logs request information
+- Validates request content
+- Manages cross-origin resource sharing
+- Provides rate limiting for API endpoints
+
+Middleware in this module ensures that all requests are properly authenticated, sanitized, and tracked before business logic is executed.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| __init__.py | Python | 0.3 KB | Package initialization |
+| auth.py | Python | 2.4 KB | Authentication middleware |
+| cors.py | Python | 0.8 KB | Cross-origin resource sharing |
+| logging.py | Python | 1.1 KB | Request logging |
+| rate_limit.py | Python | 1.3 KB | API rate limiting |
+| security.py | Python | 1.6 KB | Security protections |
+| validation.py | Python | 1.2 KB | Request validation |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
 
 ### __init__.py
-- **Primary Purpose**: Initializes the middleware package and provides package-level utilities
+- **Primary Purpose**: Package initialization and middleware registration
 - **Key Functions**:
-  * `init_middleware()`: Initializes package-level resources
-  * `register_middleware(app)`: Registers all middleware with Flask application
+  * `register_middleware(app)`: Registers all middleware with Flask app
+  * `get_middleware_modules()`: Returns list of middleware modules
 - **Dependencies**:
   * Flask
-  * Other middleware modules in the package
-- **Technical Notes**: 
-  * Uses Flask's before_request and after_request hooks
-  * Maintains clean import structure
-  * Provides centralized middleware registration
+- **Technical Notes**: Maintains proper initialization order for dependent middleware
 
 ### auth.py
-- **Primary Purpose**: Implements authentication and authorization for the web application
+- **Primary Purpose**: Authentication and authorization
 - **Key Functions**:
-  * `AuthMiddleware` class: Core authentication middleware implementation
-  * `configure_auth(app, config)`: Configures authentication settings
-  * `authenticate_request()`: Before-request handler for validation
-  * `get_current_user()`: Retrieves authenticated user information
-  * `require_auth(roles=None)`: Decorator for route-level authorization
-  * `generate_token(user_id, expiry=None)`: Creates authentication tokens
-  * `validate_token(token)`: Validates authentication tokens
+  * `configure_jwt(app)`: Sets up JWT authentication
+  * `jwt_error_handler(error)`: Handles JWT errors
+  * `identity_handler(payload)`: Resolves user from JWT payload
+  * `admin_required(fn)`: Decorator for admin-only routes
+  * `get_current_user()`: Retrieves current authenticated user
 - **Dependencies**:
-  * Flask
-  * JWT (JSON Web Tokens)
-  * werkzeug.security (for password hashing)
-  * src/config/controls.txt (for auth settings)
-- **Technical Notes**: 
-  * Implements stateless JWT-based authentication
-  * Supports role-based access control
-  * Includes token expiration and refresh
-  * Securely handles credentials with proper hashing
-  * Provides login rate limiting for security
+  * Flask-JWT-Extended
+  * User models
+- **Technical Notes**: Implements token-based authentication with refresh tokens
 
-## Relationship Documentation
+### cors.py
+- **Primary Purpose**: Cross-origin resource sharing configuration
+- **Key Functions**:
+  * `configure_cors(app)`: Sets up CORS for the application
+  * `cors_error_handler(error)`: Handles CORS errors
+- **Dependencies**:
+  * Flask-CORS
+- **Technical Notes**: Configures allowed origins, methods, and headers for cross-origin requests
+
+### logging.py
+- **Primary Purpose**: Request logging and monitoring
+- **Key Functions**:
+  * `configure_request_logging(app)`: Sets up request logging
+  * `log_request()`: Logs incoming request details
+  * `log_response(response)`: Logs outgoing response details
+  * `log_error(error)`: Logs request processing errors
+- **Dependencies**:
+  * Flask logging
+  * Python logging module
+- **Technical Notes**: Provides detailed logging for debugging and security monitoring
+
+### rate_limit.py
+- **Primary Purpose**: API request rate limiting
+- **Key Functions**:
+  * `configure_rate_limiting(app)`: Sets up rate limiting
+  * `rate_limit_decorator(limit, period)`: Decorator for rate-limited routes
+  * `ip_limit_key()`: Generates limit key based on IP
+  * `user_limit_key()`: Generates limit key based on user ID
+  * `handle_rate_limit_exceeded(error)`: Handles rate limit errors
+- **Dependencies**:
+  * Flask-Limiter
+- **Technical Notes**: Different rate limits for authenticated vs. anonymous users
+
+### security.py
+- **Primary Purpose**: Web security protections
+- **Key Functions**:
+  * `configure_security(app)`: Sets up security features
+  * `add_security_headers(response)`: Adds security HTTP headers
+  * `validate_content_type()`: Validates request content types
+  * `csrf_protect()`: CSRF protection for forms
+  * `sanitize_input(data)`: Sanitizes user input
+- **Dependencies**:
+  * Flask-WTF (for CSRF)
+  * Content sanitization libraries
+- **Technical Notes**: Implements defense-in-depth security approach
+
+### validation.py
+- **Primary Purpose**: Request content validation
+- **Key Functions**:
+  * `validate_json(schema)`: Decorator for JSON validation
+  * `validate_query_params(schema)`: Decorator for query param validation
+  * `validation_error_handler(error)`: Handles validation errors
+  * `format_validation_errors(errors)`: Formats error messages
+- **Dependencies**:
+  * JSON Schema
+  * Marshmallow
+- **Technical Notes**: Schema-based validation for API requests
+
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/web/app.py (uses middleware during initialization)
-  * src/web/middleware.py (registers middleware components)
+  * [Web Core](./src-web.md): Middleware is registered with main application
+  * [Web Routes](./src-web-routes.md): Protects route handlers
+  * [Web Services](./src-web-services.md): Provides authenticated user context
 - **Depends On**:
-  * Flask framework
+  * Flask middleware framework
   * Authentication libraries
-  * src/config/ (for configuration settings)
+  * User database models
+  * Configuration settings
 - **Used By**:
-  * All routes requiring authentication
-  * Web interface front-end (indirectly)
+  * All web requests
   * API clients
+  * Web interface
 
-## Use Cases
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
 1. **User Authentication**:
-   - **Implementation**: The auth.py middleware validates user credentials and generates secure tokens.
-   - **Example**:
+   - **Description**: Authenticating API requests with JWT tokens.
+   - **Example**: 
      ```python
-     # In routes/users.py
-     @bp.route('/login', methods=['POST'])
-     def login():
-         username = request.json.get('username')
-         password = request.json.get('password')
+     # auth.py middleware implementation
+     from flask_jwt_extended import JWTManager, jwt_required
+     from functools import wraps
+     
+     def configure_jwt(app):
+         jwt = JWTManager(app)
          
-         # Validate credentials
-         if not validate_credentials(username, password):
-             return jsonify({'error': 'Invalid credentials'}), 401
-         
-         # Generate token using auth middleware
-         from src.web.middleware.auth import generate_token
-         user_id = get_user_id(username)
-         token = generate_token(user_id)
-         
-         return jsonify({'token': token})
+         @jwt.user_identity_loader
+         def user_identity_lookup(user):
+             return user.id
+             
+         @jwt.user_loader_callback_loader
+         def user_loader_callback(identity):
+             return User.query.get(identity)
+     
+     def admin_required(fn):
+         @wraps(fn)
+         @jwt_required
+         def wrapper(*args, **kwargs):
+             current_user = get_current_user()
+             if not current_user or not current_user.is_admin:
+                 return jsonify({"error": "Admin access required"}), 403
+             return fn(*args, **kwargs)
+         return wrapper
      ```
 
-2. **Route Authorization**:
-   - **Implementation**: The auth.py middleware provides decorators for enforcing access control.
-   - **Example**:
+2. **Request Rate Limiting**:
+   - **Description**: Preventing API abuse through rate limits.
+   - **Example**: 
      ```python
-     # In routes/admin.py
-     from src.web.middleware.auth import require_auth
+     # rate_limit.py middleware implementation
+     from flask_limiter import Limiter
+     from flask_limiter.util import get_remote_address
      
-     @bp.route('/admin/settings', methods=['GET'])
-     @require_auth(roles=['admin'])
-     def admin_settings():
-         # Only accessible to users with 'admin' role
-         return jsonify(get_admin_settings())
+     limiter = None
      
-     @bp.route('/api/camera/settings', methods=['GET'])
-     @require_auth(roles=['admin', 'operator'])
-     def camera_settings():
-         # Accessible to users with either 'admin' or 'operator' role
-         return jsonify(get_camera_settings())
+     def configure_rate_limiting(app):
+         global limiter
+         limiter = Limiter(
+             app,
+             key_func=get_remote_address,
+             default_limits=["200 per day", "50 per hour"]
+         )
+         
+         # Higher limits for authenticated users
+         @app.before_request
+         def update_rate_limit_key():
+             if current_user.is_authenticated:
+                 limiter.key_func = user_limit_key
+             else:
+                 limiter.key_func = get_remote_address
+                 
+     def camera_capture_limit():
+         """Limit camera capture to 10 per hour"""
+         return "10 per hour"
      ```
 
-3. **Global Authentication Enforcement**:
-   - **Implementation**: The auth middleware intercepts requests to enforce authentication across all protected routes.
-   - **Example**:
+3. **Security Headers**:
+   - **Description**: Adding security headers to prevent common web vulnerabilities.
+   - **Example**: 
      ```python
-     # In middleware/auth.py
-     def authenticate_request():
-         # Public paths that don't require authentication
-         public_paths = [
-             '/api/login',
-             '/api/public',
-             '/static/'
-         ]
+     # security.py middleware implementation
+     def add_security_headers(response):
+         """Add security headers to response"""
+         # Content Security Policy
+         response.headers['Content-Security-Policy'] = "default-src 'self'; img-src 'self' data:; script-src 'self'"
          
-         # Skip authentication for public paths
-         for path in public_paths:
-             if request.path.startswith(path):
-                 return
+         # Prevent click-jacking
+         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
          
-         # Check for and validate token
-         token = request.headers.get('Authorization', '').replace('Bearer ', '')
-         if not token:
-             abort(401, 'Authentication required')
+         # XSS protection
+         response.headers['X-XSS-Protection'] = '1; mode=block'
          
-         # Validate token and attach user to request
-         user = validate_token(token)
-         if not user:
-             abort(401, 'Invalid or expired token')
+         # Prevent MIME type sniffing
+         response.headers['X-Content-Type-Options'] = 'nosniff'
          
-         # Store user in request context for later use
-         g.user = user
-     
-     # In app.py during initialization
-     app.before_request(authenticate_request)
+         # Force HTTPS
+         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+         
+         return response
      ```
 
-4. **Secure Token Management**:
-   - **Implementation**: The auth middleware implements secure token generation and validation.
-   - **Example**:
+4. **Request Validation**:
+   - **Description**: Validating API request parameters.
+   - **Example**: 
      ```python
-     # In middleware/auth.py
-     def generate_token(user_id, expiry=None):
-         # Default expiry time of 24 hours if not specified
-         if not expiry:
-             expiry = datetime.utcnow() + timedelta(hours=24)
-         
-         # Create payload with user ID and expiration
-         payload = {
-             'sub': user_id,
-             'exp': expiry,
-             'iat': datetime.utcnow(),
-             'jti': str(uuid.uuid4())  # Unique token ID
-         }
-         
-         # Sign with secret key
-         secret_key = current_app.config['JWT_SECRET_KEY']
-         token = jwt.encode(payload, secret_key, algorithm='HS256')
-         
-         # Record token in active tokens store
-         record_active_token(payload['jti'], user_id, expiry)
-         
-         return token
+     # validation.py middleware implementation
+     import jsonschema
+     from functools import wraps
+     from flask import request, jsonify
      
-     def validate_token(token):
-         try:
-             # Verify signature and decode
-             secret_key = current_app.config['JWT_SECRET_KEY']
-             payload = jwt.decode(token, secret_key, algorithms=['HS256'])
-             
-             # Check if token has been revoked
-             if is_token_revoked(payload['jti']):
-                 return None
-             
-             # Get user details
-             user_id = payload['sub']
-             user = get_user_by_id(user_id)
-             
-             return user
-         except jwt.ExpiredSignatureError:
-             # Token has expired
-             return None
-         except jwt.InvalidTokenError:
-             # Token is invalid
-             return None
+     def validate_json(schema):
+         """Validate JSON request against schema"""
+         def decorator(fn):
+             @wraps(fn)
+             def wrapper(*args, **kwargs):
+                 try:
+                     if not request.is_json:
+                         return jsonify({"error": "Request must be JSON"}), 400
+                         
+                     data = request.get_json()
+                     jsonschema.validate(data, schema)
+                     return fn(*args, **kwargs)
+                 except jsonschema.exceptions.ValidationError as e:
+                     return jsonify({"error": "Validation error", "message": str(e)}), 400
+             return wrapper
+         return decorator
      ```
+
+</div>
+</details>
