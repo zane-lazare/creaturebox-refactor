@@ -37,12 +37,11 @@ graph TD;
 
 ## Quick Navigation
 
-| Category | Components |
-|----------|------------|
-| **Setup** | [Installation](./root.md) · [Deployment](./deployment.md) |
-| **Core Components** | [Configuration](./src-config.md) · [Power](./src-power.md) · [Software](./src-software.md) |
-| **Web Interface** | [Web Core](./src-web.md) · [Routes](./src-web-routes.md) · [Services](./src-web-services.md) |
-| **Development** | [Tests](./src-web-tests.md) · [Validation](./documentation-validation.md) |
+| Category | Section |
+|----------|---------|
+| **Core Components** | [Overview](/core-components/) · [Configuration](/core-components/configuration) · [Power](/core-components/power) · [Software](/core-components/software) |
+| **Web Interface** | [Overview](/web-interface/) · [Core](/web-interface/core) · [Routes](/web-interface/routes) · [Services](/web-interface/services) |
+| **Setup & Deployment** | [Overview](/setup/) · [Installation](/setup/installation) · [Deployment](/setup/deployment) |
 
 ## Key Features
 
@@ -54,27 +53,32 @@ graph TD;
 - **Background processing**: Async operations for long-running tasks
 - **Caching**: Enhanced performance with local or Redis cache
 
-## Documentation Overview
+## Documentation Organization
 
-This documentation follows a structured approach to help you understand and use the CreatureBox system:
+This documentation is organized into three main sections:
 
-1. **Directory Documentation**: Each component has dedicated documentation describing its purpose, files, relationships, and use cases
-2. **Architecture Overview**: High-level understanding of how components interact
-3. **Technical Reference**: Detailed information about APIs, configurations, and functions
-4. **Usage Examples**: Concrete examples of how to use the system
+1. **[Core Components](/core-components/)**: The fundamental building blocks of the system
+   - [Configuration](/core-components/configuration): System-wide settings and parameters
+   - [Power Management](/core-components/power): Power-related operations and utilities
+   - [Software](/core-components/software): Core operational scripts
 
-## Documentation Process
+2. **[Web Interface](/web-interface/)**: The browser-based control panel
+   - [Core](/web-interface/core): Main web application components
+   - [Routes](/web-interface/routes): API endpoints for system control
+   - [Services](/web-interface/services): Background processing services
 
-This documentation was generated through a systematic, recursive documentation process that:
-1. Analyzes repository structure and code
-2. Extracts relationships between components
-3. Documents use cases and functionality
-4. Validates completeness and accuracy
+3. **[Setup & Deployment](/setup/)**: Getting the system running
+   - [Installation](/setup/installation): Setting up the system
+   - [Deployment](/setup/deployment): Production deployment configuration
 
-The documentation progress is tracked in the [Documentation Progress Tracking](./documentation-progress.json) file.
+## Installation Overview
 
-## Installation and Deployment
+To set up CreatureBox, follow these steps:
 
-To set up CreatureBox, refer to:
-- [Installation Guide](./root.md) - Base system installation
-- [Deployment Configuration](./deployment.md) - Production deployment instructions
+1. Install hardware prerequisites
+2. Clone the repository
+3. Run the installation script
+4. Configure system settings
+5. Deploy services
+
+See the [Setup & Deployment](/setup/) section for detailed instructions.
