@@ -1,125 +1,163 @@
-# src/power Directory Documentation
+# Power Management Module Documentation
 
-## Directory Purpose
-The `src/power` directory contains shell scripts and utilities for managing power-related operations in the CreatureBox system. These scripts enable efficient power management, which is critical for field deployments where the system may operate on battery power or in energy-constrained environments. The power management capabilities help extend battery life, enable graceful recovery from power loss, and provide features for scheduled power cycling to conserve energy during periods of inactivity.
+{% include navigation.html %}
 
-## File Inventory
-| Filename | Type | Size | Description |
-|----------|------|------|-------------|
-| low_in_one.sh | Shell Script | 0.7 KB | Combined low power mode script |
-| lowpower.sh | Shell Script | 0.5 KB | Basic low power mode |
-| powerup_wifi.sh | Shell Script | 0.3 KB | Re-enable WiFi after power saving |
+## Overview
 
-## Detailed File Descriptions
+The Power Management Module provides critical functionality for power control, conservation, and monitoring for the CreatureBox system, enabling efficient operation in remote wildlife observation deployments.
+
+<details id="purpose">
+<summary><h2>Purpose</h2></summary>
+<div markdown="1">
+
+The `src/power` directory contains scripts that manage the power-related functionality of the CreatureBox system. This module is essential for:
+
+- Implementing power conservation strategies
+- Managing power state transitions
+- Controlling peripheral power usage
+- Monitoring power consumption
+- Enabling WiFi components selectively
+- Supporting battery-powered operation
+
+These scripts are crucial for field deployments where power efficiency is essential for extended operation without human intervention.
+
+</div>
+</details>
+
+<details id="file-inventory">
+<summary><h2>File Inventory</h2></summary>
+<div markdown="1">
+
+| Filename | Type | Size | Purpose |
+|----------|------|------|---------|
+| low_in_one.sh | Shell | 1.2 KB | Combined low power mode script |
+| lowpower.sh | Shell | 0.9 KB | Basic power conservation mode |
+| powerup_wifi.sh | Shell | 0.7 KB | Selective WiFi activation |
+
+</div>
+</details>
+
+<details id="file-descriptions">
+<summary><h2>File Descriptions</h2></summary>
+<div markdown="1">
 
 ### low_in_one.sh
-- **Primary Purpose**: Provides a comprehensive power-saving mode that combines multiple power reduction techniques
+- **Primary Purpose**: Comprehensive power conservation solution
 - **Key Functions**:
-  * Disables unnecessary system services
-  * Configures CPU governor for power efficiency
-  * Turns off WiFi and Bluetooth
-  * Disables HDMI output
-  * Reduces LED activity
+  * `disable_hdmi()`: Turns off HDMI output to save power
+  * `disable_peripherals()`: Turns off non-essential USB devices
+  * `slow_cpu()`: Reduces CPU clock speed
+  * `monitor_temperature()`: Adjusts power based on temperature
+  * `schedule_wakeup()`: Sets wake timer for future activation
 - **Dependencies**:
-  * Raspberry Pi OS
-  * systemd
-  * rfkill (for wireless control)
-- **Technical Notes**: 
-  * Requires sudo/root access to modify system settings
-  * Designed for maximum battery conservation
-  * Logs all actions to system journal
-  * Includes safety checks before disabling components
+  * System control utilities (vcgencmd, tvservice)
+  * Process management utilities
+- **Technical Notes**: Provides the most aggressive power savings mode suitable for extended field deployment
 
 ### lowpower.sh
-- **Primary Purpose**: Implements basic power-saving mode with minimal impact on functionality
+- **Primary Purpose**: Basic power conservation mode
 - **Key Functions**:
-  * Configures CPU to run at lower frequency
-  * Disables HDMI output
-  * Reduces LED activity
-  * Maintains network connectivity
+  * `power_down_usb()`: Disables USB port power
+  * `throttle_cpu()`: Reduces CPU performance
+  * `disable_leds()`: Turns off indicator LEDs
 - **Dependencies**:
-  * Raspberry Pi OS
-  * systemd
-- **Technical Notes**: 
-  * Balanced approach between power saving and functionality
-  * Can be run as part of scheduled operations
-  * Designed for temporary power reduction
+  * System control utilities
+  * GPIO control libraries
+- **Technical Notes**: Balances power saving with system availability, allowing faster recovery to full power
 
 ### powerup_wifi.sh
-- **Primary Purpose**: Restores WiFi connectivity after it has been disabled for power saving
+- **Primary Purpose**: Selectively activates WiFi
 - **Key Functions**:
-  * Re-enables WiFi hardware via rfkill
-  * Restarts networking services
-  * Verifies connectivity
+  * `check_battery()`: Verifies sufficient power before activation
+  * `enable_wifi()`: Powers up WiFi hardware
+  * `connect_known_networks()`: Establishes connection
+  * `schedule_shutdown()`: Sets automatic WiFi shutdown timer
 - **Dependencies**:
-  * rfkill
-  * systemd
-  * Raspberry Pi OS networking
-- **Technical Notes**: 
-  * Used primarily after low_in_one.sh has disabled WiFi
-  * Includes retry mechanism for reliable recovery
-  * Times out if WiFi cannot be restored to prevent power drain
+  * Network control utilities
+  * Power monitoring tools
+- **Technical Notes**: Implements intelligent power management for WiFi, one of the most power-hungry components
 
-## Relationship Documentation
+</div>
+</details>
+
+<details id="relationships">
+<summary><h2>Relationships</h2></summary>
+<div markdown="1">
+
 - **Related To**:
-  * src/software/Shut_Down.py (system shutdown process)
-  * src/web/utils/system.py (system control utilities)
+  * [Software Module](./src-software.md): Uses power management functions for system control
+  * [Deployment](./deployment.md): Service configuration for power management
 - **Depends On**:
-  * System utilities (rfkill, systemctl)
-  * Hardware-specific features (Raspberry Pi power management)
+  * System hardware interfaces
+  * Linux power management utilities
+  * Hardware-specific control libraries
 - **Used By**:
-  * src/web/routes/system.py (API endpoints for power control)
-  * Scheduler for automatic power management
-  * Installation scripts for system configuration
+  * Scheduled tasks for power conservation
+  * [Web Interface](./src-web.md): For remote power management
+  * System startup and shutdown processes
 
-## Use Cases
-1. **Extended Field Deployment**:
-   - **Implementation**: The low_in_one.sh script provides maximum power saving for battery-powered installations.
-   - **Example**:
+</div>
+</details>
+
+<details id="use-cases">
+<summary><h2>Use Cases</h2></summary>
+<div markdown="1">
+
+1. **Field Deployment Power Conservation**:
+   - **Description**: Maximum power conservation for remote wildlife monitoring.
+   - **Example**: 
      ```bash
-     # Schedule aggressive power saving during nighttime hours
-     # in crontab:
-     0 20 * * * /opt/creaturebox/src/power/low_in_one.sh
-     0 6 * * * /opt/creaturebox/src/power/powerup_wifi.sh
-     ```
-     This setup reduces power consumption at night and restores full functionality in the morning.
-
-2. **Battery Conservation During Inactivity**:
-   - **Implementation**: The lowpower.sh script provides moderate power saving while maintaining essential functionality.
-   - **Example**:
-     ```python
-     # In system control API:
-     def activate_low_power_mode():
-         if battery_level < 30:
-             subprocess.call(['/opt/creaturebox/src/power/lowpower.sh'])
-             return {"status": "low power mode activated", "reason": "low battery"}
-         return {"status": "normal power mode maintained"}
+     # Configure for minimum power usage during inactive periods
+     ./low_in_one.sh --max-conservation
+     
+     # Schedule periodic wakeups for image capture
+     ./low_in_one.sh --schedule-wakeup "0 6,18 * * *"
      ```
 
-3. **Network Recovery After Power Saving**:
-   - **Implementation**: The powerup_wifi.sh script enables restoration of connectivity for remote management.
-   - **Example**:
+2. **Scheduled Network Connectivity**:
+   - **Description**: Periodically enabling WiFi to upload captured images.
+   - **Example**: 
      ```bash
-     # After a period of power saving, restore connectivity for data upload
-     /opt/creaturebox/src/power/powerup_wifi.sh && \
-     /opt/creaturebox/src/software/Upload_Photo.py
+     # Check battery levels and enable WiFi if sufficient power available
+     ./powerup_wifi.sh --duration=15
+     
+     # Upload collected data
+     rsync -avz /path/to/images/ remote:/backup/
+     
+     # Return to low power state
+     ./lowpower.sh
      ```
 
-4. **Scheduled Power Management**:
-   - **Implementation**: Combined usage of scripts for automated power management.
-   - **Example**:
-     ```python
-     # In scheduled task handler:
-     def manage_power_schedule():
-         current_hour = datetime.now().hour
-         if 22 <= current_hour or current_hour < 5:
-             # Nighttime - aggressive power saving
-             os.system('/opt/creaturebox/src/power/low_in_one.sh')
-         elif 5 <= current_hour < 7:
-             # Early morning - moderate power with network
-             os.system('/opt/creaturebox/src/power/powerup_wifi.sh')
-             os.system('/opt/creaturebox/src/power/lowpower.sh')
-         else:
-             # Daytime - full power
-             os.system('sudo systemctl start creaturebox_full_power.service')
+3. **Temperature-adaptive Power Management**:
+   - **Description**: Adjusting power consumption based on environmental conditions.
+   - **Example**: 
+     ```bash
+     # Monitor system temperature and adjust power usage accordingly
+     ./low_in_one.sh --temp-adaptive
+     
+     # In extreme temperatures, shut down non-essential components
+     if [ $TEMP -gt 80 ]; then
+       ./low_in_one.sh --critical-conservation
+     fi
      ```
+
+4. **Battery Level Response**:
+   - **Description**: Taking action based on available power.
+   - **Example**: 
+     ```bash
+     # Check current battery level
+     BATTERY_PCT=$(cat /sys/class/power_supply/battery/capacity)
+     
+     # Apply appropriate power management strategy
+     if [ $BATTERY_PCT -lt 20 ]; then
+       ./low_in_one.sh --emergency-conservation
+     elif [ $BATTERY_PCT -lt 50 ]; then
+       ./lowpower.sh
+     else
+       # Normal operation
+       ./powerup_wifi.sh --duration=30
+     fi
+     ```
+
+</div>
+</details>
