@@ -1,3 +1,10 @@
+---
+layout: default
+title: Deployment
+nav_order: 6
+permalink: /deployment/
+---
+
 # Deployment Module Documentation
 
 {% include navigation.html %}
@@ -96,7 +103,7 @@ These configuration files transform the development code into a robust, producti
 <div markdown="1">
 
 - **Related To**:
-  * [Web Module](./src-web.md): Serves the web application
+  * [Web Interface](./web-interface.md): Serves the web application
   * System initialization scripts
 - **Depends On**:
   * Linux systemd service manager
