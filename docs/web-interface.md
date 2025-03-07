@@ -15,28 +15,29 @@ The Web Interface is the primary user interaction component of the CreatureBox s
 The Web Interface follows a modular architecture pattern:
 
 <div class="mermaid">
-graph TD
-    App[Web Application] --> Routes[API Routes]
-    App --> Services[Background Services]
-    App --> Utils[Utility Functions]
-    App --> Middleware[Request Middleware]
+graph TD;
+    App[Web Application] --> Routes[API Routes];
+    App --> Services[Background Services];
+    App --> Utils[Utility Functions];
+    App --> Middleware[Request Middleware];
     
-    Routes --> Camera[Camera Routes]
-    Routes --> Gallery[Gallery Routes]
-    Routes --> System[System Routes]
-    Routes --> Storage[Storage Routes]
+    Routes --> Camera[Camera Routes];
+    Routes --> Gallery[Gallery Routes];
+    Routes --> System[System Routes];
+    Routes --> Storage[Storage Routes];
     
-    Services --> JobQueue[Job Queue]
-    Services --> Cache[Caching]
-    Services --> StorageMgr[Storage Manager]
+    Services --> JobQueue[Job Queue];
+    Services --> Cache[Caching];
+    Services --> StorageMgr[Storage Manager];
     
-    Utils --> CameraUtil[Camera Utilities]
-    Utils --> FileUtil[File Utilities]
-    Utils --> SystemUtil[System Utilities]
+    Utils --> CameraUtil[Camera Utilities];
+    Utils --> FileUtil[File Utilities];
+    Utils --> SystemUtil[System Utilities];
     
-    Middleware --> Auth[Authentication]
+    Middleware --> Auth[Authentication];
     
-    style App fill:#bbf,stroke:#333,stroke-width:2px
+    classDef app fill:#bbf,stroke:#333,stroke-width:2px;
+    class App app;
 </div>
 
 ## Key Components
