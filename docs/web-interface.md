@@ -14,7 +14,7 @@ The Web Interface is the primary user interaction component of the CreatureBox s
 
 The Web Interface follows a modular architecture pattern:
 
-```mermaid
+<div class="mermaid">
 graph TD
     App[Web Application] --> Routes[API Routes]
     App --> Services[Background Services]
@@ -37,7 +37,7 @@ graph TD
     Middleware --> Auth[Authentication]
     
     style App fill:#bbf,stroke:#333,stroke-width:2px
-```
+</div>
 
 ## Key Components
 
