@@ -1,29 +1,45 @@
-# Repository Structure Manifest
+# CreatureBox Repository Structure Manifest
 
-## Purpose
-This manifest provides a comprehensive mapping of the repository's directory structure, capturing key metadata about each directory.
+## Overview
+Detailed mapping of the repository's directory structure, capturing comprehensive metadata about each directory.
 
-## Manifest Components
-- **Repository Root**: Base directory path
-- **Structure Entries**:
-  * Full relative path
-  * Directory depth
-  * File count
-  * Subdirectory count
-  * List of files
-  * List of subdirectories
+## Structure Summary
+- **Root Directories**: 
+  * `deployment/`
+  * `src/`
+
+### Deployment Directory
+- **Files**: 3
+  * `creaturebox.service`
+  * `gunicorn.conf.py`
+  * `nginx.conf`
+
+### Source Directory
+**Subdirectories**:
+1. `config/`
+2. `power/`
+3. `software/`
+4. `web/`
+
+#### Web Subdirectories
+- `middleware/`
+- `routes/`
+- `services/`
+- `static/`
+- `tests/`
+- `utils/`
+
+## Manifest Metadata
+- Captures directory paths
+- Tracks directory depth
+- Counts files and subdirectories
+- Lists files and subdirectories
 
 ## Generation Method
-- Recursively traverses repository directory tree
-- Captures structural metadata for each directory
-- Provides a structured JSON representation
+- Recursively mapped repository structure
+- Provides comprehensive directory insights
 
 ## Use Cases
-- System architecture visualization
-- Dependency mapping
-- Project structure analysis
-
-## Notes
-- Dynamically generated
-- Reflects current repository state
-- Supports comprehensive project introspection
+- Project architecture visualization
+- Dependency tracking
+- Structural analysis
