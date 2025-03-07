@@ -9,6 +9,7 @@ We've recently improved the documentation structure with:
 - **Horizontal navigation menu** to quickly jump to sections
 - **Proper table formatting** for file inventories
 - **Consolidated content** to eliminate redundancy
+- **Organized core components** into a dedicated directory
 
 See the [Documentation Cleanup Plan](./documentation-cleanup-plan.md) for details on the improvements.
 
@@ -25,17 +26,21 @@ See the [Documentation Cleanup Plan](./documentation-cleanup-plan.md) for detail
   </div>
 
   <div class="component-card">
-    <h3>Configuration</h3>
+    <h3>Core Components</h3>
     <ul>
-      <li><a href="./src-config.md">Configuration Module</a></li>
-      <li><a href="./src-power.md">Power Management</a></li>
+      <li><a href="./core-components/index.md">Overview</a></li>
+      <li><a href="./core-components/configuration.md">Configuration Module</a></li>
+      <li><a href="./core-components/power-management.md">Power Management</a></li>
+      <li><a href="./core-components/software-module.md">Software Module</a></li>
     </ul>
   </div>
 
   <div class="component-card">
-    <h3>Software</h3>
+    <h3>Legacy Components</h3>
     <ul>
-      <li><a href="./src-software.md">Software Module</a></li>
+      <li><a href="./src-config.md">Configuration (Legacy Doc)</a></li>
+      <li><a href="./src-power.md">Power Management (Legacy Doc)</a></li>
+      <li><a href="./src-software.md">Software Module (Legacy Doc)</a></li>
       <li><a href="./src-software-scripts.md">Utility Scripts</a></li>
     </ul>
   </div>
@@ -103,6 +108,15 @@ All sections are collapsible to help you focus on the information you need.
    - `#relationships` - Jump to relationship documentation
    - `#use-cases` - Jump to use cases
 
+## Structure Changes
+
+We've reorganized the core components into a dedicated directory for better organization:
+
+- **Core Components Directory**: [`./core-components/`](./core-components/index.md)
+  - Contains Configuration, Power Management, and Software Module documentation
+  - Uses improved navigation and collapsible sections
+  - Maintains legacy paths for backward compatibility
+
 ## Reference Materials
 
 - [Component Map](./component-map.md) - Visual representation of system components
@@ -115,7 +129,8 @@ If you're new to the CreatureBox system, we recommend starting with:
 
 1. [System Overview](./README.md)
 2. [Installation Guide](./setup.md)
-3. [Web Interface](./src-web.md)
+3. [Core Components](./core-components/index.md)
+4. [Web Interface](./src-web.md)
 
 <style>
 .component-grid {
