@@ -1,0 +1,46 @@
+remote_theme: pmarsceill/just-the-docs
+title: CreatureBox Documentation
+description: Comprehensive documentation for the CreatureBox wildlife monitoring system
+search_enabled: true
+
+# Color scheme
+color_scheme: light
+
+# Aux links for upper right navigation
+aux_links:
+  "CreatureBox on GitHub":
+    - "//github.com/zane-lazare/creaturebox-refactor"
+
+# Footer content 
+footer_content: "CreatureBox Documentation - Generated on 2025-03-08"
+
+# Navigation structure
+nav:
+  - title: Overview
+    children:
+      - title: Introduction
+        url: /
+      - title: Repository Structure
+        url: /repository-structure-manifest
+  - title: Core Components
+    children:
+      - title: Configuration
+        url: /src-config
+      - title: Power Management
+        url: /src-power
+      - title: Software
+        url: /src-software
+  - title: Web Interface
+    children:
+      - title: Web Core
+        url: /src-web
+      - title: API Routes
+        url: /src-web-routes
+      - title: Services
+        url: /src-web-services
+      - title: Middleware
+        url: /src-web-middleware
+      - title: Utilities
+        url: /src-web-utils
+      - title: Tests
+        url: /src-web-tests
