@@ -1,24 +1,13 @@
-# Web Middleware Documentation
+---
+layout: default
+title: Web Middleware (Deprecated)
+nav_exclude: true
+---
 
-## Overview
-Web middleware components handling request processing and authentication.
+# Web Middleware Documentation (DEPRECATED)
 
-## Components
+> **DEPRECATION NOTICE**: This documentation has been consolidated into the [Web Interface Middleware](./web-interface/middleware.md) page as part of the documentation reorganization. Please use the new page for the most up-to-date information.
 
-### Authentication Middleware
-- `auth.py`: Authentication and authorization mechanisms
-- Manages user access control
-- Implements security protocols
+{% include navigation.html %}
 
-### Initialization
-- `__init__.py`: Package initialization
-- Defines middleware package structure
-
-## Key Functionalities
-- Secure request handling
-- User authentication
-- Access control management
-
-## Relationships
-- Integrated with main web application
-- Supports comprehensive security infrastructure
+[Go to new Web Middleware Documentation](./web-interface/middleware.md)
