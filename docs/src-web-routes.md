@@ -1,4 +1,12 @@
-# Web Routes Module Documentation
+---
+layout: default
+title: Web Routes
+parent: Web Interface
+nav_order: 2
+permalink: /src/web/routes/
+---
+
+# Web Routes Documentation
 
 {% include navigation.html %}
 
@@ -27,8 +35,8 @@ Routes are grouped into blueprints based on functionality, such as camera contro
 <summary><h2>File Inventory</h2></summary>
 <div markdown="1">
 
-| Filename | Type | Size | Purpose |
-|----------|------|------|---------|
+| Filename | Type | Size | Description |
+|----------|------|------|-------------|
 | __init__.py | Python | 0.2 KB | Blueprint initialization |
 | api.py | Python | 1.8 KB | RESTful API endpoint definitions |
 | auth.py | Python | 1.4 KB | Authentication routes |
@@ -37,6 +45,8 @@ Routes are grouped into blueprints based on functionality, such as camera contro
 | gallery.py | Python | 2.4 KB | Photo gallery access |
 | system.py | Python | 1.9 KB | System management endpoints |
 | views.py | Python | 1.7 KB | Web UI page routes |
+| scheduler.py | Python | 1.5 KB | Task scheduling endpoints |
+| storage.py | Python | 1.8 KB | Storage management routes |
 
 </div>
 </details>
@@ -142,6 +152,32 @@ Routes are grouped into blueprints based on functionality, such as camera contro
   * Authentication service
 - **Technical Notes**: Renders HTML templates for browser interface
 
+### scheduler.py
+- **Primary Purpose**: Task scheduling management
+- **Key Routes**:
+  * `GET /api/scheduler/tasks`: List scheduled tasks
+  * `POST /api/scheduler/tasks`: Create new scheduled task
+  * `DELETE /api/scheduler/tasks/:id`: Delete scheduled task
+  * `PUT /api/scheduler/tasks/:id`: Update scheduled task
+  * `GET /api/scheduler/history`: View task execution history
+- **Dependencies**:
+  * Scheduler service
+  * Task queue system
+- **Technical Notes**: Supports recurring and one-time scheduled operations
+
+### storage.py
+- **Primary Purpose**: Storage management functionality
+- **Key Routes**:
+  * `GET /api/storage/status`: Storage space overview
+  * `POST /api/storage/cleanup`: Trigger storage cleanup
+  * `GET /api/storage/directories`: List storage directories
+  * `POST /api/storage/backup`: Export storage backup
+  * `POST /api/storage/restore`: Restore from backup
+- **Dependencies**:
+  * Storage service
+  * File system utilities
+- **Technical Notes**: Handles quota management and storage optimization
+
 </div>
 </details>
 
@@ -150,19 +186,22 @@ Routes are grouped into blueprints based on functionality, such as camera contro
 <div markdown="1">
 
 - **Related To**:
-  * [Web Core](./src-web.md): Routes are registered with main application
-  * [Web Services](./src-web-services.md): Routes use services for business logic
-  * [Web Middleware](./src-web-middleware.md): Request processing before routes
-  * [Web Utilities](./src-web-utils.md): Helper functions used by routes
+  * [Web Interface](../web-interface/core.md): Core web application
+  * [Web Interface Routes](../web-interface/routes.md): Comprehensive documentation
+  * [Web Services](../web-interface/services.md): Business logic called by routes
+  * [Web Middleware](../web-interface/middleware.md): Request processing before routes
+  * [Web Utilities](../web-interface/utils.md): Helper functions used by routes
 - **Depends On**:
   * Flask framework
   * Authentication system
-  * [Configuration Module](./src-config.md): System settings access
-  * [Software Module](./src-software.md): System control functionality
+  * [Configuration](../core-components/configuration.md): System settings access
+  * [Software Module](../core-components/software-module.md): System control functionality
 - **Used By**:
   * Web browser clients
   * Mobile applications (via API)
   * System monitoring tools
+  * 3rd party integrations
+  * Automated scripts
 
 </div>
 </details>
@@ -286,5 +325,53 @@ Routes are grouped into blueprints based on functionality, such as camera contro
          })
      ```
 
+5. **Task Scheduling**:
+   - **Description**: Creating and managing scheduled tasks.
+   - **Example**: 
+     ```python
+     # Create a new scheduled task
+     @scheduler_bp.route('/api/scheduler/tasks', methods=['POST'])
+     @jwt_required
+     def create_scheduled_task():
+         # Get task details
+         task_data = request.get_json()
+         task_type = task_data.get('type')
+         schedule = task_data.get('schedule')
+         parameters = task_data.get('parameters', {})
+         
+         # Validate input
+         if not task_type or not schedule:
+             return jsonify({"error": "Missing required fields"}), 400
+             
+         # Create task
+         try:
+             task_id = scheduler_service.create_task(
+                 task_type=task_type,
+                 schedule=schedule,
+                 parameters=parameters,
+                 user_id=get_jwt_identity()
+             )
+             return jsonify({"success": True, "task_id": task_id})
+         except ValueError as e:
+             return jsonify({"error": str(e)}), 400
+         except Exception as e:
+             return jsonify({"error": "Failed to create task: " + str(e)}), 500
+     ```
+
 </div>
 </details>
+
+## API Design Principles
+
+The Web Routes module follows these API design principles:
+
+1. **RESTful Design**: Resources are accessed via standard HTTP methods (GET, POST, PUT, DELETE)
+2. **Authentication**: All API endpoints use JWT authentication for security
+3. **Validation**: Input validation occurs before processing any request
+4. **Response Consistency**: All responses use consistent JSON formatting
+5. **Error Handling**: Clear error messages and appropriate HTTP status codes
+6. **Pagination**: List endpoints support pagination for large result sets
+7. **Filtering**: Resource collections can be filtered via query parameters
+8. **Versioning**: API is versioned to support backward compatibility
+9. **Rate Limiting**: Requests are rate-limited to prevent abuse
+10. **Documentation**: All endpoints include OpenAPI documentation for discoverability
