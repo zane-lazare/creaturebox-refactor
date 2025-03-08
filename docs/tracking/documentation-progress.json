@@ -1,18 +1,18 @@
 {
-  "last_updated": "2025-03-08T06:30:00Z",
+  "last_updated": "2025-03-08T06:45:00Z",
   "overall_status": {
     "directories_processed": 4,
     "directories_completed": 2,
     "total_directories": 5,
-    "completion_percentage": 80.0
+    "completion_percentage": 82.0
   },
   "directory_tracking": [
     {
       "directory_path": "/",
       "documentation_status": "IN_PROGRESS",
-      "last_updated": "2025-03-08T06:30:00Z",
-      "completion_percentage": 90.0,
-      "reviewer_notes": "Most root files complete, some consolidation needed"
+      "last_updated": "2025-03-08T06:45:00Z",
+      "completion_percentage": 92.0,
+      "reviewer_notes": "Consolidated src-web-files.md into src-web.md, moved to deprecated"
     },
     {
       "directory_path": "/docs/core-components",
@@ -61,8 +61,8 @@
       "phase_name": "PHASE 2: CONSOLIDATION OF REDUNDANT FILES",
       "status": "IN_PROGRESS",
       "completion_date": null,
-      "completion_percentage": 75.0,
-      "notes": "Most file consolidation complete, some remaining redundancies to address"
+      "completion_percentage": 78.0,
+      "notes": "Consolidated src-web-files.md into src-web.md, 7 files remaining to consolidate"
     },
     {
       "phase_name": "PHASE 3: STANDARDIZATION AND FORMATTING",
@@ -75,14 +75,15 @@
       "phase_name": "PHASE 4: CROSS-REFERENCE AND NAVIGATION",
       "status": "IN_PROGRESS",
       "completion_date": null,
-      "completion_percentage": 70.0,
-      "notes": "Internal links and navigation mostly updated, some cross-references needed"
+      "completion_percentage": 72.0,
+      "notes": "Cross-references updated in consolidated src-web.md"
     },
     {
       "phase_name": "PHASE 5: CLEANUP AND REMOVAL",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "completion_date": null,
-      "completion_percentage": 0.0
+      "completion_percentage": 12.5,
+      "notes": "Started moving deprecated files to deprecated directory"
     },
     {
       "phase_name": "PHASE 6: VALIDATION AND FINAL REVIEW",
