@@ -1,164 +1,230 @@
-# CreatureBox Documentation
+---
+layout: default
+title: Documentation Index
+nav_order: 2
+permalink: /index/
+---
 
-Welcome to the CreatureBox documentation. This guide provides comprehensive information about the CreatureBox system architecture, components, and usage.
+# CreatureBox Documentation Index
+
+{% include navigation.html %}
+
+Welcome to the CreatureBox documentation index. This page provides a comprehensive listing of all documentation files organized by category.
 
 ## Documentation Improvements
 
-We've recently improved the documentation structure with:
+The documentation has been systematically improved following the [Documentation Remediation Plan](./CreatureBox%20Documentation%20Remediation%20Plan.md):
+- **Standardized format** with consistent structure across all files
 - **Collapsible sections** for better navigation
-- **Horizontal navigation menu** to quickly jump to sections
-- **Proper table formatting** for file inventories
+- **Jekyll integration** with proper front matter
 - **Consolidated content** to eliminate redundancy
-- **Organized core components** into a dedicated directory
-
-See the [Documentation Cleanup Plan](./documentation-cleanup-plan.md) for details on the improvements.
-
-## System Components
-
-<div class="component-grid">
-  <div class="component-card">
-    <h3>Core System</h3>
-    <ul>
-      <li><a href="./root.md">Root Directory</a></li>
-      <li><a href="./deployment.md">Deployment</a></li>
-      <li><a href="./src.md">Source Directory</a></li>
-    </ul>
-  </div>
-
-  <div class="component-card">
-    <h3>Core Components</h3>
-    <ul>
-      <li><a href="./core-components/index.md">Overview</a></li>
-      <li><a href="./core-components/configuration.md">Configuration Module</a></li>
-      <li><a href="./core-components/power-management.md">Power Management</a></li>
-      <li><a href="./core-components/software-module.md">Software Module</a></li>
-    </ul>
-  </div>
-
-  <div class="component-card">
-    <h3>Legacy Components</h3>
-    <ul>
-      <li><a href="./src-config.md">Configuration (Legacy Doc)</a></li>
-      <li><a href="./src-power.md">Power Management (Legacy Doc)</a></li>
-      <li><a href="./src-software.md">Software Module (Legacy Doc)</a></li>
-      <li><a href="./src-software-scripts.md">Utility Scripts</a></li>
-    </ul>
-  </div>
-
-  <div class="component-card">
-    <h3>Web Interface</h3>
-    <ul>
-      <li><a href="./src-web.md">Web Core</a></li>
-      <li><a href="./src-web-routes.md">Web Routes</a></li>
-      <li><a href="./src-web-services.md">Web Services</a></li>
-      <li><a href="./src-web-middleware.md">Web Middleware</a></li>
-      <li><a href="./src-web-utils.md">Web Utilities</a></li>
-      <li><a href="./src-web-tests.md">Web Tests</a></li>
-      <li><a href="./src-web-static.md">Web Static Resources</a></li>
-    </ul>
-  </div>
-</div>
-
-## System Architecture
-
-The CreatureBox system consists of the following high-level components:
-
-1. **Hardware Control Layer**
-   - Camera and sensor interfaces
-   - Power management
-   - External device control
-
-2. **Core Software Layer**
-   - Operational scripts
-   - System management
-   - Scheduling and automation
-
-3. **Web Interface Layer**
-   - Flask web application
-   - RESTful API endpoints
-   - User interface
-
-4. **Deployment Layer**
-   - Server configuration
-   - Service management
-   - Installation utilities
+- **Improved cross-references** between related documentation
 
 ## Documentation Structure
 
-Each module's documentation follows a consistent structure with these sections:
+<details id="system-components">
+<summary><h2>System Components</h2></summary>
+<div markdown="1">
 
-1. **Overview** - Brief introduction to the module
-2. **Purpose** - Detailed explanation of the module's role
-3. **File Inventory** - Complete listing of files with metadata
-4. **File Descriptions** - In-depth analysis of each file
-5. **Relationships** - Dependencies and connections
-6. **Use Cases** - Concrete usage examples
+### Root Level
+- [README](./README.md) - Main documentation entry point
+- [Root Directory](./root.md) - Root directory documentation
+  - [Root Files](./root-files.md) - Detailed file inventory
+- [Deployment](./deployment.md) - Deployment configuration documentation
+  - [Deployment Files](./deployment-files.md) - Detailed file inventory
+- [Source Directory](./src.md) - Source directory overview
+- [Setup Guide](./setup.md) - Installation and setup instructions
 
-All sections are collapsible to help you focus on the information you need.
+### Reference Documents
+- [Component Map](./component-map.md) - Visual representation of system components
+- [Repository Structure Manifest](./repository-manifest.md) - Complete file hierarchy
+- [Repository Structure JSON](./repository-structure-manifest.json) - Machine-readable structure
+- [Documentation Error Log](./documentation-error-log.md) - Documentation issue tracking
+- [Documentation Progress](./documentation-progress.json) - Progress tracking dashboard
+- [Comprehensive File Manifest](./comprehensive-file-manifest.md) - Complete file listing
+
+</div>
+</details>
+
+<details id="core-components">
+<summary><h2>Core Components</h2></summary>
+<div markdown="1">
+
+### Core Components Directory
+- [Core Components Overview](./core-components/index.md) - Core functionality modules
+- [Configuration Module](./core-components/configuration.md) - System-wide settings management
+- [Power Management](./core-components/power-management.md) - Power control system
+- [Software Module](./core-components/software-module.md) - Operational scripts and logic
+
+### Legacy Component Documentation
+*Note: These files have been consolidated into the core components directory*
+- [Configuration (Legacy)](./config.md) - Legacy configuration documentation
+- [Power Management (Legacy)](./power.md) - Legacy power management documentation
+- [Software Module (Legacy)](./software.md) - Legacy software module documentation
+- [Source Configuration (Legacy)](./src-config.md) - Legacy source configuration documentation
+  - [Config Files](./src-config-files.md) - Configuration files inventory
+- [Source Power Management (Legacy)](./src-power.md) - Legacy source power documentation
+  - [Power Files](./src-power-files.md) - Power management files inventory
+- [Source Software (Legacy)](./src-software.md) - Legacy source software documentation
+  - [Software Files](./src-software-files.md) - Software files inventory
+- [Software Scripts (Legacy)](./src-software-scripts.md) - Legacy scripts documentation
+
+</div>
+</details>
+
+<details id="web-interface">
+<summary><h2>Web Interface Components</h2></summary>
+<div markdown="1">
+
+### Web Interface Directory
+- [Web Interface Overview](./web-interface.md) - Web application overview
+- [Core Web Components](./web-interface/core.md) - Main application files
+- [Routes](./web-interface/routes.md) - API endpoints
+- [Services](./web-interface/services.md) - Background services
+- [Middleware](./web-interface/middleware.md) - Request processing
+- [Static Resources](./web-interface/static.md) - Frontend assets
+
+### Web Module Documentation
+- [Web Core](./src-web.md) - Web module core components
+  - [Web Files](./src-web-files.md) - Web module file inventory
+- [Web Middleware](./src-web-middleware.md) - Web middleware components
+  - [Middleware Files](./src-web-middleware-files.md) - Middleware file inventory
+- [Web Routes](./src-web-routes.md) - API routing components
+- [Web Services](./src-web-services.md) - Background service components
+- [Web Static Resources](./src-web-static.md) - Static asset components
+  - [CSS Files](./src-web-static-css.md) - CSS stylesheets documentation
+  - [JavaScript Files](./src-web-static-js.md) - JavaScript modules documentation
+- [Web Tests](./src-web-tests.md) - Test suite documentation
+- [Web Utilities](./src-web-utils.md) - Utility functions
+
+</div>
+</details>
+
+<details id="documentation-structure">
+<summary><h2>Documentation Resources</h2></summary>
+<div markdown="1">
+
+### Templates and Guidelines
+- [Document Template](./templates/document-template.md) - Standard documentation template
+- [Documentation Instructions](./documentation-instructions.md) - Documentation generation guide
+- [Documentation Cleanup Plan](./documentation-cleanup-plan.md) - Original cleanup plan
+- [Documentation Remediation Plan](./CreatureBox%20Documentation%20Remediation%20Plan.md) - Comprehensive remediation plan
+- [Documentation Progress Update](./CreatureBox%20Documentation%20Remediation%20Plan%20-%20Progress%20Update.md) - Status updates
+
+### Configuration Files
+- [Jekyll Configuration](./\_config.yml) - Jekyll site configuration
+- [Include Directory](./\_includes/) - Jekyll include files
+- [Assets Directory](./assets/) - Documentation assets
+
+</div>
+</details>
+
+## Documentation Map
+
+<div class="documentation-map">
+  <div class="section system">
+    <h3>System Level</h3>
+    <div class="files">
+      <div class="file">README.md</div>
+      <div class="file">index.md</div>
+      <div class="file">root.md</div>
+      <div class="file">deployment.md</div>
+      <div class="file">setup.md</div>
+    </div>
+  </div>
+  
+  <div class="section core">
+    <h3>Core Components</h3>
+    <div class="files">
+      <div class="file main">core-components/index.md</div>
+      <div class="file">core-components/configuration.md</div>
+      <div class="file">core-components/power-management.md</div>
+      <div class="file">core-components/software-module.md</div>
+    </div>
+  </div>
+  
+  <div class="section web">
+    <h3>Web Interface</h3>
+    <div class="files">
+      <div class="file main">web-interface.md</div>
+      <div class="file">web-interface/core.md</div>
+      <div class="file">web-interface/routes.md</div>
+      <div class="file">web-interface/middleware.md</div>
+      <div class="file">web-interface/services.md</div>
+      <div class="file">web-interface/static.md</div>
+    </div>
+  </div>
+  
+  <div class="section ref">
+    <h3>Reference</h3>
+    <div class="files">
+      <div class="file">component-map.md</div>
+      <div class="file">repository-manifest.md</div>
+      <div class="file">documentation-error-log.md</div>
+      <div class="file">documentation-progress.json</div>
+    </div>
+  </div>
+</div>
 
 ## How to Navigate this Documentation
 
-1. **Expand/Collapse Sections**: Click on any section header to expand or collapse it
-2. **Jump to Sections**: Use the horizontal navigation menu below each page title
-3. **Cross-reference Links**: Blue links will take you to related documentation
-4. **Section Anchors**: Append `#section-id` to URLs to link directly to sections:
-   - `#purpose` - Jump to purpose section
-   - `#file-inventory` - Jump to file inventory
-   - `#file-descriptions` - Jump to file descriptions
-   - `#relationships` - Jump to relationship documentation
-   - `#use-cases` - Jump to use cases
+1. **Start with [README](./README.md)** for a high-level overview
+2. **Use collapsible sections** to focus on specific information
+3. **Follow cross-references** to explore related components
+4. **Check the [Core Components](./core-components/index.md)** for essential functionality
+5. **Explore the [Web Interface](./web-interface.md)** for user interface components
 
-## Structure Changes
-
-We've reorganized the core components into a dedicated directory for better organization:
-
-- **Core Components Directory**: [`./core-components/`](./core-components/index.md)
-  - Contains Configuration, Power Management, and Software Module documentation
-  - Uses improved navigation and collapsible sections
-  - Maintains legacy paths for backward compatibility
-
-## Reference Materials
-
-- [Component Map](./component-map.md) - Visual representation of system components
-- [Repository Structure](./repository-manifest.md) - Complete file hierarchy
-- [Documentation Template](./templates/document-template.md) - Template for creating documentation
-
-## Getting Started
-
-If you're new to the CreatureBox system, we recommend starting with:
-
-1. [System Overview](./README.md)
-2. [Installation Guide](./setup.md)
-3. [Core Components](./core-components/index.md)
-4. [Web Interface](./src-web.md)
+The documentation has a consistent structure with these sections in each file:
+- **Overview**: Brief introduction to the component
+- **Purpose**: Detailed explanation of the component's role
+- **File Inventory**: Listing of files with metadata
+- **File Descriptions**: In-depth analysis of each file
+- **Relationships**: Dependencies and connections
+- **Use Cases**: Concrete examples of implementation
 
 <style>
-.component-grid {
+.documentation-map {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-gap: 20px;
   margin: 30px 0;
 }
 
-.component-card {
+.section {
   background: #f8f9fa;
   border-radius: 5px;
   padding: 15px 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.component-card h3 {
+.section h3 {
   margin-top: 0;
   border-bottom: 1px solid #e1e4e8;
   padding-bottom: 10px;
-  color: #0366d6;
 }
 
-.component-card ul {
-  padding-left: 20px;
+.section.system h3 { color: #0366d6; }
+.section.core h3 { color: #28a745; }
+.section.web h3 { color: #6f42c1; }
+.section.ref h3 { color: #d73a49; }
+
+.files {
+  display: flex;
+  flex-direction: column;
 }
 
-.component-card li {
-  margin-bottom: 5px;
+.file {
+  margin: 5px 0;
+  padding: 5px 10px;
+  background: white;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.file.main {
+  background: #fffbdd;
+  font-weight: bold;
 }
 </style>
