@@ -1,4 +1,12 @@
-# Web Utilities Module Documentation
+---
+layout: default
+title: Web Utilities
+parent: Web Interface
+nav_order: 7
+permalink: /src/web/utils/
+---
+
+# Web Utilities Documentation
 
 {% include navigation.html %}
 
@@ -28,8 +36,8 @@ These utilities encapsulate implementation details and provide clean, reusable i
 <summary><h2>File Inventory</h2></summary>
 <div markdown="1">
 
-| Filename | Type | Size | Purpose |
-|----------|------|------|---------|
+| Filename | Type | Size | Description |
+|----------|------|------|-------------|
 | __init__.py | Python | 0.2 KB | Package initialization |
 | camera.py | Python | 2.4 KB | Camera interfaces |
 | files.py | Python | 1.8 KB | File operations |
@@ -37,6 +45,9 @@ These utilities encapsulate implementation details and provide clean, reusable i
 | date_utils.py | Python | 1.2 KB | Date/time utilities |
 | validators.py | Python | 1.5 KB | Data validation |
 | formatters.py | Python | 0.9 KB | Data formatting |
+| image_utils.py | Python | 1.6 KB | Image processing utilities |
+| security.py | Python | 1.3 KB | Security helper functions |
+| network.py | Python | 1.7 KB | Network operations |
 
 </div>
 </details>
@@ -49,8 +60,7 @@ These utilities encapsulate implementation details and provide clean, reusable i
 - **Primary Purpose**: Package initialization
 - **Key Functions**:
   * Exports common utility functions
-- **Dependencies**:
-  * None
+- **Dependencies**: None
 - **Technical Notes**: Only used for package identification
 
 ### camera.py
@@ -138,9 +148,49 @@ These utilities encapsulate implementation details and provide clean, reusable i
   * `format_json(data, pretty)`: Format JSON data
   * `strip_html(html)`: Remove HTML tags
   * `pluralize(noun, count)`: Correctly pluralize words
-- **Dependencies**:
-  * None
+- **Dependencies**: None
 - **Technical Notes**: Simple pure functions for formatting
+
+### image_utils.py
+- **Primary Purpose**: Image processing utilities
+- **Key Functions**:
+  * `create_thumbnail(image_path, size)`: Generate image thumbnail
+  * `add_watermark(image, text)`: Add text watermark to image
+  * `adjust_image(image, brightness, contrast)`: Adjust image properties
+  * `detect_motion(image1, image2)`: Compare images for motion
+  * `crop_image(image, dimensions)`: Crop image to specified dimensions
+- **Dependencies**:
+  * Pillow/PIL library
+  * OpenCV (for motion detection)
+- **Technical Notes**: Optimized for embedded hardware performance
+
+### security.py
+- **Primary Purpose**: Security helper functions
+- **Key Functions**:
+  * `generate_token()`: Create secure random token
+  * `hash_password(password)`: Securely hash password
+  * `verify_password(password, hash)`: Verify password against hash
+  * `encrypt_data(data, key)`: Encrypt sensitive data
+  * `decrypt_data(encrypted, key)`: Decrypt data
+  * `generate_secure_filename()`: Create secure random filename
+- **Dependencies**:
+  * Cryptography libraries
+  * Password hashing libraries
+- **Technical Notes**: Implements security best practices
+
+### network.py
+- **Primary Purpose**: Network operations
+- **Key Functions**:
+  * `check_connectivity()`: Test internet connection
+  * `download_file(url, destination)`: Download remote file
+  * `get_local_ip()`: Get device IP address
+  * `scan_network()`: Discover devices on network
+  * `test_bandwidth()`: Measure connection speed
+  * `upload_file(file, url)`: Upload file to remote server
+- **Dependencies**:
+  * Networking libraries
+  * Request libraries
+- **Technical Notes**: Handles connection errors gracefully
 
 </div>
 </details>
@@ -150,18 +200,21 @@ These utilities encapsulate implementation details and provide clean, reusable i
 <div markdown="1">
 
 - **Related To**:
-  * [Web Routes](./src-web-routes.md): Used by route handlers
-  * [Web Services](./src-web-services.md): Used by business logic services
-  * [Web Tests](./src-web-tests.md): Used in test fixtures
+  * [Web Interface](../web-interface/core.md): Core web application
+  * [Web Interface Utils](../web-interface/utils.md): Comprehensive documentation
+  * [Web Routes](../web-interface/routes.md): Used by route handlers
+  * [Web Services](../web-interface/services.md): Used by business logic services
+  * [Web Tests](../web-interface/tests.md): Used in test fixtures
 - **Depends On**:
-  * [Software Module](./src-software.md): For camera and system control
-  * [Configuration Module](./src-config.md): For settings access
-  * [Power Module](./src-power.md): For power state management
+  * [Software Module](../core-components/software-module.md): For camera and system control
+  * [Configuration](../core-components/configuration.md): For settings access
+  * [Power Management](../core-components/power-management.md): For power state management
   * System libraries and interfaces
 - **Used By**:
   * Most web application components
   * Background tasks
   * API endpoints
+  * User interface elements
 
 </div>
 </details>
@@ -337,5 +390,69 @@ These utilities encapsulate implementation details and provide clean, reusable i
              return jsonify({"error": str(e)}), 500
      ```
 
+5. **Security Operations**:
+   - **Description**: Implementing secure operations in the application.
+   - **Example**:
+     ```python
+     # In an authentication service
+     from src.web.utils.security import hash_password, verify_password, generate_token
+     
+     def create_user(username, password):
+         # Hash password securely before storing
+         password_hash = hash_password(password)
+         
+         # Store in database
+         user = User(
+             username=username,
+             password_hash=password_hash,
+             created_at=datetime.now()
+         )
+         db.session.add(user)
+         db.session.commit()
+         
+         return user
+         
+     def authenticate_user(username, password):
+         # Find user
+         user = User.query.filter_by(username=username).first()
+         if not user:
+             return None
+             
+         # Verify password
+         if not verify_password(password, user.password_hash):
+             return None
+             
+         # Generate authentication token
+         token = generate_token()
+         
+         # Store token with expiration
+         auth_token = AuthToken(
+             user_id=user.id,
+             token=token,
+             expires_at=datetime.now() + timedelta(hours=24)
+         )
+         db.session.add(auth_token)
+         db.session.commit()
+         
+         return {
+             "user": user,
+             "token": token,
+             "expires_at": auth_token.expires_at
+         }
+     ```
+
 </div>
 </details>
+
+## Utility Best Practices
+
+When using the utility functions:
+
+1. **Error Handling**: Always wrap utility calls in try/except blocks to handle potential errors gracefully
+2. **Input Validation**: Validate inputs before passing to utility functions, especially for file paths and system commands
+3. **Resource Management**: Close resources (files, connections) properly after using utility functions that open them
+4. **Caching**: Consider caching results from expensive utility functions (like system status) that change infrequently
+5. **Asynchronous Operations**: Use asynchronous versions of utilities for operations that may block (network, file I/O)
+6. **Security**: Use security utilities to handle sensitive data and prevent security vulnerabilities
+7. **Testing**: Create mocks for hardware-dependent utilities to enable effective testing
+8. **Documentation**: Reference the utility documentation for detailed parameter descriptions and example usage
