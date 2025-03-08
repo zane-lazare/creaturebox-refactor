@@ -1,3 +1,11 @@
+---
+layout: default
+title: Web Static Resources
+parent: Web Interface
+nav_order: 5
+permalink: /src/web/static/
+---
+
 # Web Static Resources Documentation
 
 {% include navigation.html %}
@@ -179,8 +187,9 @@ These resources enable the creation of a responsive, modern web interface that p
 <div markdown="1">
 
 - **Related To**:
-  * [Web Core](./src-web.md): Serves static files to web clients
-  * [Web Routes](./src-web-routes.md): UI components correspond to API endpoints
+  * [Web Interface](../web-interface/core.md): Main web application
+  * [Web Interface Static](../web-interface/static.md): Comprehensive documentation
+  * [Web Routes](../web-interface/routes.md): UI components correspond to API endpoints
 - **Depends On**:
   * Browser web standards (HTML5, CSS3, ES6+)
   * Third-party libraries (if any)
