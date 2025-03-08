@@ -1,3 +1,10 @@
+---
+layout: default
+title: Web Interface Module
+nav_order: 3
+permalink: /src/web/
+---
+
 # Web Interface Module Documentation
 
 {% include navigation.html %}
@@ -31,9 +38,11 @@ The web interface is accessible both locally on the device network and remotely 
 | Filename | Type | Size | Description |
 |----------|------|------|-------------|
 | app.py | Python | 1.6 KB | Application entry point and factory |
-| config.py | Python | 0.9 KB | Configuration management |
+| config.py | Python | 0.9 KB | Web app configuration management |
 | error_handlers.py | Python | 1.2 KB | Centralized error handling |
 | middleware.py | Python | 0.8 KB | Request processing middleware |
+| wsgi.py | Python | 0.4 KB | WSGI entry point for production |
+| __init__.py | Python | 0.2 KB | Module initialization |
 
 </div>
 </details>
@@ -43,12 +52,12 @@ The web interface is accessible both locally on the device network and remotely 
 <div markdown="1">
 
 ### app.py
-- **Primary Purpose**: Serves as the entry point for the Flask web application
+- **Primary Purpose**: Main entry point for the Flask web application
 - **Key Functions**:
   * `create_app(env_name='development')`: Application factory that initializes Flask
   * `register_blueprints(app)`: Registers route blueprints with the application
   * `configure_logging(app)`: Sets up application logging
-  * `main()`: Entry point when run directly, configures and starts the development server
+  * `main()`: Entry point when run directly, starts the development server
 - **Dependencies**:
   * Flask
   * Blueprints from routes directory
@@ -78,7 +87,7 @@ The web interface is accessible both locally on the device network and remotely 
 - **Dependencies**:
   * Flask
   * logging module
-- **Technical Notes**: Provides consistent error responses in both API and HTML formats based on request type
+- **Technical Notes**: Provides consistent error responses in both API and HTML formats
 
 ### middleware.py
 - **Primary Purpose**: Implements request/response processing middleware
@@ -90,6 +99,25 @@ The web interface is accessible both locally on the device network and remotely 
   * Flask
   * Middleware modules from middleware/ directory
 - **Technical Notes**: Uses Flask's before_request and after_request hooks for cross-cutting concerns
+
+### wsgi.py
+- **Primary Purpose**: WSGI entry point for production deployment
+- **Key Functions**:
+  * Imports and creates the Flask application object
+  * Configures it for production environment
+  * Provides the application variable for WSGI servers like Gunicorn
+- **Dependencies**:
+  * app.py (create_app function)
+- **Technical Notes**: Minimal file that focuses on production deployment concerns only
+
+### __init__.py
+- **Primary Purpose**: Marks the directory as a Python package
+- **Key Functions**:
+  * Package initialization
+  * Version definition
+  * Package-level imports
+- **Dependencies**: None
+- **Technical Notes**: Keeps minimal code to avoid circular dependencies
 
 </div>
 </details>
@@ -106,13 +134,14 @@ The web interface is accessible both locally on the device network and remotely 
   * [Web Static](./src-web-static.md): Frontend assets served by app
   * [Web Tests](./src-web-tests.md): Test suite for web application
 - **Depends On**:
-  * Flask and related libraries
-  * [Configuration Module](./src-config.md): System configuration files
-  * [Power Module](./src-power.md): For system power control features
-  * [Software Module](./src-software.md): For camera and system control
+  * Flask framework
+  * [Configuration Module](./core-components/configuration.md): For system settings
+  * [Software Module](./core-components/software-module.md): For camera functionality
+  * [Power Management](./core-components/power-management.md): For system power control
 - **Used By**:
   * Web browser clients
-  * [Deployment](./deployment.md): WSGI server and web server configuration
+  * [Deployment](./deployment.md): For production deployment
+  * Mobile apps (if applicable)
 
 </div>
 </details>
@@ -121,29 +150,51 @@ The web interface is accessible both locally on the device network and remotely 
 <summary><h2>Use Cases</h2></summary>
 <div markdown="1">
 
-1. **Web Application Initialization**:
-   - **Description**: Creating and configuring a Flask application with all necessary components.
+1. **Application Initialization**:
+   - **Description**: Starting up the Flask application with appropriate configuration.
    - **Example**: 
      ```python
+     # Development server startup
      from src.web.app import create_app
-     app = create_app('production')
-     # Web application is now ready to serve requests
+     
+     app = create_app('development')
+     app.run(host='0.0.0.0', port=5000, debug=True)
      ```
 
-2. **Environment-specific Configuration**:
+2. **Production Deployment**:
+   - **Description**: Deploying the application with a WSGI server.
+   - **Example**: 
+     ```bash
+     # Command line using Gunicorn
+     gunicorn --workers=4 --bind=0.0.0.0:8000 src.web.wsgi:application
+     ```
+
+3. **Environment-specific Configuration**:
    - **Description**: Loading different settings based on the environment.
    - **Example**: 
      ```python
-     app = create_app('development')  # Uses development settings with debug enabled
-     # vs
-     app = create_app('production')   # Uses production settings with optimized performance
+     app_dev = create_app('development')  # Debug enabled, development database
+     app_test = create_app('testing')     # Test database, no email sending
+     app_prod = create_app('production')  # Production optimized, error emails
      ```
 
-3. **Consistent Error Handling**:
-   - **Description**: Centralized error handling for all routes.
-   - **Example**: When a route raises a 404 error, the handle_404_error function returns a JSON response for API requests or renders an error template for browser requests.
+4. **Consistent Error Handling**:
+   - **Description**: Providing tailored error responses based on request type.
+   - **Example**: 
+     ```python
+     # Example of how errors are handled
+     from flask import request, jsonify, render_template
+     
+     def handle_404_error(e):
+         if request.accept_mimetypes.accept_json and \
+            not request.accept_mimetypes.accept_html:
+            # API request
+            return jsonify({"error": "Not found", "code": 404}), 404
+         # Browser request
+         return render_template("errors/404.html"), 404
+     ```
 
-4. **Request Processing Pipeline**:
+5. **Request Processing Pipeline**:
    - **Description**: Setting up a request processing pipeline that logs requests and adds security headers.
    - **Example**: Each incoming request is logged and each outgoing response gets security headers like Content-Security-Policy.
 
