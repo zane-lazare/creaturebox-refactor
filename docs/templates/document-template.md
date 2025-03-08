@@ -1,4 +1,4 @@
-# Module Name Documentation
+# [Module Name] Documentation
 
 {% include navigation.html %}
 
