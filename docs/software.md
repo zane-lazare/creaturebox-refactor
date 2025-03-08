@@ -1,35 +1,13 @@
-# Software Module Documentation
+---
+layout: default
+title: Software Module (Deprecated)
+nav_exclude: true
+---
 
-## Overview
-The `software` directory contains core operational scripts for the CreatureBox system.
+# Software Module Documentation (DEPRECATED)
 
-## Key Components
+> **DEPRECATION NOTICE**: This documentation has been consolidated into the [Software Module](./core-components/software-module.md) page as part of the documentation reorganization. Please use the new page for the most up-to-date information.
 
-### Operational Scripts
-- `Attract_On/Off.py`: Attraction mode control
-- `Backup_Files.py`: System backup functionality
-- `DebugMode.py`: Debugging utilities
-- `Measure_Power.py`: Power consumption monitoring
-- `Scheduler.py`: Advanced scheduling mechanisms
-- `TakePhoto.py`: Imaging capture functionality
+{% include navigation.html %}
 
-### System Management
-- `StartCron.py` / `StopCron.py`: Cron job management
-- `StopScheduledShutdown.py`: Shutdown prevention
-- `TurnEverythingOff.py`: System-wide power-down
-
-### Utility Scripts
-- `RegisterNewWifi.sh`: Network configuration
-- `scripts/` subdirectory for supplementary utilities
-
-## Core Functionalities
-- System scheduling
-- Power management
-- Backup and recovery
-- Debug and diagnostic tools
-- Network configuration
-- Imaging capabilities
-
-## Relationships
-- Interdependent scripts for comprehensive system control
-- Modular design supporting flexible system operations
+[Go to new Software Module Documentation](./core-components/software-module.md)
