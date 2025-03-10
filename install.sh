@@ -67,6 +67,29 @@ run_pre_checks() {
     fi
 }
 
+# Function to create virtual environment
+create_virtual_environment() {
+    print_section "Setting up Virtual Environment"
+    
+    # Run the virtual environment creation script
+    if [ -f "${INSTALL_DIR}/deployment/create_venv.py" ]; then
+        python3 "${INSTALL_DIR}/deployment/create_venv.py"
+        VENV_RESULT=$?
+        
+        if [ $VENV_RESULT -eq 0 ]; then
+            print_colored "Virtual environment created successfully."
+            print_colored "Activate it with: source ~/activate_venv.sh"
+            return 0
+        else
+            print_colored "Failed to create virtual environment."
+            return 1
+        fi
+    else
+        print_colored "Virtual environment creation script not found."
+        return 1
+    fi
+}
+
 # Function to run installation
 run_install() {
     print_section "Running Installation"
@@ -76,6 +99,12 @@ run_install() {
         INSTALL_ARGS="--non-interactive"
     else
         INSTALL_ARGS=""
+    fi
+    
+    # Create virtual environment first
+    if ! create_virtual_environment; then
+        print_colored "Virtual environment setup failed."
+        return 1
     fi
     
     # Run installer Python script
@@ -214,6 +243,7 @@ else
     
     # Final message
     print_colored "CreatureBox has been successfully installed!"
+    print_colored "Activate the virtual environment with: source ~/activate_venv.sh"
     print_colored "You can now start using CreatureBox. Enjoy!"
     exit 0
 fi
