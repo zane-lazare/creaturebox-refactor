@@ -1,23 +1,70 @@
-site_name: CreatureBox Refactored Documentation
-theme: material
-nav:
-  - Home: index.md
-  - Getting Started: getting-started.md
-  - API Reference: api.md
-  - Components:
-      - Overview: code-overview.md
-      - Web Interface: components/web.md
-      - Power Management: components/power.md
-      - Software: components/software.md
-      - Configuration: components/config.md
-repo_url: https://github.com/zane-lazare/creaturebox-refactor
-repo_name: creaturebox-refactor
-edit_uri: "edit/main/docs/"
+site_name: CreatureBox
+site_description: Advanced Creature Habitat Management Platform
+site_author: Zane Lazare
+site_url: https://zane-lazare.github.io/creaturebox-refactor/
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - toc.follow
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+  logo: assets/creaturebox-logo.png
+  favicon: assets/favicon.png
+
 plugins:
   - search
+  - social
+
+extra:
+  version:
+    provider: mike
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX  # Replace with your actual Google Analytics ID
+
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.tabbed
   - admonition
-  - toc:
-      permalink: true
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Configuration: configuration.md
+  - Components:
+    - Web Interface: components/web-interface.md
+    - Power Management: components/power-management.md
+    - Data Analysis: components/data-analysis.md
+  - Contributing:
+    - Guidelines: contributing.md
+    - Code of Conduct: code-of-conduct.md
+  - API Reference: api-reference.md
+  - License: license.md
+
+extra_css:
+  - stylesheets/extra.css
