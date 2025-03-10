@@ -18,7 +18,7 @@ from utils import (
     print_colored, print_success, print_warning, print_error, 
     print_section, logger, GREEN, YELLOW, RED, NC,
     is_raspberry_pi, detect_pi_model, is_command_available,
-    check_python_version, run_command
+    run_command
 )
 
 def check_raspberry_pi():
@@ -49,9 +49,11 @@ def check_python_version():
     """Check if Python version is 3.7 or newer."""
     print_section("Checking Python version...")
     
-    is_valid, python_version = check_python_version()
+    # Use platform module to get Python version
+    python_version = platform.python_version()
+    python_version_tuple = tuple(map(int, python_version.split('.')))
     
-    if is_valid:
+    if python_version_tuple >= (3, 7):
         print_success(f"Python version {python_version} detected (3.7+ required).")
         return True
     else:
@@ -124,19 +126,15 @@ def check_required_commands():
         'nginx': 'Nginx is required for the web interface.'
     }
     
-    missing_commands = []
-    for cmd, desc in required_commands.items():
-        if is_command_available(cmd):
-            print_success(f"{cmd} is available.")
-        else:
-            missing_commands.append((cmd, desc))
-            print_warning(f"{cmd} is not available. {desc}")
+    missing_commands = [cmd for cmd in required_commands if not is_command_available(cmd)]
+    
+    for cmd in missing_commands:
+        print_warning(f"{cmd} is not available. {required_commands[cmd]}")
     
     if missing_commands:
-        print()
-        print("Missing commands can be installed with:")
+        print("\nMissing commands can be installed with:")
         print("sudo apt-get update")
-        print(f"sudo apt-get install {' '.join(cmd for cmd, _ in missing_commands)}")
+        print(f"sudo apt-get install {' '.join(missing_commands)}")
         return False
     
     return True
@@ -163,16 +161,16 @@ def check_network():
 def run_checks(show_summary=True):
     """Run all checks and return results."""
     checks = [
-        ("Python version", check_python_version),
-        ("Raspberry Pi", check_raspberry_pi),
-        ("Camera", check_camera),
-        ("Disk space", check_disk_space),
-        ("Required commands", check_required_commands),
-        ("Network connectivity", check_network)
+        (check_python_version, "Python version"),
+        (check_raspberry_pi, "Raspberry Pi"),
+        (check_camera, "Camera"),
+        (check_disk_space, "Disk space"),
+        (check_required_commands, "Required commands"),
+        (check_network, "Network connectivity")
     ]
     
     results = []
-    for name, check_func in checks:
+    for check_func, name in checks:
         result = check_func()
         results.append((name, result))
         print()
@@ -184,7 +182,6 @@ def run_checks(show_summary=True):
         print("==================================================")
         
         all_passed = True
-        warnings = 0
         
         for name, result in results:
             if result is True:
@@ -194,7 +191,6 @@ def run_checks(show_summary=True):
                 all_passed = False
             else:
                 status = f"{YELLOW}WARNING{NC}"
-                warnings += 1
             
             print(f"{name:.<25} {status}")
         
