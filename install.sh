@@ -1,17 +1,12 @@
 #!/bin/bash
-# Make this script executable with: chmod +x install.sh
-
 # CreatureBox Installation Script
-# -------------------------------
-# This unified installation script handles pre-installation checks,
-# installation, and verification in a single interactive process.
 
 # Set script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="${SCRIPT_DIR}/install"
 LOG_FILE="${HOME}/creaturebox_install.log"
 
-# Function to print colored text
+# Function to print text
 print_colored() {
     echo "$1"
 }
@@ -24,13 +19,8 @@ print_section() {
 
 # Print the CreatureBox banner
 print_banner() {
-    print_colored "  ____                _                  ____            "
-    print_colored " / ___|_ __ ___  __ _| |_ _   _ _ __ ___| __ )  _____  __"
-    print_colored "| |   | '__/ _ \/ _` | __| | | | '__/ _ \  _ \ / _ \ \/ /"
-    print_colored "| |___| | |  __/ (_| | |_| |_| | | |  __/ |_) | (_) >  < "
-    print_colored " \____|_|  \___|\__,_|\__|\__{_|_|  \___|____/ \___/_/\_\\"
-    print_colored "CreatureBox Unified Installation Script"
-    print_colored "--------------------------------------"
+    print_colored "CreatureBox Installation"
+    print_colored "----------------------"
     echo
 }
 
