@@ -1,0 +1,23 @@
+site_name: CreatureBox Refactored Documentation
+theme: material
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference: api.md
+  - Components:
+      - Overview: code-overview.md
+      - Web Interface: components/web.md
+      - Power Management: components/power.md
+      - Software: components/software.md
+      - Configuration: components/config.md
+repo_url: https://github.com/zane-lazare/creaturebox-refactor
+repo_name: creaturebox-refactor
+edit_uri: "edit/main/docs/"
+plugins:
+  - search
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - toc:
+      permalink: true

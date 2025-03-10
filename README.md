@@ -1,158 +1,79 @@
-# CreatureBox Web Interface
+# CreatureBox Refactored
 
-A modular web interface for controlling and monitoring CreatureBox wildlife monitoring systems.
+A platform for managing and monitoring creature habitats with advanced automation and control features.
 
 ## Features
 
-- **System monitoring and control**: View system status, reboot, shutdown
-- **Camera control**: Configure settings, take photos, calibrate
-- **Photo gallery**: View, download, and delete photos
-- **Scheduling**: Set up automatic photo schedules
-- **Storage management**: Backups, cleanup, and monitoring
-- **Background processing**: Async operations for long-running tasks
-- **Caching**: Enhanced performance with local or Redis cache
+- Centralized monitoring system for environmental parameters
+- Automated power management for habitat components
+- Web-based control interface
+- Configurable alerts and notifications
+- Data logging and analysis
 
 ## Installation
 
-### Requirements
-
-- Python 3.7+
-- Raspberry Pi (tested on Pi 4 and Pi 5)
-
-### Base Setup
+CreatureBox now includes a unified installation script for easy setup:
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/creaturebox-refactor.git
+chmod +x install.sh
+./install.sh
+```
+
+The installation script will guide you through the process with easy-to-follow prompts.
+
+For detailed installation options and requirements, see [INSTALL.md](INSTALL.md).
+
+### Manual Installation (Alternative)
+
+If you prefer to install components manually:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/zane-lazare/creaturebox-refactor.git
 cd creaturebox-refactor
+```
 
-# Install dependencies
+2. Install dependencies:
+```bash
 pip install -r requirements.txt
-
-# Run the application
-python -m src.web.app
 ```
 
-### Optional Dependencies
-
+3. Configure the system:
 ```bash
-# Install optional dependencies (Redis cache, OpenCV for image processing)
-pip install "redis>=4.4.0" "opencv-python-headless>=4.5.0"
-
-# For Raspberry Pi with PiJuice power management
-pip install pijuice>=1.6
+cp config/example.config.ini config/config.ini
+# Edit config/config.ini with your specific settings
 ```
 
-### Development Setup
-
+4. Start the application:
 ```bash
-# Install development dependencies
-pip install -r requirements.txt[dev]
-
-# Run tests
-pytest
+python src/app.py
 ```
 
-## Architecture
+The web interface should now be accessible at `http://localhost:5000`.
 
-The CreatureBox web interface uses a modular architecture:
+## Documentation
 
-- **Routes**: API endpoints in `src/web/routes/`
-- **Utils**: Utility functions in `src/web/utils/`
-- **Services**: Background services in `src/web/services/`
-- **Tests**: Test suite in `src/web/tests/`
+Full documentation is available at [https://zane-lazare.github.io/creaturebox-refactor/](https://zane-lazare.github.io/creaturebox-refactor/).
 
-### Key Components
-
-- **Job Queue**: Background processing for long-running tasks
-- **Caching**: Performance optimization with Redis/in-memory caching
-- **Storage Manager**: Photo backup and cleanup
-
-## API Endpoints
-
-### System
-
-- `GET /api/system/status`: Get system status information
-- `POST /api/system/reboot`: Reboot the system
-- `POST /api/system/shutdown`: Shut down the system
-- `POST /api/system/toggle-lights`: Toggle attraction lights
-
-### Camera
-
-- `GET /api/camera/settings`: Get camera settings
-- `POST /api/camera/settings`: Update camera settings
-- `POST /api/camera/calibrate`: Calibrate camera
-- `POST /api/camera/capture`: Capture a photo
-- `GET /api/camera/stream`: Stream camera feed
-
-### Gallery
-
-- `GET /api/gallery/dates`: Get list of dates with photos
-- `GET /api/gallery/photos`: Get list of photos
-- `GET /api/gallery/photos/view/<date>/<filename>`: View a photo
-- `GET /api/gallery/photos/thumbnail/<date>/<filename>`: View a photo thumbnail
-- `DELETE /api/gallery/photos/<filename>`: Delete a photo
-
-### Jobs
-
-- `GET /api/jobs/`: List background jobs
-- `GET /api/jobs/<job_id>`: Get job status
-- `POST /api/jobs/<job_id>/cancel`: Cancel a job
-- `POST /api/jobs/cleanup`: Clean up old completed jobs
-
-### Storage
-
-- `GET /api/storage/stats`: Get storage statistics
-- `POST /api/storage/backup`: Start a photo backup
-- `POST /api/storage/backup/external`: Backup to external storage
-- `POST /api/storage/clean`: Clean up old photos
-
-## Development
-
-### Running Tests
-
+For local development, you can build and serve the documentation:
 ```bash
-# Run all tests
-pytest
+# Install MkDocs and required theme
+pip install mkdocs mkdocs-material
 
-# Run with coverage report
-pytest --cov=src
+# Serve documentation locally
+mkdocs serve
 
-# Run specific test
-pytest src/web/tests/test_job_queue.py
+# Build documentation
+mkdocs build
 ```
 
-### Code Structure
+## Components
 
-```
-src/
-├── web/
-│   ├── routes/        # API endpoints
-│   ├── utils/         # Utility functions
-│   ├── services/      # Background services
-│   ├── tests/         # Tests
-│   ├── app.py         # Application factory
-│   ├── config.py      # Configuration
-│   ├── error_handlers.py # Error handling
-│   └── middleware.py  # Request middleware
-```
-
-## Deployment
-
-### Development
-
-```bash
-python -m src.web.app
-```
-
-### Production
-
-For production deployment, we recommend using Gunicorn with Nginx:
-
-```bash
-gunicorn -w 4 -b 127.0.0.1:5000 'src.web.app:create_app()'
-```
+- **Web Interface**: User-friendly dashboard for monitoring and control
+- **Power Management**: Control and monitor power outlets
+- **Software Components**: Core functionality including data collection and analysis
+- **Configuration**: System settings and user preferences
 
 ## License
 
-MIT
+[MIT License](LICENSE)

@@ -1,476 +1,237 @@
 #!/bin/bash
+# Make this script executable with: chmod +x install.sh
 
 # CreatureBox Installation Script
 # -------------------------------
-# This script installs the CreatureBox software and web dashboard
+# This unified installation script handles pre-installation checks,
+# installation, and verification in a single interactive process.
 
-# Set strict error handling
-set -e
-
-# Variables
+# Set script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_DIR="${HOME}/CreatureBox"
-LOG_FILE="${TARGET_DIR}/install.log"
-WEB_PORT=5000
-VENV_PATH="${HOME}/creaturebox-venv"
+INSTALL_DIR="${SCRIPT_DIR}/install"
+LOG_FILE="${HOME}/creaturebox_install.log"
 
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
 NC='\033[0m' # No Color
 
-# Check if running as root (which we don't want for the main installer)
-if [ "$EUID" -eq 0 ]; then
-    echo -e "${YELLOW}Warning: This script doesn't need to be run as root.${NC}"
-    echo "The script will use sudo only when necessary."
-    read -p "Continue anyway? (y/n) " -n 1 -r
+# Function to print colored text
+print_colored() {
+    echo -e "${2}${1}${NC}"
+}
+
+# Function to print a section header
+print_section() {
+    print_colored "\n$1" "${BLUE}"
+    print_colored "$(printf '%*s' ${#1} | tr ' ' '-')" "${BLUE}"
+}
+
+# Print the CreatureBox banner
+print_banner() {
+    print_colored "  ____                _                  ____            " "${GREEN}"
+    print_colored " / ___|_ __ ___  __ _| |_ _   _ _ __ ___| __ )  _____  __" "${GREEN}"
+    print_colored "| |   | '__/ _ \/ _` | __| | | | '__/ _ \  _ \ / _ \ \/ /" "${GREEN}"
+    print_colored "| |___| | |  __/ (_| | |_| |_| | | |  __/ |_) | (_) >  < " "${GREEN}"
+    print_colored " \____|_|  \___|\__,_|\__|\__,_|_|  \___|____/ \___/_/\_\\" "${GREEN}"
+    print_colored "\nCreatureBox Unified Installation Script" "${BOLD}"
+    print_colored "--------------------------------------" "${BOLD}"
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
+}
+
+# Function to check if Python is available
+check_python() {
+    if ! command -v python3 &>/dev/null; then
+        print_colored "Python 3 is not installed or not in your PATH." "${RED}"
+        print_colored "Please install Python 3.7 or newer and try again." "${RED}"
+        print_colored "You can install it with: sudo apt-get update && sudo apt-get install -y python3" "${YELLOW}"
+        return 1
     fi
-fi
-
-# Log function
-log() {
-    echo -e "${GREEN}[$(date '+%Y-%m-%d %H:%M:%S')] $1${NC}"
-    mkdir -p "$(dirname "$LOG_FILE")"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+    return 0
 }
 
-error() {
-    echo -e "${RED}[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $1${NC}" >&2
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $1" >> "$LOG_FILE"
+# Function to show usage
+show_usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo
+    echo "OPTIONS:"
+    echo "  --help              Show this help message"
+    echo "  --check-only        Only run pre-installation checks"
+    echo "  --install-only      Skip checks and proceed with installation"
+    echo "  --verify-only       Only verify an existing installation"
+    echo "  --non-interactive   Run in non-interactive mode (use defaults)"
+    echo
+    echo "Examples:"
+    echo "  $0                          # Run full interactive installation"
+    echo "  $0 --check-only             # Only check requirements"
+    echo "  $0 --non-interactive        # Run installation without prompts"
+    echo
 }
 
-# Detect Raspberry Pi model
-detect_pi_model() {
-    log "Detecting Raspberry Pi model..."
-    PI_MODEL="unknown"
+# Function to run pre-installation checks
+run_pre_checks() {
+    print_section "Running Pre-Installation Checks"
     
-    if grep -q "Raspberry Pi 5" /proc/cpuinfo; then
-        PI_MODEL="5"
-        log "Detected Raspberry Pi 5"
-    elif grep -q "Raspberry Pi 4" /proc/cpuinfo; then
-        PI_MODEL="4"
-        log "Detected Raspberry Pi 4"
-    elif grep -q "Raspberry Pi" /proc/cpuinfo; then
-        PI_MODEL="other"
-        log "Detected Raspberry Pi (older model)"
+    # Run pre-check Python script
+    if [ -f "${INSTALL_DIR}/pre_check.py" ]; then
+        python3 "${INSTALL_DIR}/pre_check.py"
+        return $?
     else
-        log "Could not detect Raspberry Pi model"
-    fi
-    
-    # Export for use in other functions
-    export PI_MODEL
-}
-
-# Check system requirements
-check_system() {
-    log "Checking system requirements..."
-    
-    # Check if running on Raspberry Pi
-    if ! grep -q "Raspberry Pi\|BCM" /proc/cpuinfo; then
-        error "This script is designed to run on a Raspberry Pi."
-        error "If you are running on a Pi but seeing this message, you can continue anyway."
-        read -p "Continue installation? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            exit 1
-        fi
-    fi
-    
-    # Detect Pi model
-    detect_pi_model
-    
-    # Check Python version
-    python_version=$(python3 --version 2>&1 | cut -d ' ' -f 2)
-    log "Detected Python version: $python_version"
-    python_major=$(echo $python_version | cut -d. -f1)
-    python_minor=$(echo $python_version | cut -d. -f2)
-    
-    if [ "$python_major" -lt 3 ] || ([ "$python_major" -eq 3 ] && [ "$python_minor" -lt 7 ]); then
-        error "CreatureBox requires Python 3.7+. Please upgrade your Python installation."
-        exit 1
-    fi
-    
-    # Ensure system is up to date
-    log "Updating package lists..."
-    sudo apt-get update
-}
-
-# Install required system packages
-install_packages() {
-    log "Installing required system packages..."
-    
-    # Update package lists and upgrade
-    sudo apt-get update
-    sudo apt-get upgrade -y
-    
-    # Install core system dependencies
-    sudo apt-get install -y \
-        git \
-        wget \
-        curl \
-        software-properties-common \
-        gnupg \
-        ca-certificates
-    
-    # Install Python and related packages
-    sudo apt-get install -y \
-        python3 \
-        python3-pip \
-        python3-venv
-    
-    # Install camera dependencies with extra packages for Pi 5
-    sudo apt-get install -y \
-        libcamera-dev \
-        libcamera-apps \
-        python3-libcamera \
-        python3-picamera2 \
-        libcap-dev \
-        v4l-utils
-    
-    # Install networking and wireless tools
-    sudo apt-get install -y \
-        network-manager \
-        avahi-daemon \
-        nginx
-    
-    # Install additional system utilities
-    sudo apt-get install -y \
-        rsync \
-        psmisc
-    
-    log "System package installation complete."
-}
-
-# Setup Python virtual environment
-setup_venv() {
-    log "Setting up Python virtual environment..."
-    
-    # Ensure Python3 venv is available
-    if ! dpkg -l | grep -q python3-venv; then
-        log "Installing python3-venv..."
-        sudo apt-get update
-        sudo apt-get install -y python3-venv
-    fi
-    
-    # Create virtual environment if it doesn't exist
-    if [ ! -d "$VENV_PATH" ]; then
-        log "Creating virtual environment at $VENV_PATH..."
-        python3 -m venv "$VENV_PATH"
-    else
-        log "Virtual environment already exists at $VENV_PATH"
-    fi
-    
-    # Activate virtual environment
-    log "Activating virtual environment..."
-    source "$VENV_PATH/bin/activate"
-    
-    # Upgrade pip within the virtual environment
-    log "Upgrading pip, setuptools, and wheel..."
-    pip install --upgrade pip setuptools wheel
-    
-    log "Python virtual environment setup complete."
-}
-
-# Install Python dependencies
-install_python_deps() {
-    log "Installing Python dependencies..."
-    
-    # Make sure virtual environment is activated
-    if [[ "$VIRTUAL_ENV" != "$VENV_PATH" ]]; then
-        source "$VENV_PATH/bin/activate"
-    fi
-    
-    # Check if requirements.txt exists
-    if [ -f "$SCRIPT_DIR/requirements.txt" ]; then
-        log "Installing from requirements.txt..."
-        pip install -r "$SCRIPT_DIR/requirements.txt"
-    else
-        # Fallback to inline installation if requirements.txt isn't found
-        log "requirements.txt not found, installing packages directly..."
-        pip install \
-            Flask==2.1.0 \
-            flask-cors==3.0.10 \
-            numpy==1.22.0 \
-            opencv-python-headless==4.5.5.64 \
-            Pillow==9.0.0 \
-            piexif==1.1.3 \
-            psutil==5.9.0 \
-            RPi.GPIO==0.7.0 \
-            schedule==1.1.0 \
-            python-crontab==2.6.0
-        
-        # Install picamera2 for Pi 5
-        if [ "$PI_MODEL" = "5" ]; then
-            log "Installing picamera2 for Raspberry Pi 5..."
-            pip install picamera2
-        fi
-    fi
-    
-    # Create a file to indicate which Pi model was used for installation
-    echo "PI_MODEL=$PI_MODEL" > "$TARGET_DIR/pi_model.txt"
-    
-    # Check if PiJuice is present and install the module if needed
-    if lsusb | grep -q "PiJuice"; then
-        log "PiJuice detected, installing PiJuice Python module..."
-        pip install pijuice.py
-    fi
-    
-    log "Python dependencies installed successfully."
-}
-
-# Create directory structure
-create_directories() {
-    log "Creating directory structure at $TARGET_DIR..."
-    
-    mkdir -p "$TARGET_DIR"
-    mkdir -p "$TARGET_DIR/Software"
-    mkdir -p "$TARGET_DIR/photos"
-    mkdir -p "$TARGET_DIR/photos_backedup"
-    mkdir -p "$TARGET_DIR/logs"
-    mkdir -p "$TARGET_DIR/web"
-    mkdir -p "$TARGET_DIR/web/static"
-    mkdir -p "$TARGET_DIR/web/static/css"
-    mkdir -p "$TARGET_DIR/web/static/js"
-    mkdir -p "$TARGET_DIR/web/static/img"
-    
-    log "Directory structure created."
-}
-
-# Copy files
-copy_files() {
-    log "Copying files to installation directory..."
-    
-    # Ensure source files exist
-    if [ ! -d "$SCRIPT_DIR/src" ]; then
-        error "Source directory not found. Ensure you're running the script from the repository root."
-        exit 1
-    fi
-    
-    # Copy files
-    cp -r "$SCRIPT_DIR/src/Software/"* "$TARGET_DIR/Software/"
-    cp -r "$SCRIPT_DIR/src/config/"* "$TARGET_DIR/"
-    cp "$SCRIPT_DIR/src/web/app.py" "$TARGET_DIR/web/"
-    cp -r "$SCRIPT_DIR/src/web/static/"* "$TARGET_DIR/web/static/"
-    
-    # Copy README and LICENSE
-    [ -f "$SCRIPT_DIR/README.md" ] && cp "$SCRIPT_DIR/README.md" "$TARGET_DIR/"
-    [ -f "$SCRIPT_DIR/LICENSE" ] && cp "$SCRIPT_DIR/LICENSE" "$TARGET_DIR/"
-    
-    log "Files copied successfully."
-}
-
-# Set file permissions
-set_permissions() {
-    log "Setting file permissions..."
-    
-    # Make scripts executable
-    find "$TARGET_DIR/Software" -type f \( -name "*.py" -o -name "*.sh" \) -exec chmod +x {} \;
-    chmod +x "$TARGET_DIR/web/app.py"
-    
-    # Set directory permissions
-    chmod -R 755 "$TARGET_DIR/Software"
-    chmod -R 755 "$TARGET_DIR/web"
-    chmod -R 755 "$TARGET_DIR/photos"
-    chmod -R 755 "$TARGET_DIR/logs"
-    
-    # Set file permissions
-    find "$TARGET_DIR" -type f -name "*.csv" -exec chmod 644 {} \;
-    [ -f "$TARGET_DIR/controls.txt" ] && chmod 644 "$TARGET_DIR/controls.txt"
-    
-    log "Permissions set."
-}
-
-# Create symlinks
-create_symlinks() {
-    log "Creating symlinks for convenience..."
-    
-    # Create symlinks to main scripts
-    for script in TakePhoto.py Scheduler.py Attract_On.py Attract_Off.py StopScheduledShutdown.py; do
-        if [ -f "$TARGET_DIR/Software/$script" ]; then
-            ln -sf "$TARGET_DIR/Software/$script" "$TARGET_DIR/$script"
-            log "Created symlink for $script"
-        else
-            log "Could not create symlink for $script (file not found)"
-        fi
-    done
-    
-    log "Symlinks created."
-}
-
-# Set up web service
-setup_web_service() {
-    log "Setting up web service..."
-    
-    # Create systemd service file
-    sudo tee /etc/systemd/system/creaturebox-web.service > /dev/null << EOL
-[Unit]
-Description=CreatureBox Web Interface
-After=network.target
-
-[Service]
-User=$USER
-WorkingDirectory=$TARGET_DIR/web
-ExecStart=$VENV_PATH/bin/python $TARGET_DIR/web/app.py
-Restart=always
-RestartSec=5
-Environment="PATH=$VENV_PATH/bin:$PATH"
-
-[Install]
-WantedBy=multi-user.target
-EOL
-    
-    # Configure Nginx
-    sudo tee /etc/nginx/sites-available/creaturebox > /dev/null << EOL
-server {
-    listen 80;
-    server_name creaturebox.local;
-
-    location / {
-        proxy_pass http://127.0.0.1:$WEB_PORT;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-    }
-
-    # Special configuration for camera streaming
-    location /api/camera/stream {
-        proxy_pass http://127.0.0.1:$WEB_PORT;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        
-        # Disable buffering for streaming content
-        proxy_buffering off;
-        proxy_http_version 1.1;
-        proxy_set_header Connection "";
-        
-        # Increased timeouts for streaming
-        proxy_read_timeout 86400;
-        proxy_send_timeout 86400;
-    }
-
-    client_max_body_size 100M;
-}
-EOL
-    
-    # Enable sites and restart services
-    sudo ln -sf /etc/nginx/sites-available/creaturebox /etc/nginx/sites-enabled/
-    sudo systemctl enable creaturebox-web.service
-    sudo systemctl start creaturebox-web.service
-    sudo systemctl restart nginx
-    
-    log "Web service set up successfully."
-}
-
-# Create crontab example file
-create_crontab_example() {
-    log "Creating crontab example file..."
-    
-    cat > "$TARGET_DIR/crontab.example" << EOL
-# Example crontab entries for CreatureBox
-# To install: crontab -e
-
-# Take photo every hour
-0 * * * * $VENV_PATH/bin/python ${TARGET_DIR}/TakePhoto.py
-
-# Run scheduler at boot
-@reboot $VENV_PATH/bin/python ${TARGET_DIR}/Scheduler.py
-
-# Backup photos daily at 3 AM
-0 3 * * * $VENV_PATH/bin/python ${TARGET_DIR}/Software/Backup_Files.py
-EOL
-    
-    log "Crontab example file created at $TARGET_DIR/crontab.example"
-}
-
-# Verify installation
-verify_installation() {
-    log "Verifying installation..."
-    
-    # Check if critical files exist
-    local missing_files=0
-    for file in "$TARGET_DIR/TakePhoto.py" "$TARGET_DIR/Scheduler.py" "$TARGET_DIR/web/app.py"; do
-        if [ ! -f "$file" ]; then
-            error "Missing critical file: $file"
-            missing_files=$((missing_files + 1))
-        fi
-    done
-    
-    # Check if web service is running
-    if ! systemctl is-active --quiet creaturebox-web.service; then
-        error "Web service is not running. Check logs with: sudo journalctl -u creaturebox-web.service"
-        missing_files=$((missing_files + 1))
-    fi
-    
-    # Check Python dependencies in virtual environment
-    local missing_deps=0
-    for dep in flask numpy opencv-python-headless pillow; do
-        if ! $VENV_PATH/bin/pip list | grep -i "$dep" > /dev/null; then
-            error "Missing Python dependency: $dep"
-            missing_deps=$((missing_deps + 1))
-        fi
-    done
-    
-    # Check for Pi 5 specific dependencies
-    if [ "$PI_MODEL" = "5" ]; then
-        if ! $VENV_PATH/bin/pip list | grep -i "picamera2" > /dev/null; then
-            error "Missing Python dependency for Pi 5: picamera2"
-            missing_deps=$((missing_deps + 1))
-        fi
-    fi
-    
-    if [ $missing_files -eq 0 ] && [ $missing_deps -eq 0 ]; then
-        log "Installation verification successful!"
-        return 0
-    else
-        error "Installation verification failed with $missing_files missing files and $missing_deps missing dependencies."
-        error "Please check the log file at $LOG_FILE for details."
+        print_colored "Pre-check script not found: ${INSTALL_DIR}/pre_check.py" "${RED}"
         return 1
     fi
 }
 
-# Main installation function
-main() {
-    log "Starting CreatureBox installation..."
+# Function to run installation
+run_install() {
+    print_section "Running Installation"
     
-    # System checks and setup
-    check_system
-    install_packages
+    # Check if installation should be interactive
+    if [ "$NON_INTERACTIVE" = "true" ]; then
+        INSTALL_ARGS="--non-interactive"
+    else
+        INSTALL_ARGS=""
+    fi
     
-    # Python environment setup
-    setup_venv
-    
-    # Trap to deactivate virtual environment on script exit
-    trap 'deactivate' EXIT
-    
-    # Python dependencies
-    install_python_deps
-    
-    # Directory structure and files
-    create_directories
-    copy_files
-    set_permissions
-    create_symlinks
-    
-    # Service setup
-    setup_web_service
-    create_crontab_example
-    
-    # Verify installation
-    verify_installation
-    
-    # Installation complete
-    log "CreatureBox installation complete!"
-    log "You can access the web interface at:"
-    log "  http://creaturebox.local (from other devices on your network)"
-    log "  http://localhost (from this device)"
-    log
-    log "Find your IP address with: hostname -I"
-    log
-    log "See $TARGET_DIR/README.md for usage instructions"
+    # Run installer Python script
+    if [ -f "${INSTALL_DIR}/installer.py" ]; then
+        python3 "${INSTALL_DIR}/installer.py" $INSTALL_ARGS
+        return $?
+    else
+        print_colored "Installer script not found: ${INSTALL_DIR}/installer.py" "${RED}"
+        return 1
+    fi
 }
 
-# Run main function
-main
+# Function to run verification
+run_verify() {
+    print_section "Verifying Installation"
+    
+    # Run verifier Python script
+    if [ -f "${INSTALL_DIR}/verifier.py" ]; then
+        python3 "${INSTALL_DIR}/verifier.py"
+        return $?
+    else
+        print_colored "Verifier script not found: ${INSTALL_DIR}/verifier.py" "${RED}"
+        return 1
+    fi
+}
+
+# Initialize variables
+CHECK_ONLY="false"
+INSTALL_ONLY="false"
+VERIFY_ONLY="false"
+NON_INTERACTIVE="false"
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --help)
+            show_usage
+            exit 0
+            ;;
+        --check-only)
+            CHECK_ONLY="true"
+            ;;
+        --install-only)
+            INSTALL_ONLY="true"
+            ;;
+        --verify-only)
+            VERIFY_ONLY="true"
+            ;;
+        --non-interactive)
+            NON_INTERACTIVE="true"
+            ;;
+        *)
+            print_colored "Unknown option: $1" "${RED}"
+            show_usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+# Check for mutually exclusive options
+if [[ "$CHECK_ONLY" = "true" && "$INSTALL_ONLY" = "true" ]]; then
+    print_colored "Error: --check-only and --install-only cannot be used together" "${RED}"
+    exit 1
+fi
+
+if [[ "$CHECK_ONLY" = "true" && "$VERIFY_ONLY" = "true" ]]; then
+    print_colored "Error: --check-only and --verify-only cannot be used together" "${RED}"
+    exit 1
+fi
+
+if [[ "$INSTALL_ONLY" = "true" && "$VERIFY_ONLY" = "true" ]]; then
+    print_colored "Error: --install-only and --verify-only cannot be used together" "${RED}"
+    exit 1
+fi
+
+# Print banner
+print_banner
+
+# Check Python availability
+if ! check_python; then
+    exit 1
+fi
+
+# Setup Python path
+export PYTHONPATH="${INSTALL_DIR}:${PYTHONPATH}"
+
+# Create log file directory
+mkdir -p "$(dirname "$LOG_FILE")"
+
+# Log start of installation
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting CreatureBox installation" > "$LOG_FILE"
+
+# Run the requested operation
+if [ "$CHECK_ONLY" = "true" ]; then
+    run_pre_checks
+    exit $?
+elif [ "$VERIFY_ONLY" = "true" ]; then
+    run_verify
+    exit $?
+elif [ "$INSTALL_ONLY" = "true" ]; then
+    run_install
+    exit $?
+else
+    # Run full installation process
+    print_colored "Starting CreatureBox installation process..." "${BLUE}"
+    echo
+    
+    # Run pre-installation checks
+    if ! run_pre_checks; then
+        print_colored "Pre-installation checks failed. Please address the issues before proceeding." "${RED}"
+        
+        if [ "$NON_INTERACTIVE" = "false" ]; then
+            read -p "Do you want to continue anyway? (y/n) " -n 1 -r
+            echo
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                exit 1
+            fi
+        else
+            exit 1
+        fi
+    fi
+    
+    # Run installation
+    if ! run_install; then
+        print_colored "Installation failed. Please check the log file: $LOG_FILE" "${RED}"
+        exit 1
+    fi
+    
+    # Run verification
+    if ! run_verify; then
+        print_colored "Verification failed. Your installation may not be complete." "${RED}"
+        print_colored "Please check the log file: $LOG_FILE" "${RED}"
+        exit 1
+    fi
+    
+    # Final message
+    print_colored "\n🎉 CreatureBox has been successfully installed! 🎉" "${GREEN}"
+    print_colored "You can now start using CreatureBox. Enjoy!" "${GREEN}"
+    exit 0
+fi
