@@ -31,6 +31,24 @@ theme:
   logo: assets/creaturebox-logo.png
   favicon: assets/favicon.png
 
+# Navigation Menu
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: installation.md
+      - Configuration: configuration.md
+  - Components:
+      - Web Interface: components/web-interface.md
+      - Power Management: components/power-management.md
+      - Data Analysis: components/data-analysis.md
+  - API Reference: 
+      - Overview: api-reference.md
+  - Development:
+      - Contributing: contributing.md
+      - Code of Conduct: code-of-conduct.md
+  - Resources:
+      - License: license.md
+
 plugins:
   - search
   - social
@@ -50,21 +68,6 @@ markdown_extensions:
   - pymdownx.details
   - attr_list
   - md_in_html
-
-nav:
-  - Home: index.md
-  - Getting Started:
-    - Installation: installation.md
-    - Configuration: configuration.md
-  - Components:
-    - Web Interface: components/web-interface.md
-    - Power Management: components/power-management.md
-    - Data Analysis: components/data-analysis.md
-  - Contributing:
-    - Guidelines: contributing.md
-    - Code of Conduct: code-of-conduct.md
-  - API Reference: api-reference.md
-  - License: license.md
 
 extra_css:
   - stylesheets/extra.css
