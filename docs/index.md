@@ -1,29 +1,70 @@
-# CreatureBox Refactored
-
-Welcome to the CreatureBox Refactored documentation!
-
-This documentation provides comprehensive information about the CreatureBox Refactored platform, including setup instructions, API reference, and component details.
+# CreatureBox: Advanced Habitat Management
 
 ## Overview
 
-CreatureBox Refactored is a platform for managing and monitoring creature habitats with advanced automation and control features.
+CreatureBox is a comprehensive platform designed to revolutionize creature habitat management through advanced monitoring, automation, and control technologies.
+
+![CreatureBox Hero Image](/assets/hero-image.png)
 
 ## Key Features
 
-- Centralized monitoring system for environmental parameters
-- Automated power management for habitat components
-- Web-based control interface
-- Configurable alerts and notifications
+### 🌡️ Environmental Monitoring
+- Real-time tracking of critical habitat parameters
+- Customizable sensor integration
+- Instant alerts for environmental changes
 
-## Getting Started
+### ⚡ Smart Power Management
+- Automated power control for habitat components
+- Energy efficiency optimization
+- Comprehensive power usage analytics
 
-See the [Getting Started](getting-started.md) guide for installation and setup instructions.
+### 🖥️ Intuitive Web Interface
+- User-friendly dashboard
+- Responsive design for mobile and desktop
+- Granular access controls
 
-## Components
+### 📊 Advanced Data Analysis
+- Comprehensive logging
+- Machine learning-powered insights
+- Historical trend visualization
 
-The platform consists of several major components:
+## Quick Start
 
-- [Web Interface](components/web.md) - Frontend and user interaction
-- [Power Management](components/power.md) - Power control and monitoring
-- [Software Components](components/software.md) - Core functionality
-- [Configuration](components/config.md) - System configuration
+```bash
+# Clone the repository
+git clone https://github.com/zane-lazare/creaturebox-refactor.git
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python src/app.py
+```
+
+## System Requirements
+
+- Python 3.8+
+- Linux, macOS, or Windows
+- Minimum 4GB RAM
+- Internet connection for initial setup
+
+## Community and Support
+
+- 📝 [Documentation](https://zane-lazare.github.io/creaturebox-refactor/)
+- 🐛 [Report Issues](https://github.com/zane-lazare/creaturebox-refactor/issues)
+- 💬 Community Support: Coming Soon!
+
+## License
+
+CreatureBox is open-source software released under the [MIT License](license.md).
+
+## Roadmap
+
+- [ ] Advanced machine learning integration
+- [ ] Mobile application
+- [ ] Extended sensor support
+- [ ] Cloud synchronization
+
+---
+
+**Join the CreatureBox Community and Transform Habitat Management!**
