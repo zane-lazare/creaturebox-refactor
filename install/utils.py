@@ -121,9 +121,16 @@ def prompt_yes_no(question, default="yes"):
 def run_command(cmd, shell=False, check=True, capture_output=True):
     """Run a command and return the result."""
     try:
+        if shell:
+            # For shell commands, explicitly use bash instead of /bin/sh
+            modified_cmd = ["/bin/bash", "-c", cmd] if isinstance(cmd, str) else cmd
+            shell = False  # Since we're now using bash explicitly, set shell to False
+        else:
+            modified_cmd = cmd
+            
         if capture_output:
             result = subprocess.run(
-                cmd, 
+                modified_cmd, 
                 shell=shell, 
                 check=check, 
                 stdout=subprocess.PIPE, 
@@ -133,7 +140,7 @@ def run_command(cmd, shell=False, check=True, capture_output=True):
             return result
         else:
             # Just run the command and let output go to terminal
-            subprocess.run(cmd, shell=shell, check=check)
+            subprocess.run(modified_cmd, shell=shell, check=check)
             return None
     except subprocess.CalledProcessError as e:
         logger.error(f"Command failed: {e}")
