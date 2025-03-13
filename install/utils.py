@@ -29,13 +29,23 @@ logging.basicConfig(
 
 logger = logging.getLogger('creaturebox_installer')
 
-# Define common paths
+# Define common paths - use environment variables if they're set
 HOME_DIR = os.path.expanduser('~')
 INSTALL_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.dirname(INSTALL_DIR)
-TARGET_DIR = os.path.join(HOME_DIR, 'CreatureBox')
-VENV_PATH = os.path.join(HOME_DIR, 'creaturebox-venv')
+
+# Allow customization of installation directory and virtual environment location
+# Default: Install in the user's home directory
+TARGET_DIR = os.environ.get('CREATUREBOX_HOME', os.path.join(HOME_DIR, 'CreatureBox'))
+VENV_PATH = os.environ.get('CREATUREBOX_VENV', os.path.join(HOME_DIR, 'creaturebox-venv'))
 DEPLOYMENT_DIR = os.path.join(INSTALL_DIR, 'deployment')
+
+# Ensure these directories exist
+def ensure_directories_exist():
+    """Ensure all required directories exist."""
+    os.makedirs(TARGET_DIR, exist_ok=True)
+    os.makedirs(os.path.dirname(VENV_PATH), exist_ok=True)
+    return True
 
 def setup_logging(log_file=None):
     """Set up logging to both console and file if specified."""
@@ -178,3 +188,6 @@ def create_progress_bar(iteration, total, prefix='', suffix='', length=50, fill=
 def clear_screen():
     """Clear the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
+
+# Call this at import time to ensure directories exist
+ensure_directories_exist()

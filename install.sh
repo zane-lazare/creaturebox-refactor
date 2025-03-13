@@ -1,10 +1,18 @@
 #!/bin/bash
-# CreatureBox Installation Script
+# CreatureBox Installation Script - Simplified and Robust
 
-# Set script directory
+# Set script directory (works regardless of where the repository is cloned)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="${SCRIPT_DIR}/install"
 LOG_FILE="${HOME}/creaturebox_install.log"
+
+# Installation target directories - can be overridden with environment variables
+TARGET_DIR="${CREATUREBOX_HOME:-${HOME}/CreatureBox}"
+VENV_PATH="${CREATUREBOX_VENV:-${HOME}/creaturebox-venv}"
+
+# Export variables so Python scripts can use them
+export CREATUREBOX_HOME="${TARGET_DIR}"
+export CREATUREBOX_VENV="${VENV_PATH}"
 
 # Function to print text
 print_colored() {
@@ -46,11 +54,25 @@ show_usage() {
     echo "  --verify-only       Only verify an existing installation"
     echo "  --non-interactive   Run in non-interactive mode (use defaults)"
     echo
-    echo "Examples:"
-    echo "  $0                          # Run full interactive installation"
-    echo "  $0 --check-only             # Only check requirements"
-    echo "  $0 --non-interactive        # Run installation without prompts"
+    echo "ENVIRONMENT VARIABLES:"
+    echo "  CREATUREBOX_HOME    Target installation directory (default: ~/CreatureBox)"
+    echo "  CREATUREBOX_VENV    Virtual environment path (default: ~/creaturebox-venv)"
     echo
+    echo "Examples:"
+    echo "  $0                                  # Run full interactive installation"
+    echo "  $0 --check-only                     # Only check requirements"
+    echo "  CREATUREBOX_HOME=/opt/cb $0         # Install to custom location"
+    echo
+}
+
+# Function to ensure directories exist
+ensure_directories() {
+    # Make sure installation and virtual environment directories exist
+    mkdir -p "${TARGET_DIR}"
+    mkdir -p "$(dirname "${VENV_PATH}")"
+    
+    # Create log file directory
+    mkdir -p "$(dirname "$LOG_FILE")"
 }
 
 # Function to run pre-installation checks
@@ -67,29 +89,6 @@ run_pre_checks() {
     fi
 }
 
-# Function to create virtual environment
-create_virtual_environment() {
-    print_section "Setting up Virtual Environment"
-    
-    # Run the virtual environment creation script
-    if [ -f "${INSTALL_DIR}/deployment/create_venv.py" ]; then
-        python3 "${INSTALL_DIR}/deployment/create_venv.py"
-        VENV_RESULT=$?
-        
-        if [ $VENV_RESULT -eq 0 ]; then
-            print_colored "Virtual environment created successfully."
-            print_colored "Activate it with: source ~/activate_venv.sh"
-            return 0
-        else
-            print_colored "Failed to create virtual environment."
-            return 1
-        fi
-    else
-        print_colored "Virtual environment creation script not found."
-        return 1
-    fi
-}
-
 # Function to run installation
 run_install() {
     print_section "Running Installation"
@@ -99,12 +98,6 @@ run_install() {
         INSTALL_ARGS="--non-interactive"
     else
         INSTALL_ARGS=""
-    fi
-    
-    # Create virtual environment first
-    if ! create_virtual_environment; then
-        print_colored "Virtual environment setup failed."
-        return 1
     fi
     
     # Run installer Python script
@@ -165,38 +158,28 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-# Check for mutually exclusive options
-if [[ "$CHECK_ONLY" = "true" && "$INSTALL_ONLY" = "true" ]]; then
-    print_colored "Error: --check-only and --install-only cannot be used together"
-    exit 1
-fi
-
-if [[ "$CHECK_ONLY" = "true" && "$VERIFY_ONLY" = "true" ]]; then
-    print_colored "Error: --check-only and --verify-only cannot be used together"
-    exit 1
-fi
-
-if [[ "$INSTALL_ONLY" = "true" && "$VERIFY_ONLY" = "true" ]]; then
-    print_colored "Error: --install-only and --verify-only cannot be used together"
-    exit 1
-fi
-
-# Print banner
+# Print banner and installation info
 print_banner
+print_colored "Installation paths:"
+print_colored "- Installation directory: ${TARGET_DIR}"
+print_colored "- Virtual environment: ${VENV_PATH}"
+echo
 
 # Check Python availability
 if ! check_python; then
     exit 1
 fi
 
+# Make sure all required directories exist
+ensure_directories
+
 # Setup Python path
 export PYTHONPATH="${INSTALL_DIR}:${PYTHONPATH}"
 
-# Create log file directory
-mkdir -p "$(dirname "$LOG_FILE")"
-
 # Log start of installation
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting CreatureBox installation" > "$LOG_FILE"
+echo "- Installation directory: ${TARGET_DIR}" >> "$LOG_FILE"
+echo "- Virtual environment: ${VENV_PATH}" >> "$LOG_FILE"
 
 # Run the requested operation
 if [ "$CHECK_ONLY" = "true" ]; then
@@ -243,7 +226,8 @@ else
     
     # Final message
     print_colored "CreatureBox has been successfully installed!"
-    print_colored "Activate the virtual environment with: source ~/activate_venv.sh"
+    print_colored "Activate the virtual environment with: source ${VENV_PATH}/bin/activate"
+    print_colored "You can also use: source ~/activate_venv.sh"
     print_colored "You can now start using CreatureBox. Enjoy!"
     exit 0
 fi

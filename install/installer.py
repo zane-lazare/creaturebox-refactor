@@ -18,7 +18,7 @@ from utils import (
     print_colored, print_success, print_warning, print_error, 
     print_section, print_step, logger, GREEN, YELLOW, RED, NC,
     run_command, prompt_yes_no, is_raspberry_pi, detect_pi_model,
-    HOME_DIR, REPO_DIR, TARGET_DIR, VENV_PATH
+    HOME_DIR, REPO_DIR, TARGET_DIR, VENV_PATH, INSTALL_DIR, ensure_directories_exist
 )
 
 # Total number of installation steps for progress tracking
@@ -72,25 +72,41 @@ def setup_virtual_environment():
     print_step(2, TOTAL_STEPS, "Setting up Python virtual environment")
     
     try:
-        # Create virtual environment if it doesn't exist
-        if not os.path.exists(VENV_PATH):
-            print_section(f"Creating virtual environment at {VENV_PATH}...")
-            run_command(['python3', '-m', 'venv', VENV_PATH], capture_output=False)
+        # Create target directory first to ensure it exists
+        os.makedirs(TARGET_DIR, exist_ok=True)
+        
+        # Use the dedicated create_venv.py script from deployment
+        venv_script = os.path.join(INSTALL_DIR, 'deployment', 'create_venv.py')
+        
+        if os.path.exists(venv_script):
+            # Run the script directly
+            result = run_command(['python3', venv_script], capture_output=False)
+            if result and result.returncode != 0:
+                raise Exception(f"Virtual environment script failed with code {result.returncode}")
         else:
-            print_warning(f"Virtual environment already exists at {VENV_PATH}")
-            if prompt_yes_no("Do you want to recreate it?", "no"):
-                print_section("Removing existing virtual environment...")
-                shutil.rmtree(VENV_PATH)
-                print_section("Creating new virtual environment...")
+            # Manual virtual environment setup if script doesn't exist
+            if os.path.exists(VENV_PATH):
+                print_warning(f"Virtual environment already exists at {VENV_PATH}")
+                if prompt_yes_no("Do you want to recreate it?", "no"):
+                    print_section("Removing existing virtual environment...")
+                    shutil.rmtree(VENV_PATH)
+                    print_section("Creating new virtual environment...")
+                    run_command(['python3', '-m', 'venv', VENV_PATH], capture_output=False)
+            else:
+                print_section(f"Creating virtual environment at {VENV_PATH}...")
                 run_command(['python3', '-m', 'venv', VENV_PATH], capture_output=False)
+                
+            # Write activation scripts to multiple locations
+            for script_path in [
+                os.path.join(HOME_DIR, 'activate_venv.sh'),
+                os.path.join(TARGET_DIR, 'activate_venv.sh')
+            ]:
+                with open(script_path, 'w') as f:
+                    f.write(f'#!/bin/bash\nsource {VENV_PATH}/bin/activate\n')
+                os.chmod(script_path, 0o755)
+                print_success(f"Activation script created at {script_path}")
         
-        # Write activation command to a script file for easy sourcing
-        activate_script = os.path.join(TARGET_DIR, 'activate_venv.sh')
-        with open(activate_script, 'w') as f:
-            f.write(f'#!/bin/bash\nsource {VENV_PATH}/bin/activate\n')
-        os.chmod(activate_script, 0o755)
-        
-        print_success("Virtual environment setup complete")
+        print_success("Virtual environment setup completed successfully!")
         return True
     except Exception as e:
         print_error(f"Failed to setup virtual environment: {e}")
@@ -101,8 +117,17 @@ def install_python_dependencies(pi_model):
     print_step(3, TOTAL_STEPS, "Installing Python dependencies")
     
     try:
-        # Activate virtual environment by sourcing the activate script
-        activate_cmd = f"source {VENV_PATH}/bin/activate && "
+        # Determine the correct pip path based on platform
+        pip_path = os.path.join(VENV_PATH, 'bin', 'pip')
+        if not os.path.exists(pip_path) and os.path.exists(os.path.join(VENV_PATH, 'Scripts', 'pip')):
+            # Windows uses Scripts directory
+            pip_path = os.path.join(VENV_PATH, 'Scripts', 'pip')
+            
+        # Determine the correct activation script based on platform
+        if os.name == 'nt':  # Windows
+            activate_cmd = f"{os.path.join(VENV_PATH, 'Scripts', 'activate')} && "
+        else:  # Unix/Linux
+            activate_cmd = f"source {os.path.join(VENV_PATH, 'bin', 'activate')} && "
         
         # Upgrade pip, setuptools, and wheel
         print_section("Upgrading pip, setuptools, and wheel...")
@@ -161,14 +186,17 @@ def install_python_dependencies(pi_model):
             f.write(f"PI_MODEL={pi_model}\n")
         
         # Check if PiJuice is present and install the module if needed
-        result = run_command(['lsusb'])
-        if 'PiJuice' in result.stdout:
-            print_section("PiJuice detected, installing PiJuice Python module...")
-            run_command(
-                activate_cmd + "pip install pijuice.py", 
-                shell=True, 
-                capture_output=False
-            )
+        try:
+            result = run_command(['lsusb'])
+            if 'PiJuice' in result.stdout:
+                print_section("PiJuice detected, installing PiJuice Python module...")
+                run_command(
+                    activate_cmd + "pip install pijuice.py", 
+                    shell=True, 
+                    capture_output=False
+                )
+        except Exception as juice_err:
+            print_warning(f"Could not check for PiJuice: {juice_err}")
         
         print_success("Python dependencies installed successfully")
         return True
@@ -216,24 +244,79 @@ def copy_files():
             print_error(f"Source directory not found: {src_dir}")
             return False
         
-        # Copy files
+        # Create required directories first
+        for dir_path in [
+            os.path.join(TARGET_DIR, 'Software'),
+            os.path.join(TARGET_DIR, 'web'),
+            os.path.join(TARGET_DIR, 'web', 'static')
+        ]:
+            os.makedirs(dir_path, exist_ok=True)
+        
+        # Copy files using a safer approach
         print_section("Copying Software files...")
         software_src = os.path.join(src_dir, 'Software')
         software_dst = os.path.join(TARGET_DIR, 'Software')
-        run_command(['cp', '-r', f"{software_src}/*", software_dst], shell=True, capture_output=False)
+        
+        if os.path.exists(software_src):
+            # Use shutil.copytree with dirs_exist_ok on Python 3.8+
+            if hasattr(shutil, 'copytree') and 'dirs_exist_ok' in shutil.copytree.__code__.co_varnames:
+                shutil.copytree(software_src, software_dst, dirs_exist_ok=True)
+            else:
+                # Fallback for older Python versions
+                for item in os.listdir(software_src):
+                    s = os.path.join(software_src, item)
+                    d = os.path.join(software_dst, item)
+                    if os.path.isdir(s):
+                        if os.path.exists(d):
+                            shutil.rmtree(d)
+                        shutil.copytree(s, d)
+                    else:
+                        shutil.copy2(s, d)
+        else:
+            print_warning(f"Software source directory not found: {software_src}")
         
         print_section("Copying config files...")
         config_src = os.path.join(src_dir, 'config')
-        run_command(['cp', '-r', f"{config_src}/*", TARGET_DIR], shell=True, capture_output=False)
+        if os.path.exists(config_src):
+            for item in os.listdir(config_src):
+                s = os.path.join(config_src, item)
+                d = os.path.join(TARGET_DIR, item)
+                if os.path.isdir(s):
+                    if os.path.exists(d):
+                        shutil.rmtree(d)
+                    shutil.copytree(s, d)
+                else:
+                    shutil.copy2(s, d)
+        else:
+            print_warning(f"Config source directory not found: {config_src}")
         
         print_section("Copying web files...")
         web_app_src = os.path.join(src_dir, 'web', 'app.py')
         web_app_dst = os.path.join(TARGET_DIR, 'web')
-        run_command(['cp', web_app_src, web_app_dst], capture_output=False)
+        if os.path.exists(web_app_src):
+            shutil.copy2(web_app_src, web_app_dst)
+        else:
+            print_warning(f"Web app source file not found: {web_app_src}")
         
         web_static_src = os.path.join(src_dir, 'web', 'static')
         web_static_dst = os.path.join(TARGET_DIR, 'web', 'static')
-        run_command(['cp', '-r', f"{web_static_src}/*", web_static_dst], shell=True, capture_output=False)
+        if os.path.exists(web_static_src):
+            # Use shutil.copytree with dirs_exist_ok on Python 3.8+
+            if hasattr(shutil, 'copytree') and 'dirs_exist_ok' in shutil.copytree.__code__.co_varnames:
+                shutil.copytree(web_static_src, web_static_dst, dirs_exist_ok=True)
+            else:
+                # Fallback for older Python versions
+                for item in os.listdir(web_static_src):
+                    s = os.path.join(web_static_src, item)
+                    d = os.path.join(web_static_dst, item)
+                    if os.path.isdir(s):
+                        if os.path.exists(d):
+                            shutil.rmtree(d)
+                        shutil.copytree(s, d)
+                    else:
+                        shutil.copy2(s, d)
+        else:
+            print_warning(f"Web static source directory not found: {web_static_src}")
         
         # Copy README and LICENSE
         readme_path = os.path.join(REPO_DIR, 'README.md')
@@ -256,6 +339,11 @@ def set_permissions():
     print_step(6, TOTAL_STEPS, "Setting file permissions")
     
     try:
+        # Skip permission setting on Windows
+        if os.name == 'nt':
+            print_warning("Skipping permission setting on Windows")
+            return True
+            
         # Make scripts executable
         print_section("Making scripts executable...")
         run_command(
@@ -266,7 +354,8 @@ def set_permissions():
         
         # Make web app executable
         web_app_path = os.path.join(TARGET_DIR, 'web', 'app.py')
-        os.chmod(web_app_path, 0o755)
+        if os.path.exists(web_app_path):
+            os.chmod(web_app_path, 0o755)
         
         # Set directory permissions
         print_section("Setting directory permissions...")
@@ -278,7 +367,8 @@ def set_permissions():
         ]
         
         for directory in directories:
-            run_command(['chmod', '-R', '755', directory], capture_output=False)
+            if os.path.exists(directory):
+                run_command(['chmod', '-R', '755', directory], capture_output=False)
         
         # Set file permissions for CSV files
         print_section("Setting file permissions for data files...")
@@ -304,6 +394,11 @@ def create_symlinks():
     print_step(7, TOTAL_STEPS, "Creating symlinks")
     
     try:
+        # Skip symlink creation on Windows
+        if os.name == 'nt':
+            print_warning("Skipping symlink creation on Windows")
+            return True
+            
         scripts = [
             'TakePhoto.py',
             'Scheduler.py',
@@ -338,6 +433,11 @@ def setup_web_service():
     print_step(8, TOTAL_STEPS, "Setting up web service")
     
     try:
+        # Skip on Windows
+        if os.name == 'nt':
+            print_warning("Skipping web service setup on Windows")
+            return True
+            
         web_port = 5000
         user = os.environ.get('USER', os.environ.get('USERNAME', 'pi'))
         
@@ -534,6 +634,15 @@ WantedBy=multi-user.target
 def run_installation(interactive=True):
     """Run the complete installation process."""
     try:
+        # Ensure all directories exist
+        ensure_directories_exist()
+        
+        # Display setup information
+        print_section("Installation Paths:")
+        print(f"Installation directory: {TARGET_DIR}")
+        print(f"Virtual environment: {VENV_PATH}")
+        print("")
+        
         # Detect Raspberry Pi model
         pi_model = detect_pi_model_details()
         
