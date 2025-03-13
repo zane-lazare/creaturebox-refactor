@@ -211,7 +211,7 @@ def create_directory_structure():
     try:
         directories = [
             '',  # Main directory
-            'Software',
+            'software',
             'photos',
             'photos_backedup',
             'logs',
@@ -246,7 +246,7 @@ def copy_files():
         
         # Create required directories first
         for dir_path in [
-            os.path.join(TARGET_DIR, 'Software'),
+            os.path.join(TARGET_DIR, 'software'),
             os.path.join(TARGET_DIR, 'web'),
             os.path.join(TARGET_DIR, 'web', 'static')
         ]:
@@ -254,8 +254,8 @@ def copy_files():
         
         # Copy files using a safer approach
         print_section("Copying Software files...")
-        software_src = os.path.join(src_dir, 'Software')
-        software_dst = os.path.join(TARGET_DIR, 'Software')
+        software_src = os.path.join(src_dir, 'software')
+        software_dst = os.path.join(TARGET_DIR, 'software')
         
         if os.path.exists(software_src):
             # Use shutil.copytree with dirs_exist_ok on Python 3.8+
@@ -347,7 +347,7 @@ def set_permissions():
         # Make scripts executable
         print_section("Making scripts executable...")
         run_command(
-            f"find {TARGET_DIR}/Software -type f \( -name '*.py' -o -name '*.sh' \) -exec chmod +x {{}} \;", 
+            f"find {TARGET_DIR}/software -type f \( -name '*.py' -o -name '*.sh' \) -exec chmod +x {{}} \;", 
             shell=True, 
             capture_output=False
         )
@@ -360,7 +360,7 @@ def set_permissions():
         # Set directory permissions
         print_section("Setting directory permissions...")
         directories = [
-            os.path.join(TARGET_DIR, 'Software'),
+            os.path.join(TARGET_DIR, 'software'),
             os.path.join(TARGET_DIR, 'web'),
             os.path.join(TARGET_DIR, 'photos'),
             os.path.join(TARGET_DIR, 'logs')
@@ -408,7 +408,7 @@ def create_symlinks():
         ]
         
         for script in scripts:
-            source = os.path.join(TARGET_DIR, 'Software', script)
+            source = os.path.join(TARGET_DIR, 'software', script)
             target = os.path.join(TARGET_DIR, script)
             
             if os.path.exists(source):
@@ -618,7 +618,7 @@ WantedBy=multi-user.target
 @reboot {VENV_PATH}/bin/python {TARGET_DIR}/Scheduler.py
 
 # Backup photos daily at 3 AM
-0 3 * * * {VENV_PATH}/bin/python {TARGET_DIR}/Software/Backup_Files.py
+0 3 * * * {VENV_PATH}/bin/python {TARGET_DIR}/software/Backup_Files.py
 """
         
         crontab_path = os.path.join(TARGET_DIR, 'crontab.example')
